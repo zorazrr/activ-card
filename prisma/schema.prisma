@@ -47,7 +47,8 @@ model Classroom {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   name     String
   students Student[]
-  teacher  Teacher[]
+  teacher_id String
+  teacher  Teacher@relation(fields: [teacher_id], references: [id])
   set      Set[]
 }
 
@@ -64,7 +65,7 @@ model Teacher {
   id           String    @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   classroom_id String
-  classroom    Classroom @relation(fields: [classroom_id], references: [id])
+  classroom    Classroom[]
 }
 
 model Set {
