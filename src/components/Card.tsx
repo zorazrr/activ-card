@@ -18,7 +18,7 @@ const SetCard = ({
             alt="Set cover image"
             objectFit="cover"
             w="100%"
-            h="300px"
+            h="220px"
             borderTopRightRadius="md"
             borderBottomRightRadius="md"
           />
