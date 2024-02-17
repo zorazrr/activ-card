@@ -1,6 +1,6 @@
 import { z } from "zod";
-import fs from "fs";
 import OpenAI from "openai";
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 import {
     createTRPCRouter,
@@ -13,14 +13,26 @@ export const gptRouter = createTRPCRouter({
     // Upload a file to AWS S3 and use Textract to extract text from the file
     // Returns the extracted text
     uploadFile: publicProcedure.mutation(async () => {
-        const file = await openai.files.create({
-            file: fs.createReadStream("README.md"),
-            purpose: "assistants",
-        });
+        // const S3_BUCKET = process.env.S3_BUCKET_NAME;
 
-        return {
-            file
-        };
+        // const s3 = new S3Client({
+        //     region: process.env.AWS_REGION
+        // });
+        // try {
+        //     const uploadParams = {
+        //         Bucket: "treehacksfiles",
+        //         Key: file.name,
+        //         Body: file,
+        //     };
+
+        //     const command = new PutObjectCommand(uploadParams);
+        //     await s3.send(command);
+
+        //     alert('File uploaded successfully.');
+        // } catch (err) {
+        //     alert('File upload failed.');
+        //     console.error(err);
+        // }
     }),
     // Generate flashcard based on text 
     // Returns the generated flashcard
@@ -32,7 +44,6 @@ export const gptRouter = createTRPCRouter({
             model: "gpt-3.5-turbo",
         });
         console.log(completion!.choices[0].message.content)
-
         return completion!.choices[0].message.content
     })
 });
