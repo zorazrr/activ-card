@@ -33,7 +33,7 @@ const Sidebar = ({ classes }: { classes: Class[] }) => {
   return (
     <Box w="20%" h="100%" className="main-class bg-darkBlue">
       <Heading textAlign="center" mt={3} className="main-class text-white">
-        ActivCard
+        ActiveCard
       </Heading>
       <VStack spacing={0}>
         {classes.map((c) => {
