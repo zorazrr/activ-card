@@ -27,6 +27,11 @@ export default function TeacherDashboard() {
   // console.log(student);
   // NOTE: Will keep this here until student dashboard is created
 
+  const { data: teacherInfo } = api.teacher.getTeacherAndClassrooms.useQuery({
+    teacherId: "65d1242ccdde4a764731c37f",
+  });
+  console.log(teacherInfo);
+
   return (
     <HStack height="100%" className="main-class min-h-screen">
       <Sidebar classes={classes} />

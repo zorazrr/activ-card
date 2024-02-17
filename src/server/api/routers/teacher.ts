@@ -1,3 +1,4 @@
+import { Teacher } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
@@ -9,7 +10,7 @@ export const teacherRouter = createTRPCRouter({
   getTeacherAndClassrooms: publicProcedure
     .input(z.object({ teacherId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const teacher = await ctx.db.teacher.findMany({
+      const teacher: Teacher[] = await ctx.db.teacher.findMany({
         where: {
           id: input.teacherId,
         },
