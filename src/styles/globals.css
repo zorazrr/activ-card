@@ -24,8 +24,7 @@
   @apply font-roboto text-text-size;
 }
 
-.typewriter h1,
-p {
+.typewriter > h1 {
   font-family: "Roboto";
   font-size: "36px";
   overflow: hidden; /* Ensures the content is not revealed until the animation */
