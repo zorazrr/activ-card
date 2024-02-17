@@ -1,5 +1,5 @@
 import { HStack } from "@chakra-ui/react";
-import { Set } from "@prisma/client";
+import type { Set } from "@prisma/client";
 import SetCard from "~/components/Card";
 import Sidebar from "~/components/SideBar/SideBar";
 import { api } from "~/utils/api";
