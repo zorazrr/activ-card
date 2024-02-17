@@ -11,8 +11,8 @@ const SetCard = ({
   <Card>
     <CardBody h="100%" paddingY={0} paddingRight={0}>
       <HStack h="100%">
-        <Box minW="90%">{setName}</Box>
-        <Box w="10%">
+        <Box minW="80%">{setName}</Box>
+        <Box minW="20%">
           <Image
             src={imageSrc}
             alt="Set cover image"
