@@ -1,8 +1,9 @@
 import { postRouter } from "~/server/api/routers/post";
 import { createTRPCRouter } from "~/server/api/trpc";
 import { gptRouter } from "./routers/gpt";
-import { studentsRouter } from "./routers/students";
+import { studentRouter } from "./routers/student";
 import { setRouter } from "./routers/set";
+import { classroomRouter } from "./routers/classroom";
 
 /**
  * This is the primary router for your server.
@@ -12,7 +13,8 @@ import { setRouter } from "./routers/set";
 export const appRouter = createTRPCRouter({
   post: postRouter,
   gpt: gptRouter,
-  students: studentsRouter,
+  student: studentRouter,
+  classroom: classroomRouter,
   set: setRouter,
 });
 

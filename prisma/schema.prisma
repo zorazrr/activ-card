@@ -64,7 +64,6 @@ model Student {
 model Teacher {
   id           String    @id @default(auto()) @map("_id") @db.ObjectId
   name         String
-  classroom_id String
   classroom    Classroom[]
 }
 

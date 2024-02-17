@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-export const classroomsRouter = createTRPCRouter({
+export const classroomRouter = createTRPCRouter({
   // TODO: GET classrooms of teacher
   getClassroomsForTeacher: publicProcedure
     .input(z.object({}))
