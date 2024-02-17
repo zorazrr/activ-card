@@ -33,6 +33,9 @@ const Sidebar = ({
   const { getRadioProps } = useRadioGroup({
     name: "classList",
     defaultValue: classes[0]?.className,
+    onChange: (nextValue) => {
+      console.log("Selected class:", nextValue);
+    },
   });
 
   return (
@@ -41,7 +44,7 @@ const Sidebar = ({
       h="100%"
       className="main-class bg-darkBlue"
       position="sticky"
-      top="0" // Stick to the top of the viewport
+      top="0"
       zIndex="sticky"
     >
       <Heading textAlign="center" mt={3} className="main-class text-white">
@@ -49,7 +52,7 @@ const Sidebar = ({
       </Heading>
       <VStack spacing={0}>
         {classes.map((c) => {
-          const radio = getRadioProps({ value: c });
+          const radio = getRadioProps({ value: c.className });
           return (
             <ClassRadioButton
               key={c.className}

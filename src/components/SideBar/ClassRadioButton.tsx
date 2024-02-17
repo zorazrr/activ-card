@@ -4,6 +4,7 @@ import {
   type UseRadioProps,
   type BoxProps,
 } from "@chakra-ui/react";
+import { useEffect } from "react";
 
 interface Class {
   className: string;
