@@ -5,15 +5,34 @@ import {
   type BoxProps,
 } from "@chakra-ui/react";
 
-const ClassRadioButton = (props: UseRadioProps & BoxProps) => {
+interface Class {
+  className: string;
+}
+
+interface ClassRadioButtonProps
+  extends Omit<UseRadioProps, "onChange">,
+    BoxProps {
+  classObject: Class;
+  setCurrentClass: React.Dispatch<React.SetStateAction<Class | undefined>>;
+}
+
+const ClassRadioButton = ({
+  classObject,
+  setCurrentClass,
+  ...props
+}: ClassRadioButtonProps) => {
   const { getInputProps, getRadioProps } = useRadio(props);
 
   const input = getInputProps();
   const checkbox = getRadioProps();
 
+  const handleClick = () => {
+    setCurrentClass(classObject);
+  };
+
   return (
     <Box as="label" w="100%">
-      <input {...input} />
+      <input {...input} onClick={handleClick} />
       <Box
         {...checkbox}
         cursor="pointer"

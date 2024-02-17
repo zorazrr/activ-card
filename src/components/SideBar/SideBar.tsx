@@ -14,32 +14,50 @@ import {
   Box,
 } from "@chakra-ui/react";
 
-import React from "react";
+import React, { type Dispatch, type SetStateAction } from "react";
 import ClassRadioButton from "./ClassRadioButton";
 
 interface Class {
   className: string;
 }
 
-const Sidebar = ({ classes }: { classes: Class[] }) => {
+const Sidebar = ({
+  classes,
+  setCurrentClass,
+}: {
+  classes: Class[];
+  setCurrentClass: Dispatch<SetStateAction<Class | undefined>>;
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { getRadioProps } = useRadioGroup({
     name: "classList",
     defaultValue: classes[0]?.className,
-    onChange: console.log,
   });
 
   return (
-    <Box w="20%" h="100%" className="main-class bg-darkBlue">
+    <Box
+      w="20%"
+      h="100%"
+      className="main-class bg-darkBlue"
+      position="sticky"
+      top="0" // Stick to the top of the viewport
+      zIndex="sticky"
+    >
       <Heading textAlign="center" mt={3} className="main-class text-white">
         ActivCard
       </Heading>
       <VStack spacing={0}>
         {classes.map((c) => {
-          const radio = getRadioProps({ value: c.className });
+          const radio = getRadioProps({ value: c });
           return (
-            <ClassRadioButton key={c.className} {...radio} gap={0}>
+            <ClassRadioButton
+              key={c.className}
+              {...radio}
+              gap={0}
+              setCurrentClass={setCurrentClass}
+              classObject={c}
+            >
               {c.className}
             </ClassRadioButton>
           );
