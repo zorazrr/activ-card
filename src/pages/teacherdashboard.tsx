@@ -15,7 +15,9 @@ export default function TeacherDashboard() {
     { className: "Science" },
   ] as Class[];
 
-  const { data: sets } = api.sets.getAllSets.useQuery({ classId: "65d104e87c97cf68389b7e90" });
+  const { data: sets } = api.set.getAllSets.useQuery({
+    classId: "65d104e87c97cf68389b7e90",
+  });
   console.log(sets);
 
   return (
