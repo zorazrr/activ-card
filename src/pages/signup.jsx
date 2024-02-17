@@ -29,28 +29,32 @@ export default function Home() {
             className="flex-col items-start justify-between space-y-6"
             style={{ marginTop: "5%" }}
           >
-            <StyledButton
-              label="I'm a Teacher"
-              colorInd={1}
-              onClick={() => {}}
-              style={{
-                width: "50%",
-                paddingTop: "15px",
-                paddingBottom: "15px",
-                marginBottom: "3%",
-              }}
-            />
-            <StyledButton
-              label="I'm a Student"
-              colorInd={2}
-              onClick={() => {}}
-              style={{
-                width: "50%",
-                paddingTop: "15px",
-                paddingBottom: "15px",
-                marginBottom: "3%",
-              }}
-            />
+            <Link href="/login">
+              <StyledButton
+                label="I'm a Teacher"
+                colorInd={1}
+                onClick={() => {}}
+                style={{
+                  width: "50%",
+                  paddingTop: "15px",
+                  paddingBottom: "15px",
+                  marginBottom: "3%",
+                }}
+              />
+            </Link>
+            <Link href="/login">
+              <StyledButton
+                label="I'm a Student"
+                colorInd={2}
+                onClick={() => {}}
+                style={{
+                  width: "50%",
+                  paddingTop: "15px",
+                  paddingBottom: "15px",
+                  marginBottom: "3%",
+                }}
+              />
+            </Link>
           </div>
         </div>
       </div>
