@@ -17,7 +17,7 @@ datasource db {
 model Badge {
   id          String        @id @default(auto()) @map("_id") @db.ObjectId
   url         String
-  student_id  String        @db.ObjectId
+  student_id  String @db.ObjectId
   student     Student       @relation(fields: [student_id], references: [id])
   SetProgress SetProgress[]
 }
@@ -26,55 +26,55 @@ model Card {
   id              String       @id @default(auto()) @map("_id") @db.ObjectId
   term            String
   definition      String
-  set             Set          @relation(fields: [set_id], references: [id], onDelete: Cascade)
-  set_id          String       @db.ObjectId
-  set_progress_id String?      @db.ObjectId
+  set_id          String @db.ObjectId
+  set             Set          @relation(fields: [set_id], references: [id])
+  set_progress_id String? @db.ObjectId
   set_progress    SetProgress? @relation(fields: [set_progress_id], references: [id])
 }
 
 model SetProgress {
   id              String  @id @default(auto()) @map("_id") @db.ObjectId
-  set_id          String  @db.ObjectId
+  set_id          String @db.ObjectId
   set             Set     @relation(fields: [set_id], references: [id])
-  student_id      String  @db.ObjectId
+  student_id      String @db.ObjectId
   student         Student @relation(fields: [student_id], references: [id])
   completed_cards Card[]
-  badge_id        String  @db.ObjectId
+  badge_id        String @db.ObjectId
   badge           Badge   @relation(fields: [badge_id], references: [id])
 }
 
 model Classroom {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  name       String
-  studentIds String[]  @db.ObjectId
-  students   Student[] @relation(fields: [studentIds], references: [id])
-  teacher_id String    @db.ObjectId
-  teacher    Teacher   @relation(fields: [teacher_id], references: [id])
-  set        Set[]
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  student_ids String[]   @db.ObjectId
+  students  Student[] @relation(fields: [student_ids], references: [id])
+  teacher_id String  @db.ObjectId
+  teacher  Teacher@relation(fields: [teacher_id], references: [id])
+  sets      Set[]
 }
 
 model Student {
   id           String        @id @default(auto()) @map("_id") @db.ObjectId
   name         String
-  classroomIds String[]      @db.ObjectId
-  classrooms   Classroom[]   @relation(fields: [classroomIds], references: [id])
+  classroom_ids String[]   @db.ObjectId
+  classrooms  Classroom[] @relation(fields: [classroom_ids], references: [id]) 
   set_progress SetProgress[]
   badge        Badge[]
 }
 
 model Teacher {
-  id        String      @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  classroom Classroom[]
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  classroom    Classroom[] 
 }
 
 model Set {
   id           String        @id @default(auto()) @map("_id") @db.ObjectId
   name         String
-  classroom_id String        @db.ObjectId
+  classroom_id String @db.ObjectId
   classroom    Classroom     @relation(fields: [classroom_id], references: [id])
   set_progress SetProgress[]
-  cards        Card[]
+  cards        Card[] 
   check_mode   CheckMode
   answer_mode  AnswerMode
   pomodoro     Boolean

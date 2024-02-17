@@ -15,8 +15,22 @@ export default function TeacherDashboard() {
     { className: "Science" },
   ] as Class[];
 
-  const { data: sets } = api.set.getAllSets.useQuery({ classId: "65d104e87c97cf68389b7e90" });
+  // API Proof of Concepts
+  const { data: sets } = api.set.getAllSets.useQuery({
+    classId: "65d12457cdde4a764731c380",
+  });
   console.log(sets);
+
+  // const { data: student } = api.student.getStudentInfo.useQuery({
+  //   studentId: "65d12546cdde4a764731c381",
+  // });
+  // console.log(student);
+  // NOTE: Will keep this here until student dashboard is created
+
+  const { data: teacherInfo } = api.teacher.getTeacherAndClassrooms.useQuery({
+    teacherId: "65d1242ccdde4a764731c37f",
+  });
+  console.log(teacherInfo);
 
   return (
     <HStack height="100%" className="main-class min-h-screen">
