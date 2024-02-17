@@ -35,7 +35,6 @@ export const gptRouter = createTRPCRouter({
             }
             return accumulator;
         }, '').trim();
-        console.log(concatenatedString)
 
         return concatenatedString;
     }),
@@ -43,8 +42,8 @@ export const gptRouter = createTRPCRouter({
     // Returns the generated flashcard
     generateFlashcard: publicProcedure.input(z.object({ content: z.string() })).query(async ({ input }) => {
         const completion = await openai.chat.completions.create({
-            messages: [{ "role": "system", "content": "You are a helpful assistant." },
-            { "role": "user", "content": "Generate a term and definition pair based on this content." },
+            messages: [{ "role": "system", "content": "You are a helpful teaching assistant." },
+            { "role": "user", "content": "From the given content only, extract 3 [term:definition] pairs, keep it short." },
             { "role": "assistant", "content": input.content }],
             model: "gpt-3.5-turbo",
         });

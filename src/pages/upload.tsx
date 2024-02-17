@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { api } from '~/utils/api';
 
@@ -13,7 +13,9 @@ const s3 = new S3Client({
 
 const FileUpload = () => {
     const [file, setFile] = useState<File>();
-    const extractText = api.gpt.extractText.useMutation({ retry: false });
+    const [extractedText, setExtractedText] = useState<string>("");
+    const generateFlashcard = api.gpt.generateFlashcard.useQuery({ content: extractedText }, { enabled: false });
+    const extractText = api.gpt.extractText.useMutation({ retry: false, onSuccess: (data) => setExtractedText(data as string) });
 
 
     const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +47,12 @@ const FileUpload = () => {
             console.error(err);
         }
     };
+
+    useEffect(() => {
+        if (extractedText) {
+            void generateFlashcard.refetch();
+        }
+    }, [extractedText, generateFlashcard]);
 
     return (
         <div>
