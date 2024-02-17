@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Set } from "@prisma/client";
+import type { Set, Card } from "@prisma/client";
 
 import {
     createTRPCRouter,
@@ -8,12 +8,36 @@ import {
 
 
 export const cardRouter = createTRPCRouter({
-    getSetByClassroom: publicProcedure.input(z.object({ classId: z.string() })).query(async ({ ctx, input }) => {
-        const sets: Set[] = await ctx.db.set.findMany({
+    geCardBySet: publicProcedure.input(z.object({ setId: z.string() })).query(async ({ ctx, input }) => {
+        const cards: Card[] = await ctx.db.card.findMany({
             where: {
-                classroom_id: input.classId,
+                set_id: input.setId,
             },
         });
-        return sets;
+        return cards;
+    }),
+    createCardsforSet: publicProcedure.input(z.object({ setId: z.string(), cards: z.array(z.object({ term: z.string(), def: z.string() })) })).mutation(async ({ ctx, input }) => {
+        const cards: Card[] = await Promise.all(input.cards.map(async (card) => {
+            return await ctx.db.card.create({
+                data: {
+                    term: card.term,
+                    definition: card.def,
+                    set_id: input.setId,
+                }
+            });
+        }));
+        await Promise.all(cards.map(async (card) => {
+            await ctx.db.set.update({
+                where: {
+                    id: input.setId
+                },
+                data: {
+                    cards: {
+                        push: card
+                    }
+                }
+            });
+        }));
+        return cards;
     })
 })
