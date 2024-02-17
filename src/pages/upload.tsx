@@ -1,20 +1,25 @@
 import React, { useState } from 'react';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { api } from '~/utils/api';
 
 // Initialize S3 client
 const s3 = new S3Client({
     region: "us-east-1",
     credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+        accessKeyId: "AKIA4MTWIFKYCTHCZ7PP",
+        secretAccessKey: "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"
     }
 });
 
 const FileUpload = () => {
-    const [file, setFile] = useState(null);
+    const [file, setFile] = useState<File>();
+    const extractText = api.gpt.extractText.useMutation({ retry: false });
 
-    const handleFileInput = (e) => {
-        setFile(e.target.files[0]);
+
+    const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files?.[0] != null) {
+            setFile(e.target.files[0]);
+        }
     };
 
     const uploadFile = async () => {
@@ -32,6 +37,7 @@ const FileUpload = () => {
 
             const command = new PutObjectCommand(uploadParams);
             await s3.send(command);
+            await extractText.mutateAsync();
 
             alert('File uploaded successfully.');
         } catch (err) {
