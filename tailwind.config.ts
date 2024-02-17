@@ -9,6 +9,9 @@ export default {
         sans: ["var(--font-sans)", ...fontFamily.sans],
         roboto: ["Roboto", "sans-serif"],
       },
+      minHeight: {
+        screen: "100vh",
+      },
       fontSize: {
         "h1-size": "96px", // Existing custom font size
         "h2-size": "64px", // New custom font size

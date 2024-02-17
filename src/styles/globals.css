@@ -62,3 +62,12 @@ p {
 .custom-image-class img {
   max-width: none !important;
 }
+
+body {
+  min-height: 100vh;
+  margin: 0;
+}
+
+#__next {
+  height: 100vh;
+}
