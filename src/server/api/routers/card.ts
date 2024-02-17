@@ -26,6 +26,18 @@ export const cardRouter = createTRPCRouter({
                 }
             });
         }));
+        await Promise.all(cards.map(async (card) => {
+            await ctx.db.set.update({
+                where: {
+                    id: input.setId
+                },
+                data: {
+                    cards: {
+                        push: card
+                    }
+                }
+            });
+        }));
         return cards;
     })
 })
