@@ -23,8 +23,12 @@ export default function Home() {
           </Link>
         </div>
         <div className="main-class flex items-center justify-between space-x-4 p-5">
-          <StyledButton label="Log In" colorInd={0} onClick={() => {}} />
-          <StyledButton label="Sign Up" colorInd={1} onClick={() => {}} />
+          <Link href="/login">
+            <StyledButton label="Log In" colorInd={0} onClick={() => {}} />
+          </Link>
+          <Link href="/signup">
+            <StyledButton label="Sign Up" colorInd={1} onClick={() => {}} />
+          </Link>
         </div>
       </div>
       <div
