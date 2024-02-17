@@ -1,7 +1,7 @@
 import { postRouter } from "~/server/api/routers/post";
 import { createTRPCRouter } from "~/server/api/trpc";
 import { gptRouter } from "./routers/gpt";
-import { setsRouter } from "./routers/sets";
+import { setRouter } from "./routers/set";
 
 /**
  * This is the primary router for your server.
@@ -11,7 +11,8 @@ import { setsRouter } from "./routers/sets";
 export const appRouter = createTRPCRouter({
   post: postRouter,
   gpt: gptRouter,
-  sets: setsRouter,
+  set: setRouter,
+  
 });
 
 // export type definition of API
