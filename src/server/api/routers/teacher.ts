@@ -3,15 +3,17 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const teacherRouter = createTRPCRouter({
-  // TODO: GET teacher
-  getTeacher: publicProcedure.input(z.object({})).query(({ ctx }) => {
-    const sets = ctx.db.classroom.findMany();
-  }),
-
-  // TODO: Add to teacher
-  addClassroomToTeacher: publicProcedure
-    .input(z.object({}))
-    .query(({ ctx }) => {
-      const sets = ctx.db.classroom.findMany();
+  // GET
+  // Allows you to get a teacher's information (name, classroooms)
+  // Useful for teacher dashboard to populate the classrooms
+  getTeacherAndClassrooms: publicProcedure
+    .input(z.object({ teacherId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const teacher = await ctx.db.teacher.findMany({
+        where: {
+          id: input.teacherId,
+        },
+      });
+      return teacher;
     }),
 });
