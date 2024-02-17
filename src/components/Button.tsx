@@ -8,9 +8,9 @@ interface ButtonProps {
 }
 
 const colors: string[] = [
-  "reg-text w-32 rounded-md bg-darkBlue  py-2 text-white hover:bg-midBlue",
-  "reg-text w-32 rounded-md bg-mediumBlue  py-2 text-white hover:bg-midBlue",
-  "reg-text w-32 rounded-md bg-midBlue py-2 text-white hover:bg-mediumBlue",
+  "reg-text w-32 rounded-md bg-darkBlue  py-2 text-white hover:opacity-75",
+  "reg-text w-32 rounded-md bg-mediumBlue  py-2 text-white hover:opacity-75",
+  "reg-text w-32 rounded-md bg-midBlue py-2 text-white hover:opacity-75",
 ];
 
 const StyledButton = ({ label, onClick, colorInd, style }: ButtonProps) => (
