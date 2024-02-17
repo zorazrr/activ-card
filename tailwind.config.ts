@@ -17,6 +17,7 @@ export default {
         "h2-size": "64px", // New custom font size
         "h3-size": "48px",
         "h4-size": "36px",
+        "h5-size": "24px",
         "text-size": "16px",
       },
       fontWeight: {
