@@ -30,7 +30,7 @@ export default function Home() {
         style={{
           width: "100%",
           paddingTop: "10%",
-          paddingLeft: "15%",
+          paddingLeft: "25%",
           paddingRight: "15%",
         }}
       >
