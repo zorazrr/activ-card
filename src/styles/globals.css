@@ -1,3 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+  .h1 {
+    @apply font-roboto text-h1-size font-extrabold;
+  }
+
+
+  .h2 {
+    @apply font-roboto text-h2-size font-bold;
+  }
+
+
+  .h3 {
+    @apply font-roboto text-h3-size font-semibold;
+  }
+
+  .h4 {
+    @apply font-roboto text-h4-size font-medium;
+  }
+
+  .reg-text {
+    @apply font-roboto text-text-size ;
+  }

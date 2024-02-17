@@ -30,6 +30,21 @@ export default function Home() {
                 Just the basics - Everything you need to know to set up your
                 database and authentication.
               </div>
+              <div className="h1">
+                hiiii
+              </div>
+              <div className="h2">
+                hiiii
+              </div>
+              <div className="h3">
+                hiiii
+              </div>
+              <div className="h4">
+                hiiii
+              </div>
+              <div className="text">
+                hiiii
+              </div>
             </Link>
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
