@@ -31,13 +31,15 @@ const Sidebar = ({ classes }: { classes: Class[] }) => {
   });
 
   return (
-    <Box w="20%">
-      <Heading>ActivCard</Heading>
+    <Box w="20%" h="100%" className="main-class bg-darkBlue">
+      <Heading textAlign="center" mt={3} className="main-class text-white">
+        ActivCard
+      </Heading>
       <VStack spacing={0}>
         {classes.map((c) => {
           const radio = getRadioProps({ value: c.className });
           return (
-            <ClassRadioButton key={c.className} {...radio} m={0} p={0}>
+            <ClassRadioButton key={c.className} {...radio} gap={0}>
               {c.className}
             </ClassRadioButton>
           );

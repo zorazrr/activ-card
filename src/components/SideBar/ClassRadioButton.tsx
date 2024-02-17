@@ -12,14 +12,16 @@ const ClassRadioButton = (props: UseRadioProps & BoxProps) => {
   const checkbox = getRadioProps();
 
   return (
-    <Box as="label" w="100%" h="80px">
+    <Box as="label" w="100%">
       <input {...input} />
       <Box
         {...checkbox}
         cursor="pointer"
         borderBottom="1px gray"
+        color="white"
+        h="100%"
         _checked={{
-          bg: "teal.600",
+          bg: "#4A729D",
           color: "white",
           borderColor: "teal.600",
         }}

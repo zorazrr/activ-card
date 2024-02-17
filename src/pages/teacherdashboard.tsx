@@ -13,7 +13,7 @@ export default function TeacherDashboard() {
     { className: "Science" },
   ] as Class[];
   return (
-    <HStack>
+    <HStack height="100%" className="main-class min-h-screen">
       <Sidebar classes={classes} />
       <SetCard
         setName="hiii"
