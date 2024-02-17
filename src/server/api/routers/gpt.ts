@@ -12,7 +12,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 export const gptRouter = createTRPCRouter({
     // Upload a file to AWS S3 and use Textract to extract text from the file
     // Returns the extracted text
-    uploadFile: publicProcedure.input({}).mutation(async () => {
+    uploadFile: publicProcedure.mutation(async () => {
         const file = await openai.files.create({
             file: fs.createReadStream("README.md"),
             purpose: "assistants",
@@ -24,8 +24,7 @@ export const gptRouter = createTRPCRouter({
     }),
     // Generate flashcard based on text 
     // Returns the generated flashcard
-    generateFlashcard: publicProcedure.input({}).query(async () => {
-        console.log("generateFlashcard")
+    generateFlashcard: publicProcedure.input(z.object({})).query(async () => {
         const completion = await openai.chat.completions.create({
             messages: [{ "role": "system", "content": "You are a helpful assistant." },
             { "role": "user", "content": "Generate a term and definition pair based on this content." },
