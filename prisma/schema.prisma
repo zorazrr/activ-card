@@ -46,7 +46,8 @@ model SetProgress {
 model Classroom {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   name     String
-  students Student[]
+  studentIds String[]   @db.ObjectId
+  students  Student[] @relation(fields: [studentIds], references: [id])
   teacher_id String
   teacher  Teacher@relation(fields: [teacher_id], references: [id])
   set      Set[]
@@ -55,8 +56,8 @@ model Classroom {
 model Student {
   id           String        @id @default(auto()) @map("_id") @db.ObjectId
   name         String
-  classroom_id String
-  classroom    Classroom     @relation(fields: [classroom_id], references: [id])
+  classroomIds String[]   @db.ObjectId
+  classrooms  Classroom[] @relation(fields: [classroomIds], references: [id]) 
   set_progress SetProgress[]
   badge        Badge[]
 }

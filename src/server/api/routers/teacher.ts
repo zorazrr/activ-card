@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-export const classroomRouter = createTRPCRouter({
+export const teacherRouter = createTRPCRouter({
   // TODO: GET teacher
   getTeacher: publicProcedure.input(z.object({})).query(({ ctx }) => {
     const sets = ctx.db.classroom.findMany();
