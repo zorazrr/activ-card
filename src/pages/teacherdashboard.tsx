@@ -16,8 +16,9 @@ export default function TeacherDashboard() {
     <HStack height="100%" className="main-class min-h-screen">
       <Sidebar classes={classes} />
       <SetCard
-        setName="hiii"
+        setName="Spelling Unit 1"
         imageSrc="https://gizmodo.com.au/wp-content/uploads/2023/01/25/google-reverse-image-search.png?quality=75"
+        className="English 7th Hour"
       />
     </HStack>
   );
