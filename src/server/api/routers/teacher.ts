@@ -14,6 +14,9 @@ export const teacherRouter = createTRPCRouter({
         where: {
           id: input.teacherId,
         },
+        include: {
+          classroom: true,
+        },
       });
       return teacher;
     }),
