@@ -1,6 +1,7 @@
 import { HStack } from "@chakra-ui/react";
 import SetCard from "~/components/Card";
 import Sidebar from "~/components/SideBar/SideBar";
+import { api } from "~/utils/api";
 
 interface Class {
   className: string;
@@ -12,6 +13,10 @@ export default function TeacherDashboard() {
     { className: "Math" },
     { className: "Science" },
   ] as Class[];
+
+  const sets = api.sets.getSets.useQuery();
+  console.log(sets);
+
   return (
     <HStack height="100%" className="main-class min-h-screen">
       <Sidebar classes={classes} />
