@@ -17,7 +17,7 @@ export const cardRouter = createTRPCRouter({
         return cards;
     }),
     createCardsforSet: publicProcedure.input(z.object({ setId: z.string(), cards: z.array(z.object({ term: z.string(), def: z.string() })) })).mutation(async ({ ctx, input }) => {
-        const cards: Card[] = await Promise.all(input.cards.map(async (card) => {
+        const newCards: Card[] = await Promise.all(input.cards.map(async (card) => {
             return await ctx.db.card.create({
                 data: {
                     term: card.term,
@@ -26,18 +26,23 @@ export const cardRouter = createTRPCRouter({
                 }
             });
         }));
-        await Promise.all(cards.map(async (card) => {
-            await ctx.db.set.update({
-                where: {
-                    id: input.setId
-                },
-                data: {
-                    cards: {
-                        push: card
-                    }
+        const setUpdate: Set = await ctx.db.set.update({
+            where: {
+                id: input.setId
+            },
+            include: {
+                cards: true
+            },
+            data: {
+                cards: {
+                    set: newCards.map((card) => {
+                        return {
+                            id: card.id
+                        }
+                    })
                 }
-            });
-        }));
-        return cards;
+            }
+        });
+        return setUpdate;
     })
 })
