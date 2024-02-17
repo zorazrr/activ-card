@@ -2,72 +2,89 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "mongodb"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+  provider = "mongodb"
+  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
+model Badge {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  url         String
+  student_id  String
+  student     Student       @relation(fields: [student_id], references: [id])
+  SetProgress SetProgress[]
 }
 
-// Necessary for Next auth
-model Account {
-    id                String  @id @default(cuid()) @map("_id")
-    userId            String  @db.ObjectId
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? @map(name: "refresh_token")
-    access_token      String? @map(name: "access_token")
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? // @db.Text
-    session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    @@unique([provider, providerAccountId])
+model Card {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  term            String
+  definition      String
+  set_id          String
+  set             Set         @relation(fields: [set_id], references: [id])
+  set_progress_id String
+  set_progress    SetProgress @relation(fields: [set_progress_id], references: [id])
 }
 
-model Session {
-    id           String   @id @default(auto()) @map("_id") @db.ObjectId
-    sessionToken String   @unique
-    userId       String   @db.ObjectId
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model SetProgress {
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  set_id          String
+  set             Set     @relation(fields: [set_id], references: [id])
+  student_id      String
+  student         Student @relation(fields: [student_id], references: [id])
+  completed_cards Card[]
+  badge_id        String
+  badge           Badge   @relation(fields: [badge_id], references: [id])
 }
 
-model User {
-    id            String    @id @default(auto()) @map("_id") @db.ObjectId
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]
+model Classroom {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  students Student[]
+  teacher  Teacher[]
+  set      Set[]
 }
 
-model VerificationToken {
-    identifier String   @id @default(auto()) @map("_id") @db.ObjectId
-    token      String   @unique
-    expires    DateTime
+model Student {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  classroom_id String
+  classroom    Classroom     @relation(fields: [classroom_id], references: [id])
+  set_progress SetProgress[]
+  badge        Badge[]
+}
 
-    @@unique([identifier, token])
+model Teacher {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  classroom_id String
+  classroom    Classroom @relation(fields: [classroom_id], references: [id])
+}
+
+model Set {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  classroom_id String
+  classroom    Classroom     @relation(fields: [classroom_id], references: [id])
+  set_progress SetProgress[]
+  card         Card[]
+  check_mode   CheckMode
+  answer_mode  AnswerMode
+  pomodoro     Boolean
+}
+
+enum CheckMode {
+  AI_CHECK
+  WORD_BY_WORD
+}
+
+enum AnswerMode {
+  TYPING
+  SPEAKING
 }
