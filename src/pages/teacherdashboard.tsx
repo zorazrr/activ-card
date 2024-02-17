@@ -1,5 +1,5 @@
 import { HStack } from "@chakra-ui/react";
-import { Set } from "@prisma/client";
+import { Classroom, Set } from "@prisma/client";
 import SetCard from "~/components/Card";
 import Sidebar from "~/components/SideBar/SideBar";
 import { api } from "~/utils/api";
@@ -27,14 +27,23 @@ export default function TeacherDashboard() {
   // console.log(student);
   // NOTE: Will keep this here until student dashboard is created
 
-  const { data: teacherInfo } = api.teacher.getTeacherAndClassrooms.useQuery({
-    teacherId: "65d1242ccdde4a764731c37f",
+  const { data: teacherInfo, isLoading } =
+    api.teacher.getTeacherAndClassrooms.useQuery({
+      teacherId: "65d1242ccdde4a764731c37f",
+    });
+  const classRes: Class[] = teacherInfo?.classroom.map((x: Classroom) => {
+    console.log(x.name);
+    return { className: x?.name };
   });
-  console.log(teacherInfo);
+  console.log(classRes);
+
+  if (!teacherInfo) {
+    return <div>Loading</div>;
+  }
 
   return (
     <HStack height="100%" className="main-class min-h-screen">
-      <Sidebar classes={classes} />
+      <Sidebar classes={classRes} />
       {sets?.map((set: Set) => (
         <SetCard
           key={set.id}
