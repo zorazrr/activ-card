@@ -22,17 +22,22 @@ export default function TeacherDashboard() {
   });
   console.log(sets);
 
+  const { data: hello } = api.set.getSetByClassroom.useQuery({
+    classId: "65d12457cdde4a764731c380",
+  });
+  console.log("HI");
+  console.log(hello);
+
   // const { data: student } = api.student.getStudentInfo.useQuery({
   //   studentId: "65d12546cdde4a764731c381",
   // });
   // console.log(student);
   // NOTE: Will keep this here until student dashboard is created
 
-  const { data: teacherInfo } =
-    api.teacher.getTeacherAndClassrooms.useQuery({
-      teacherId: "65d1242ccdde4a764731c37f",
-    });
-    
+  const { data: teacherInfo } = api.teacher.getTeacherAndClassrooms.useQuery({
+    teacherId: "65d1242ccdde4a764731c37f",
+  });
+
   const classRes: Class[] = teacherInfo?.classroom.map((x: Classroom) => {
     return { className: x?.name };
   });
