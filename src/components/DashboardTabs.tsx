@@ -9,8 +9,6 @@ const DashboardTabs = ({
 }: {
   currentClass: Classroom | undefined;
 }) => {
-  console.log(currentClass);
-  console.log("if the aboe thing is undefined, be sad");
   return (
     <Tabs variant="enclosed" pt={5}>
       <TabList>

@@ -3,13 +3,10 @@ import Card from "../Card";
 import { type Classroom, type Set } from "@prisma/client";
 import { api } from "~/utils/api";
 import { Box, HStack, Spinner } from "@chakra-ui/react";
+import Link from "next/link";
 
 const Sets = ({ currentClass }: { currentClass: Classroom | undefined }) => {
   const [sets, setSets] = useState<Set[] | undefined>();
-  if (currentClass) {
-    console.log("okkkkkkkk");
-    console.log(currentClass.id);
-  }
 
   const { data } = api.set.getSetByClassroom.useQuery(
     {
@@ -31,7 +28,9 @@ const Sets = ({ currentClass }: { currentClass: Classroom | undefined }) => {
     <div>
       <HStack wrap="wrap">
         {sets?.map((set) => (
-          <Card key={set.name} name={set.name} description={set.description} />
+          <Link href={`/set/${set.id}`} key={set.id}>
+            <Card key={set.name} name={set.name} description={set.description} />
+          </Link>
         ))}
       </HStack>
     </div>
