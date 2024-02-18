@@ -2,7 +2,6 @@
 import fs from "fs";
 import { z } from "zod";
 import OpenAI from "openai";
-import fs from "fs";
 import {
   DetectDocumentTextCommand,
   TextractClient,
