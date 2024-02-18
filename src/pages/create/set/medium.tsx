@@ -3,7 +3,7 @@ import StyledButton from "~/components/Button";
 import StyledFileUpload from "~/components/FileUpload";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { Modal, useDisclosure } from "@chakra-ui/react";
+import { HStack, Modal, VStack, useDisclosure } from "@chakra-ui/react";
 import StyledModal from "~/components/Modal";
 import { api } from "~/utils/api";
 import { useState, useEffect } from "react";
@@ -61,34 +61,34 @@ export default function SetCreationMediumSelection() {
       >
         <div className="text-center" style={{ marginTop: "5%" }}>
           <div className="h2 text-darkBlue">Create a Set</div>
-          <div
-            className="flex-col items-start justify-between space-y-6"
-            style={{ marginTop: "5%" }}
-          >
+          <br></br>
+          <HStack spacing={8}>
             <StyledFileUpload classId={router.query.classId as string} />
             <StyledButton
               label="Generate Using AI"
-              colorInd={2}
+              colorInd={1}
               onClick={onOpen}
               style={{
-                width: "50%",
-                paddingTop: "15px",
-                paddingBottom: "15px",
-                marginBottom: "3%",
+                width: "120%",
+                paddingTop: "13px",
+                paddingBottom: "13px",
+                marginRight: "5%",
               }}
             />
-            <StyledButton
-              label="Create from Scratch"
-              colorInd={2}
-              onClick={() => {}}
-              style={{
-                width: "50%",
-                paddingTop: "15px",
-                paddingBottom: "15px",
-                marginBottom: "3%",
-              }}
-            />
-          </div>
+            <div style={{ marginLeft: "25px " }}>
+              <StyledButton
+                label="Create from Scratch"
+                colorInd={1}
+                onClick={() => {}}
+                style={{
+                  width: "120%",
+                  paddingTop: "13px",
+                  paddingBottom: "13px",
+                  marginRight: "10%",
+                }}
+              />
+            </div>
+          </HStack>
         </div>
       </div>
       <StyledModal

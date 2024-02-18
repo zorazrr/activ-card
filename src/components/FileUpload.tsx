@@ -80,7 +80,7 @@ const StyledFileUpload = ({ classId }: { classId: string }) => {
   return (
     <div className="py-2">
       <label
-        className="reg-text w-32 cursor-pointer rounded-md bg-darkBlue py-2 text-white hover:opacity-75"
+        className="reg-text w-32 cursor-pointer rounded-md bg-mediumBlue py-2 text-white hover:opacity-75"
         style={{
           width: "50%",
           padding: "15px",
