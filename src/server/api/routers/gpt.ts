@@ -100,28 +100,21 @@ export const gptRouter = createTRPCRouter({
       });
       return termDefPairs;
     }),
+  generateImage: publicProcedure.input(z.object({ imagePath: z.string() })).mutation(async ({ input }) => {
 
-  generateImage: publicProcedure
-    .input(z.object({ imagePath: z.string() }))
-    .query(async ({ input }) => {
-      console.log("HELLO");
-      console.log(input.imagePath);
-      // const string =
-      //   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
-      // const regex = /^data:.+\/(.+);base64,(.*)$/;
+    const regex = /^data:.+\/(.+);base64,(.*)$/;
+    const matches = input.imagePath.match(regex);
+    const ext = matches[1];
+    const data = matches[2];
+    const buffer = Buffer.from(data, "base64");
+    const filePath = "./public/assets/drawing." + ext;
+    fs.writeFileSync(filePath, buffer);
 
-      // const matches = string.match(regex);
-      // const ext = matches[1];
-      // const data = matches[2];
-      // const buffer = Buffer.from(data, "base64");
-      // fs.writeFileSync("data." + ext, buffer);
+    // Cast the ReadStream to `any` to appease the TypeScript compiler
+    const image = await openai.images.createVariation({
+      image: fs.createReadStream(filePath),
+    });
 
-      // // Cast the ReadStream to `any` to appease the TypeScript compiler
-      // const image = await openai.images.createVariation({
-      //   image: fs.createReadStream(input.imagePath) as any,
-      // });
-
-      // return image.data;
-      return [];
-    }),
+    return image.data;
+  }),
 });

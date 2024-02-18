@@ -3,8 +3,8 @@ import React, { useState, useRef } from "react";
 import CanvasDraw from "react-canvas-draw";
 import { CirclePicker } from "react-color";
 import { VStack } from "@chakra-ui/react";
-import { api } from "~/utils/api";
 import { Image } from "openai/resources/images.mjs";
+import { api } from "~/utils/api";
 
 const colors = [
   "#f44336",
@@ -43,8 +43,12 @@ function Canvas() {
 
   const generateImage = api.gpt.generateImage.useMutation({
     retry: false,
-    onSuccess: (data: Image[]) => setImages(data),
-  });
+  })
+
+  // const generateImage = api.gpt.generateImage.useMutation({
+  //   retry: false,
+  //   onSuccess: (data: Image[]) => setImages(data),
+  // });
 
   return (
     <div
