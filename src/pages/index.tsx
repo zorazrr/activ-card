@@ -7,7 +7,6 @@ import StyledButton from "~/components/Button";
 import { api } from "~/utils/api";
 
 export default function Home() {
-  const hello = api.post.hello.useQuery({ text: "from tRPC" });
 
   return (
     <>
@@ -24,10 +23,10 @@ export default function Home() {
         </div>
         <div className="main-class flex items-center justify-between space-x-4 p-5">
           <Link href="/login">
-            <StyledButton label="Log In" colorInd={0} onClick={() => {}} />
+            <StyledButton label="Log In" colorInd={0} onClick={() => { }} />
           </Link>
           <Link href="/signup">
-            <StyledButton label="Sign Up" colorInd={1} onClick={() => {}} />
+            <StyledButton label="Sign Up" colorInd={1} onClick={() => { }} />
           </Link>
         </div>
       </div>
@@ -52,7 +51,7 @@ export default function Home() {
               <StyledButton
                 label="Get Started"
                 colorInd={0}
-                onClick={() => {}}
+                onClick={() => { }}
                 style={{ width: "65%", height: "50px" }}
               />
             </Link>
