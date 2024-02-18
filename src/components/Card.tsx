@@ -13,7 +13,7 @@ const SetCard = (props: Partial<Set>) => (
         </Box>
         <Box w="20%">
           <Image
-            src="https://gizmodo.com.au/wp-content/uploads/2023/01/25/google-reverse-image-search.png?quality=75"
+            src={`https://picsum.photos/seed/${props.name}/400/400`}
             alt="Set cover image"
             objectFit="cover"
             w="100%"
