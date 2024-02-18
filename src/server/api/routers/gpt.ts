@@ -30,7 +30,7 @@ const parseDataUrl = (dataUrl: string, fileName: string) => {
   const filePath = "./public/assets/" + fileName + "." + ext;
   fs.writeFileSync(filePath, buffer);
   return filePath;
-}
+};
 
 export const gptRouter = createTRPCRouter({
   /**
@@ -108,8 +108,8 @@ export const gptRouter = createTRPCRouter({
           term: term.replace(/^\d+\.\s*/, ""), // Remove the numbering
           def: definition.trim(), // Trim any leading or trailing whitespace
         };
-        return termDefPairs;
-      })
+      });
+      return termDefPairs;
     }),
   /**
    * Generate flashcard based on text and return the term-definition pairs
@@ -179,19 +179,20 @@ export const gptRouter = createTRPCRouter({
       };
     }),
   /**
-    * Transcribe speech to text
-    * @returns The transcribed text
-    */
-  speechToText: publicProcedure.input(z.object({ audioUrl: z.string() })).mutation(async ({ input }) => {
-    const filePath = parseDataUrl(input.audioUrl, "audio");
-    const audioFileWebm = fs.createReadStream(filePath);
-    const transcript = await openai.audio.transcriptions.create({
-      model: "whisper-1",
-      file: audioFileWebm,
-      content_type: "audio/mp3",
-    });
-    console.log(transcript);
-    return transcript;
-  })
+   * Transcribe speech to text
+   * @returns The transcribed text
+   */
+  speechToText: publicProcedure
+    .input(z.object({ audioUrl: z.string() }))
+    .mutation(async ({ input }) => {
+      const filePath = parseDataUrl(input.audioUrl, "audio");
+      const audioFileWebm = fs.createReadStream(filePath);
+      const transcript = await openai.audio.transcriptions.create({
+        model: "whisper-1",
+        file: audioFileWebm,
+        content_type: "audio/mp3",
+      });
+      console.log(transcript);
+      return transcript;
+    }),
 });
-

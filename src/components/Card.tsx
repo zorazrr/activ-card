@@ -9,7 +9,7 @@ const SetCard = (props: Partial<Set>) => (
         <Box w="80%" minH="100%" pt={5}>
           <p className="h4">{props.name}</p>
           <Divider w="100px" />
-          {props.name && <p className="reg-text pt-3">{props.name}</p>}
+          {props.name && <p className="reg-text pt-3">{props.description}</p>}
         </Box>
         <Box w="20%">
           <Image
