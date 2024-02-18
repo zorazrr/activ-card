@@ -4,17 +4,13 @@ import {
   type UseRadioProps,
   type BoxProps,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
-
-interface Class {
-  className: string;
-}
+import { type Classroom } from "@prisma/client";
 
 interface ClassRadioButtonProps
   extends Omit<UseRadioProps, "onChange">,
     BoxProps {
-  classObject: Class;
-  setCurrentClass: React.Dispatch<React.SetStateAction<Class | undefined>>;
+  classObject: Classroom;
+  setCurrentClass: React.Dispatch<React.SetStateAction<Classroom | undefined>>;
 }
 
 const ClassRadioButton = ({
