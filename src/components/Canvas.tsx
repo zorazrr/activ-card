@@ -5,6 +5,8 @@ import { CirclePicker } from "react-color";
 import { VStack } from "@chakra-ui/react";
 import { Image } from "openai/resources/images.mjs";
 import { api } from "~/utils/api";
+import StyledButton from "./Button";
+import StyledModal from "./StyledModal";
 
 const colors = [
   "#f44336",
@@ -43,12 +45,8 @@ function Canvas() {
 
   const generateImage = api.gpt.generateImage.useMutation({
     retry: false,
-  })
-
-  // const generateImage = api.gpt.generateImage.useMutation({
-  //   retry: false,
-  //   onSuccess: (data: Image[]) => setImages(data),
-  // });
+    onSuccess: (data: Image[]) => setImages(data),
+  });
 
   return (
     <div
@@ -69,16 +67,24 @@ function Canvas() {
           <div>
             <CirclePicker onChange={handleChange} colors={colors} />
           </div>
+          <StyledButton
+            onClick={() => {
+              console.log(canvasRef.current.getDataURL());
+              setDataURL(canvasRef.current.getDataURL());
+              generateImage.mutate({
+                imagePath: canvasRef.current.getDataURL(),
+              });
+            }}
+            label={"Generate an Image"}
+            colorInd={2}
+            style={{
+              width: "100%",
+              paddingLeft: "5%",
+              paddingRight: "5%",
+              marginTop: "5%",
+            }}
+          />
         </VStack>
-        <button
-          onClick={() => {
-            console.log(canvasRef.current.getDataURL());
-            setDataURL(canvasRef.current.getDataURL());
-            generateImage.mutate({ imagePath: canvasRef.current.getDataURL() });
-          }}
-        >
-          GetDataURL
-        </button>
       </div>
     </div>
   );
