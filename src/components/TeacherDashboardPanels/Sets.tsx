@@ -4,6 +4,7 @@ import { type Classroom, type Set } from "@prisma/client";
 import { api } from "~/utils/api";
 import { Box, HStack, Spinner } from "@chakra-ui/react";
 import Link from "next/link";
+import CardNew from "../CardNew";
 
 const Sets = ({ currentClass }: { currentClass: Classroom | undefined }) => {
   const [sets, setSets] = useState<Set[] | undefined>();
@@ -32,6 +33,7 @@ const Sets = ({ currentClass }: { currentClass: Classroom | undefined }) => {
             <Card key={set.name} name={set.name} description={set.description} />
           </Link>
         ))}
+        <Link href={`/create/set/medium?classId=${currentClass!.id}`}><CardNew /></Link>
       </HStack>
     </div>
   );

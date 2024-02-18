@@ -2,8 +2,12 @@ import Link from "next/link";
 import StyledButton from "~/components/Button";
 import StyledFileUpload from "~/components/FileUpload";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 export default function SetCreationMediumSelection() {
+
+  const router = useRouter();
+
   return (
     <>
       <div className="p-5 hover:opacity-75">
@@ -22,7 +26,7 @@ export default function SetCreationMediumSelection() {
             className="flex-col items-start justify-between space-y-6"
             style={{ marginTop: "5%" }}
           >
-            <StyledFileUpload />
+            <StyledFileUpload classId={router.query.classId as string} />
             <StyledButton
               label="Generate Using AI"
               colorInd={2}
