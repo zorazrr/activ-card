@@ -41,6 +41,10 @@
     /* Loop the typing animation */ blink-caret 0.75s step-end infinite; /* Keep the cursor blinking */
 }
 
+#filledtrack {
+  background-color: "darkBlue";
+}
+
 /* The typing effect */
 @keyframes typing {
   from {
