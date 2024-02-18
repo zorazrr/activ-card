@@ -3,10 +3,49 @@ import StyledButton from "~/components/Button";
 import StyledFileUpload from "~/components/FileUpload";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { Modal, useDisclosure } from "@chakra-ui/react";
+import StyledModal from "~/components/Modal";
+import { api } from "~/utils/api";
+import { useState, useEffect } from "react";
+import { type TermDefPair } from "~/utils/types";
 
 export default function SetCreationMediumSelection() {
-
   const router = useRouter();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [flashcards, setFlashcards] = useState<TermDefPair[]>([]);
+  const [subject, setSubject] = useState<string>("");
+
+  const generateFlashcard =
+    api.gpt.generateFlashcardsFromPromptedSubject.useQuery(
+      { subject: subject },
+      {
+        retry: false,
+        onSuccess: (data) => setFlashcards(data),
+        enabled: false,
+      },
+    );
+
+  const createCard = api.card.createCardsforSet.useMutation({
+    retry: false,
+    onSuccess: (data) => {
+      window.location.href = `../set/${data.id}`;
+    },
+  });
+
+  const createSet = api.set.createSet.useMutation({
+    retry: false,
+    onSuccess: (data) =>
+      createCard.mutate({ setId: data.id, cards: flashcards }),
+  });
+
+  const createNewSet = async () => {
+    await generateFlashcard.refetch();
+    createSet.mutate({
+      classId: router.query.classId as string,
+      name: subject,
+    });
+  };
 
   return (
     <>
@@ -30,7 +69,7 @@ export default function SetCreationMediumSelection() {
             <StyledButton
               label="Generate Using AI"
               colorInd={2}
-              onClick={() => { }}
+              onClick={onOpen}
               style={{
                 width: "50%",
                 paddingTop: "15px",
@@ -41,7 +80,7 @@ export default function SetCreationMediumSelection() {
             <StyledButton
               label="Create from Scratch"
               colorInd={2}
-              onClick={() => { }}
+              onClick={() => {}}
               style={{
                 width: "50%",
                 paddingTop: "15px",
@@ -52,6 +91,13 @@ export default function SetCreationMediumSelection() {
           </div>
         </div>
       </div>
+      <StyledModal
+        isOpen={isOpen}
+        onClose={onClose}
+        isScan={false}
+        onClick={createNewSet}
+        setSubject={setSubject}
+      />
     </>
   );
 }

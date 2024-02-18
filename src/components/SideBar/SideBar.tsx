@@ -20,8 +20,6 @@ const Sidebar = ({
   classes: Classroom[];
   setCurrentClass: Dispatch<SetStateAction<Classroom | undefined>>;
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
   const { getRadioProps } = useRadioGroup({
     name: "classList",
     defaultValue: classes[0]?.name,

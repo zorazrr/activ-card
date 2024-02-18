@@ -1,7 +1,8 @@
-import { VStack } from "@chakra-ui/react";
+import { useDisclosure } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import type { TermDefPair } from "~/utils/types";
+import StyledModal from "./Modal";
 
 const StyledFileUpload = ({ classId }: { classId: string }) => {
   const [file, setFile] = useState<File>();
@@ -25,12 +26,14 @@ const StyledFileUpload = ({ classId }: { classId: string }) => {
   );
   const createCard = api.card.createCardsforSet.useMutation({
     retry: false,
-    onSuccess: (data) => { window.location.href = `../set/${data.id}`; }
+    onSuccess: (data) => {
+      window.location.href = `../set/${data.id}`;
+    },
   });
   const createSet = api.set.createSet.useMutation({
     retry: false,
     onSuccess: (data) =>
-      createCard.mutate({ setId: data.id, cards: flashcards })
+      createCard.mutate({ setId: data.id, cards: flashcards }),
   });
 
   const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,10 +75,12 @@ const StyledFileUpload = ({ classId }: { classId: string }) => {
     }
   }, [flashcards]);
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <div className="py-2">
-      {/* <label
-        className="reg-text bg-darkBlue w-32 cursor-pointer rounded-md py-2 text-white hover:opacity-75"
+      <label
+        className="reg-text w-32 cursor-pointer rounded-md bg-darkBlue py-2 text-white hover:opacity-75"
         style={{
           width: "50%",
           padding: "15px",
@@ -87,15 +92,27 @@ const StyledFileUpload = ({ classId }: { classId: string }) => {
         <input
           type="file"
           onChange={handleFileInput}
+          onClick={onOpen}
           style={{ display: "none" }}
         />
-      </label> */}
-      <VStack align={"center"}>
-        <div className="w-full flex justify-center">
+      </label>
+      {/* <VStack align={"center"}>
+        <div className="flex w-full justify-center">
           <input type="file" onChange={handleFileInput} />
         </div>
-        <button className="reg-text bg-darkBlue w-full cursor-pointer rounded-md py-3 text-white hover:opacity-75" onClick={uploadFile}>Generate from File</button>
-      </VStack>
+        <button
+          className="reg-text w-full cursor-pointer rounded-md bg-darkBlue py-3 text-white hover:opacity-75"
+          onClick={uploadFile}
+        >
+          Generate from File
+        </button>
+      </VStack> */}
+      <StyledModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onClick={uploadFile}
+        isScan
+      />
     </div>
   );
 };
