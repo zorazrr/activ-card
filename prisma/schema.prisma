@@ -71,6 +71,7 @@ model Teacher {
 model Set {
   id           String        @id @default(auto()) @map("_id") @db.ObjectId
   name         String
+  description  String
   classroom_id String @db.ObjectId
   classroom    Classroom     @relation(fields: [classroom_id], references: [id])
   set_progress SetProgress[]

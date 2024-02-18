@@ -22,11 +22,12 @@ const StyledFileUpload = () => {
     { content: extractedText },
     { retry: false, onSuccess: (data) => setFlashcards(data), enabled: false },
   );
+  const createCard = api.card.createCardsforSet.useMutation({ retry: false, onSuccess: (data) => { window.location.href = `../set/${data.id}`; } });
+  const createSet = api.set.createSet.useMutation({ retry: false, onSuccess: (data) => createCard.mutate({ setId: data.id, cards: flashcards }) });
 
   const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0] != null) {
       setFile(e.target.files[0]);
-      await uploadFile();
     }
   };
 
@@ -44,8 +45,6 @@ const StyledFileUpload = () => {
         body: file,
       });
       await extractText.refetch();
-      // alert("Successfully extracted text from file.");
-      window.location.href = "../";
     } catch (err) {
       alert("File upload failed. Try again!");
       console.error(err);
@@ -59,9 +58,15 @@ const StyledFileUpload = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [extractedText]);
 
+  useEffect(() => {
+    if (flashcards.length !== 0) {
+      void createSet.mutate({ name: file!.name, classId: "65d12457cdde4a764731c380" });
+    }
+  }, [flashcards]);
+
   return (
     <div className="py-2">
-      <label
+      {/* <label
         className="reg-text bg-darkBlue w-32 cursor-pointer rounded-md py-2 text-white hover:opacity-75"
         style={{
           width: "50%",
@@ -76,7 +81,9 @@ const StyledFileUpload = () => {
           onChange={handleFileInput}
           style={{ display: "none" }}
         />
-      </label>
+      </label> */}
+      <input type="file" onChange={handleFileInput} />
+      <button onClick={uploadFile}>Generate Flashcards</button>
     </div>
   );
 };
