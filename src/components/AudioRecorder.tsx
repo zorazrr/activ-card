@@ -1,14 +1,18 @@
-import { useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
+import { api } from "~/utils/api";
 
 const AudioRecorder = () => {
 
-    const mimeType = "audio/webm";
+    const mimeType = "audio/mp3";
     const [permission, setPermission] = useState(false);
     const [stream, setStream] = useState<MediaStream>();
     const mediaRecorder = useRef<MediaRecorder | null>(null);
     const [recordingStatus, setRecordingStatus] = useState("inactive");
     const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
     const [audio, setAudio] = useState<string>("");
+    const [audioDataUrl, setAudioDataUrl] = useState<string>("");
+
+    const speechToText = api.gpt.speechToText.useMutation();
 
     const getMicrophonePermission = async () => {
         try {
@@ -45,6 +49,16 @@ const AudioRecorder = () => {
         }
     };
 
+    const blobToBase64 = (blob: Blob) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        return new Promise(resolve => {
+            reader.onloadend = () => {
+                resolve(reader.result);
+            };
+        });
+    };
+
     const stopRecording = () => {
         console.log("Stop recording");
         setRecordingStatus("inactive");
@@ -52,12 +66,22 @@ const AudioRecorder = () => {
         mediaRecorder.current!.onstop = () => {
             const audioBlob = new Blob(audioChunks, { type: mimeType });
             const audioUrl = URL.createObjectURL(audioBlob);
+            const audioDataUrl = blobToBase64(audioBlob);
+            void audioDataUrl.then((data) => {
+                setAudioDataUrl(data as string);
+            });
             setAudio(audioUrl);
             setAudioChunks([]);
         };
         console.log("Recording stopped");
     };
-    console.log(audio);
+
+    useEffect(() => {
+        if (audioDataUrl !== "") {
+            speechToText.mutate({ audioUrl: audioDataUrl });
+        }
+    }, [audioDataUrl]);
+
 
     return <div>
         <button onClick={() => getMicrophonePermission()}>Permission</button>

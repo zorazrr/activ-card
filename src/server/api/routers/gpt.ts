@@ -23,6 +23,17 @@ const s3 = new S3Client({
     }
 });
 
+const parseDataUrl = (dataUrl: string, fileName: string) => {
+    const regex = /^data:.+\/(.+);base64,(.*)$/;
+    const matches = dataUrl.match(regex);
+    const ext = matches[1];
+    const data = matches[2];
+    const buffer = Buffer.from(data, "base64");
+    const filePath = "./public/assets/" + fileName + "." + ext;
+    fs.writeFileSync(filePath, buffer);
+    return filePath;
+}
+
 export const gptRouter = createTRPCRouter({
     /**
      * Generate a presigned URL for uploading a file to S3
@@ -114,13 +125,15 @@ export const gptRouter = createTRPCRouter({
      * Transcribe speech to text
      * @returns The transcribed text
      */
-    speechToText: publicProcedure.input(z.object({})).mutation(async ({ input }) => {
-        const audio_file = fs.createReadStream("./test.mp3");
+    speechToText: publicProcedure.input(z.object({ audioUrl: z.string() })).mutation(async ({ input }) => {
+        const filePath = parseDataUrl(input.audioUrl, "audio");
+        const audioFileWebm = fs.createReadStream(filePath);
         const transcript = await openai.audio.transcriptions.create({
             model: "whisper-1",
-            file: audio_file,
-            content_type: "audio/mpeg",
+            file: audioFileWebm,
+            content_type: "audio/mp3",
         });
         console.log(transcript);
+        return transcript;
     })
 });
