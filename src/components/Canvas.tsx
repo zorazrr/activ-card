@@ -2,10 +2,11 @@
 import React, { useState, useRef } from "react";
 import CanvasDraw from "react-canvas-draw";
 import { CirclePicker } from "react-color";
-import { VStack } from "@chakra-ui/react";
-import { Image } from "openai/resources/images.mjs";
+import { VStack, useDisclosure } from "@chakra-ui/react";
+import { type Image } from "openai/resources/images.mjs";
 import { api } from "~/utils/api";
 import StyledButton from "./Button";
+import ImageModal from "./ImageModal";
 
 const colors = [
   "#f44336",
@@ -30,11 +31,13 @@ const colors = [
 
 function Canvas() {
   const [color, setColor] = useState("#ffffff");
-  let canvasRef =
+  const canvasRef =
     useRef<React.MutableRefObject<HTMLCanvasElement | undefined>>();
 
   const [images, setImages] = useState<Image[] | undefined>();
   const [dataURL, setDataURL] = useState("");
+
+  const { onClose, onOpen, isOpen } = useDisclosure();
 
   const handleChange = (color, event) => {
     console.log("color");
@@ -73,6 +76,7 @@ function Canvas() {
               generateImage.mutate({
                 imagePath: canvasRef.current.getDataURL(),
               });
+              onOpen();
             }}
             label={"Generate an Image"}
             colorInd={2}
@@ -85,6 +89,7 @@ function Canvas() {
           />
         </VStack>
       </div>
+      <ImageModal onClose={onClose} isOpen={isOpen} images={images} />
     </div>
   );
 }
