@@ -3,10 +3,14 @@ import Link from "next/link";
 import Image from "next/image";
 import StyledButton from "~/components/Button";
 import { Button, HStack } from "@chakra-ui/react";
+import { signIn } from "next-auth/react";
 
 import { api } from "~/utils/api";
+import { useRouter } from "next/router";
 
 export default function Login() {
+  const role = useRouter().query.role;
+
   return (
     <>
       <Head>
@@ -51,6 +55,9 @@ export default function Login() {
                 paddingTop: "5px",
                 paddingBottom: "5px",
               }}
+              onClick={() =>
+                signIn("google", { callbackUrl: `/${role}/dashboard` })
+              }
             >
               <Image
                 src={"/assets/google.png"}
@@ -59,9 +66,7 @@ export default function Login() {
                 height={20}
                 style={{ marginRight: "3px" }}
               />
-              <div className="reg-text" style={{ marginRight: "20px" }}>
-                {"Continue with Google"}
-              </div>
+              <p className="reg-text mr-[20px]">{"Continue with Google"}</p>
             </button>
           </div>
           <div
@@ -106,7 +111,7 @@ export default function Login() {
           />
           <div
             className="typewriter absolute left-3/4 top-1/2 -translate-x-3/4 -translate-y-3/4 transform text-white"
-            style={{ width: "150%", fontSize: "18px" }}
+            style={{ width: "150%", fontSize: "18px", marginTop: "5%" }}
           >
             <h1>Active Learning &#129309; Meets &#129309; Flashcards </h1>
           </div>

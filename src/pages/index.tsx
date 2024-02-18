@@ -9,15 +9,6 @@ import { useState } from "react";
 import { Image } from "openai/resources/images.mjs";
 
 export default function Home() {
-  // const hello = api.post.hello.useQuery({ text: "from tRPC" });
-  // const [images, setImages] = useState<Image[] | undefined>();
-  // const generateFlashcard = api.gpt.generateImage.useQuery(
-  //   { imagePath: "./public/assets/cupcake.png" },
-  //   { retry: false, onSuccess: (data: Image[]) => setImages(data) },
-  // );
-  // console.log("here are the images");
-  // console.log(images);
-
   return (
     <>
       <Head>
@@ -80,7 +71,7 @@ export default function Home() {
           />
           <div
             className="typewriter absolute left-3/4 top-1/2 -translate-x-3/4 -translate-y-3/4 transform text-white"
-            style={{ width: "150%", fontSize: "18px" }}
+            style={{ width: "150%", fontSize: "18px", marginTop: "5%" }}
           >
             <h1>Active Learning &#129309; Meets &#129309; Flashcards </h1>
           </div>

@@ -1,3 +1,4 @@
+import { Progress } from "@chakra-ui/react";
 import { type Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
 
