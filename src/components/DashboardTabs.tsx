@@ -1,6 +1,6 @@
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@chakra-ui/react";
 import Sets from "./TeacherDashboardPanels/Sets";
-import Students from "./TeacherDashboardPanels/Students";
+import StudentRoster from "./TeacherDashboardPanels/StudentRoster";
 import Metrics from "./TeacherDashboardPanels/Metrics";
 import { type Classroom } from "@prisma/client";
 
@@ -23,7 +23,7 @@ const DashboardTabs = ({
           <Sets currentClass={currentClass} />
         </TabPanel>
         <TabPanel overflowY="scroll">
-          <Students />
+          <StudentRoster />
         </TabPanel>
         <TabPanel overflowY="scroll">
           <Metrics />
