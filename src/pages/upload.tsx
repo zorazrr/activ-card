@@ -10,6 +10,7 @@ const FileUpload = () => {
     const uploadUrl = api.gpt.getPresignedUrl.useQuery({ fileName: file ? file.name : "" }, { retry: false, enabled: false });
     const extractText = api.gpt.extractText.useQuery({ fileName: file ? file.name : "" }, { retry: false, onSuccess: (data) => setExtractedText(data), enabled: false });
     const generateFlashcard = api.gpt.generateFlashcard.useQuery({ content: extractedText }, { retry: false, onSuccess: (data) => setFlashcards(data), enabled: false });
+    const createCard = api.card.createCardsforSet.useMutation({ retry: false });
 
     const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files?.[0] != null) {
@@ -50,11 +51,14 @@ const FileUpload = () => {
         <div>
             <input type="file" onChange={handleFileInput} />
             <button onClick={uploadFile}>Generate Flashcards</button>
-            {flashcards?.map((pair, index) =>
-                <div key={index}>
-                    <h3>{pair.term}</h3>
-                    <p>{pair.def}</p>
-                </div>)}
+            {flashcards.length !== 0 && <div>
+                {flashcards?.map((pair, index) =>
+                    <div key={index}>
+                        <h3>{pair.term}</h3>
+                        <p>{pair.def}</p>
+                    </div>)}
+                <button onClick={() => createCard.mutate({ setId: "65d105607c97cf68389b7e91", cards: flashcards })}>Create Flashcards</button>
+            </div>}
         </div>
     );
 };
