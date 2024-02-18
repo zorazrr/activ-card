@@ -2,11 +2,8 @@ import Link from "next/link";
 import StyledButton from "~/components/Button";
 import StyledFileUpload from "~/components/FileUpload";
 import Image from "next/image";
-import { useState } from "react";
-import { type TermDefPair } from "~/utils/types";
 
 export default function SetCreationMediumSelection() {
-  const [flashcards, setFlashcards] = useState<TermDefPair[]>([]);
   return (
     <>
       <div className="p-5 hover:opacity-75">
@@ -29,7 +26,7 @@ export default function SetCreationMediumSelection() {
             <StyledButton
               label="Generate Using AI"
               colorInd={2}
-              onClick={() => {}}
+              onClick={() => { }}
               style={{
                 width: "50%",
                 paddingTop: "15px",
@@ -40,7 +37,7 @@ export default function SetCreationMediumSelection() {
             <StyledButton
               label="Create from Scratch"
               colorInd={2}
-              onClick={() => {}}
+              onClick={() => { }}
               style={{
                 width: "50%",
                 paddingTop: "15px",

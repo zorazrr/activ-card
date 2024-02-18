@@ -37,7 +37,7 @@ const Sidebar = ({
       zIndex="sticky"
     >
       <Heading textAlign="center" mt={3} className="main-class text-white">
-        ActivCard
+        ActiveCard
       </Heading>
       <VStack spacing={0}>
         {classes.map((c) => {
