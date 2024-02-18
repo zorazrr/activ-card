@@ -2,6 +2,7 @@ import { type Card, CheckMode, AnswerMode } from "@prisma/client";
 import { use, useEffect, useState, type FC } from "react";
 import { api } from "~/utils/api";
 import AudioRecorder from "./AudioRecorder";
+import { Input, Textarea } from "@chakra-ui/react";
 
 interface FlashCardProps {
   card: Card;
@@ -72,8 +73,8 @@ const FlashCard: FC<FlashCardProps> = ({
         <p>{card.term}</p>
       </div>
       <div className="flex h-1/3 w-full flex-col gap-2">
-        <input
-          type="text"
+        <Textarea
+          h="full"
           className="h-full rounded-lg border px-10"
           value={studentInput}
           onChange={(e) => setStudentInput(e.target.value)}
