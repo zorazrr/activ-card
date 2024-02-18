@@ -31,7 +31,7 @@ const FlashCard: FC<FlashCardProps> = ({ card, onCorrectCallback, onIncorrectCal
         } else {
             studentInput.toLowerCase() === card.definition.toLowerCase() ? onCorrectCallback?.() : onIncorrectCallback?.();
         }
-        if (answerMode === AnswerMode.SPEAKING) {
+        if (studentAudioText && answerMode === AnswerMode.SPEAKING) {
             console.log("Checking answer with audio");
             checkAnswerMutation.mutate({
                 term: card.term,
@@ -48,6 +48,7 @@ const FlashCard: FC<FlashCardProps> = ({ card, onCorrectCallback, onIncorrectCal
     useEffect(() => {
         if (studentAudioText !== undefined) {
             checkAnswer();
+            setStudentAudioText(undefined);
         }
     }, [studentAudioText]);
 
