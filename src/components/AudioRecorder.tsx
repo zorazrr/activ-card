@@ -1,7 +1,11 @@
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "~/utils/api";
 
-const AudioRecorder = () => {
+const AudioRecorder = ({
+    textCallBack,
+}: {
+    textCallBack: (text: string) => void;
+}) => {
 
     const mimeType = "audio/mp3";
     const [permission, setPermission] = useState(false);
@@ -12,7 +16,11 @@ const AudioRecorder = () => {
     const [audio, setAudio] = useState<string>("");
     const [audioDataUrl, setAudioDataUrl] = useState<string>("");
 
-    const speechToText = api.gpt.speechToText.useMutation();
+    const speechToText = api.gpt.speechToText.useMutation({
+        onSuccess: (data) => {
+            textCallBack(data.text);
+        }
+    });
 
     const getMicrophonePermission = async () => {
         try {
@@ -83,16 +91,20 @@ const AudioRecorder = () => {
     }, [audioDataUrl]);
 
 
-    return <div>
-        <button onClick={() => getMicrophonePermission()}>Permission</button>
-        <button onClick={() => startRecording()}>Start</button>
-        <button onClick={() => stopRecording()}>Stop</button>
+    return <div className="flex flex-col">
+        {
+            recordingStatus === "inactive" ? <button
+                onClick={() => startRecording()}
+                className="bg-mediumBlue text-white h-fit rounded-lg px-6 py-1 w-fit text-sm">Speak</button> :
+                <button
+                    onClick={() => stopRecording()}
+                    className="bg-mediumBlue text-white h-fit rounded-lg px-6 py-1 w-fit text-sm"
+                >Stop</button>
+        }
+        <button onClick={() => getMicrophonePermission()} className="text-xs">Grant Permission</button>
         {audio ? (
             <div>
                 <audio src={audio} controls></audio>
-                <a download href={audio}>
-                    Download Recording
-                </a>
             </div>
         ) : null}
     </div>;
