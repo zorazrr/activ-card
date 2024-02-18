@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import type { TermDefPair } from "~/utils/types";
 
-const StyledFileUpload = () => {
+const StyledFileUpload = ({ classId }: { classId: string }) => {
   const [file, setFile] = useState<File>();
   const [extractedText, setExtractedText] = useState<string>("");
   const [flashcards, setFlashcards] = useState<TermDefPair[]>([]);
@@ -23,8 +23,15 @@ const StyledFileUpload = () => {
     { content: extractedText },
     { retry: false, onSuccess: (data) => setFlashcards(data), enabled: false },
   );
-  const createCard = api.card.createCardsforSet.useMutation({ retry: false, onSuccess: (data) => { window.location.href = `../set/${data.id}`; } });
-  const createSet = api.set.createSet.useMutation({ retry: false, onSuccess: (data) => createCard.mutate({ setId: data.id, cards: flashcards }) });
+  const createCard = api.card.createCardsforSet.useMutation({
+    retry: false,
+    onSuccess: (data) => { window.location.href = `../set/${data.id}`; }
+  });
+  const createSet = api.set.createSet.useMutation({
+    retry: false,
+    onSuccess: (data) =>
+      createCard.mutate({ setId: data.id, cards: flashcards })
+  });
 
   const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0] != null) {
@@ -61,7 +68,7 @@ const StyledFileUpload = () => {
 
   useEffect(() => {
     if (flashcards.length !== 0) {
-      void createSet.mutate({ name: file!.name, classId: "65d12457cdde4a764731c380" });
+      void createSet.mutate({ name: file!.name, classId: classId });
     }
   }, [flashcards]);
 
