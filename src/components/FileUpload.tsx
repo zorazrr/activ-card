@@ -1,3 +1,4 @@
+import { VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import type { TermDefPair } from "~/utils/types";
@@ -82,8 +83,12 @@ const StyledFileUpload = () => {
           style={{ display: "none" }}
         />
       </label> */}
-      <input type="file" onChange={handleFileInput} />
-      <button onClick={uploadFile}>Generate Flashcards</button>
+      <VStack align={"center"}>
+        <div className="w-full flex justify-center">
+          <input type="file" onChange={handleFileInput} />
+        </div>
+        <button className="reg-text bg-darkBlue w-full cursor-pointer rounded-md py-3 text-white hover:opacity-75" onClick={uploadFile}>Generate from File</button>
+      </VStack>
     </div>
   );
 };
