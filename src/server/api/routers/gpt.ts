@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { z } from "zod";
 import OpenAI from "openai";
+import fs from "fs";
 import {
   DetectDocumentTextCommand,
   TextractClient,
@@ -19,6 +20,17 @@ const s3 = new S3Client({
     secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY!,
   },
 });
+
+const parseDataUrl = (dataUrl: string, fileName: string) => {
+  const regex = /^data:.+\/(.+);base64,(.*)$/;
+  const matches = dataUrl.match(regex);
+  const ext = matches[1];
+  const data = matches[2];
+  const buffer = Buffer.from(data, "base64");
+  const filePath = "./public/assets/" + fileName + "." + ext;
+  fs.writeFileSync(filePath, buffer);
+  return filePath;
+}
 
 export const gptRouter = createTRPCRouter({
   /**
@@ -96,8 +108,8 @@ export const gptRouter = createTRPCRouter({
           term: term.replace(/^\d+\.\s*/, ""), // Remove the numbering
           def: definition.trim(), // Trim any leading or trailing whitespace
         };
-      });
-      return termDefPairs;
+        return termDefPairs;
+      })
     }),
   /**
    * Generate flashcard based on text and return the term-definition pairs
@@ -166,4 +178,20 @@ export const gptRouter = createTRPCRouter({
           .includes("yes"),
       };
     }),
+  /**
+    * Transcribe speech to text
+    * @returns The transcribed text
+    */
+  speechToText: publicProcedure.input(z.object({ audioUrl: z.string() })).mutation(async ({ input }) => {
+    const filePath = parseDataUrl(input.audioUrl, "audio");
+    const audioFileWebm = fs.createReadStream(filePath);
+    const transcript = await openai.audio.transcriptions.create({
+      model: "whisper-1",
+      file: audioFileWebm,
+      content_type: "audio/mp3",
+    });
+    console.log(transcript);
+    return transcript;
+  })
 });
+

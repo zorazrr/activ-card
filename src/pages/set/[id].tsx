@@ -54,7 +54,9 @@ const Set = () => {
                         card={cards[curIndex]!}
                         onCorrectCallback={() => { handleCorrectAnswer() }}
                         onIncorrectCallback={() => { handleIncorrectAnswer() }}
-                        checkMode={set?.check_mode} />
+                        checkMode={set?.check_mode}
+                        answerMode={set?.answer_mode}
+                    />
                 ) : (
                     <div>No card available</div>
                 )

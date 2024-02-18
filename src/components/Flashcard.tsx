@@ -1,6 +1,7 @@
-import { Card, CheckMode } from "@prisma/client";
-import { useState, type FC } from "react";
+import { Card, CheckMode, AnswerMode } from "@prisma/client";
+import { use, useEffect, useState, type FC } from "react";
 import { api } from "~/utils/api";
+import AudioRecorder from "./AudioRecorder";
 
 
 interface FlashCardProps {
@@ -8,10 +9,12 @@ interface FlashCardProps {
     onCorrectCallback?: () => void;
     onIncorrectCallback?: () => void;
     checkMode: CheckMode;
+    answerMode: AnswerMode;
 }
 
-const FlashCard: FC<FlashCardProps> = ({ card, onCorrectCallback, onIncorrectCallback, checkMode }) => {
+const FlashCard: FC<FlashCardProps> = ({ card, onCorrectCallback, onIncorrectCallback, checkMode, answerMode }) => {
     const [studentInput, setStudentInput] = useState<string>("");
+    const [studentAudioText, setStudentAudioText] = useState<string>();
     const checkAnswerMutation = api.gpt.checkAnswer.useMutation({ retry: false });
 
     const checkAnswer = () => {
@@ -28,7 +31,26 @@ const FlashCard: FC<FlashCardProps> = ({ card, onCorrectCallback, onIncorrectCal
         } else {
             studentInput.toLowerCase() === card.definition.toLowerCase() ? onCorrectCallback?.() : onIncorrectCallback?.();
         }
+        if (studentAudioText && answerMode === AnswerMode.SPEAKING) {
+            console.log("Checking answer with audio");
+            checkAnswerMutation.mutate({
+                term: card.term,
+                definition: card.definition,
+                studentInput: studentAudioText
+            }, {
+                onSuccess: ({ isCorrect }) => {
+                    isCorrect ? onCorrectCallback?.() : onIncorrectCallback?.();
+                }
+            });
+        }
     }
+
+    useEffect(() => {
+        if (studentAudioText !== undefined) {
+            checkAnswer();
+            setStudentAudioText(undefined);
+        }
+    }, [studentAudioText]);
 
     return (
         <div className="flex flex-row items-center w-screen h-full px-40 justify-between gap-12 text-lg">
@@ -42,7 +64,7 @@ const FlashCard: FC<FlashCardProps> = ({ card, onCorrectCallback, onIncorrectCal
                     onChange={(e) => setStudentInput(e.target.value)}
                     placeholder="Start typing or press icon to speak." />
                 <div className="w-full flex flex-row justify-between">
-                    <button className="bg-mediumBlue text-white h-fit rounded-lg px-6 py-1 w-fit text-sm">Speak</button>
+                    <AudioRecorder textCallBack={setStudentAudioText} />
                     <button
                         onClick={() => checkAnswer()}
                         className="bg-darkBlue text-white h-fit rounded-lg px-6 py-1 w-fit text-sm">
