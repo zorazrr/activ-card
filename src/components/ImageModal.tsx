@@ -22,7 +22,7 @@ const ImageModal = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent minH="300px">
+      <ModalContent minH="300px" backgroundColor={"white"}>
         <ModalHeader>Your Badge</ModalHeader>
         <ModalCloseButton />
         <VStack>

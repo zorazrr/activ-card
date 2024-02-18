@@ -156,7 +156,7 @@ export const gptRouter = createTRPCRouter({
       const res = await openai.images.edit({
         image: fs.createReadStream(filePath),
         prompt:
-          "Fill in empty spaces with bright and creative content related to the art style given",
+          "Fill in empty spaces with bright polka dots related to the art style given",
         n: 1,
         size: "1024x1024",
       });
