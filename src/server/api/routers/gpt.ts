@@ -222,4 +222,31 @@ export const gptRouter = createTRPCRouter({
       console.log(transcript);
       return transcript;
     }),
+  explainAnswer: publicProcedure
+    .input(
+      z.object({
+        term: z.string(),
+        definition: z.string(),
+        studentInput: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const formattedInput = `Term: ${input.term}\nDefinition: ${input.definition}\nStudent Answer: ${input.studentInput}`;
+      const completion = await openai.chat.completions.create({
+        messages: [
+          { role: "system", content: "You are a helpful teaching assistant." },
+          {
+            role: "user",
+            content:
+              "Given the following term, student answer,\
+               and definition, explain why the student answer is inaccurate\
+               and what the student should pay attention to next time.\
+               Keep your answer concise and pretend you are talking to the student.",
+          },
+          { role: "assistant", content: formattedInput },
+        ],
+        model: "gpt-3.5-turbo",
+      });
+      return completion.choices[0].message.content;
+    }),
 });

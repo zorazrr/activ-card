@@ -20,7 +20,11 @@ const FlashCard: FC<FlashCardProps> = ({
 }) => {
   const [studentInput, setStudentInput] = useState<string>("");
   const [studentAudioText, setStudentAudioText] = useState<string>();
+  const [answerExplanation, setAnswerExplanation] = useState<string>("");
   const checkAnswerMutation = api.gpt.checkAnswer.useMutation({ retry: false });
+  const explainAnswerMutation = api.gpt.explainAnswer.useMutation({ retry: false });
+
+
 
   const checkAnswer = () => {
     if (checkMode === CheckMode.AI_CHECK) {
@@ -32,7 +36,23 @@ const FlashCard: FC<FlashCardProps> = ({
         },
         {
           onSuccess: ({ isCorrect }) => {
-            isCorrect ? onCorrectCallback?.() : onIncorrectCallback?.();
+            if (isCorrect) {
+              onCorrectCallback?.();
+            } else {
+              explainAnswerMutation.mutate(
+                {
+                  term: card.term,
+                  definition: card.definition,
+                  studentInput: studentInput,
+                },
+                {
+                  onSuccess: (data) => {
+                    setAnswerExplanation(data!)
+                  },
+                },
+              );
+              onIncorrectCallback?.();
+            }
           },
         },
       );
@@ -51,7 +71,23 @@ const FlashCard: FC<FlashCardProps> = ({
         },
         {
           onSuccess: ({ isCorrect }) => {
-            isCorrect ? onCorrectCallback?.() : onIncorrectCallback?.();
+            if (isCorrect) {
+              onCorrectCallback?.();
+            } else {
+              explainAnswerMutation.mutate(
+                {
+                  term: card.term,
+                  definition: card.definition,
+                  studentInput: studentAudioText,
+                },
+                {
+                  onSuccess: (data) => {
+                    setAnswerExplanation(data!)
+                  },
+                },
+              );
+              onIncorrectCallback?.();
+            }
           },
         },
       );
@@ -67,28 +103,36 @@ const FlashCard: FC<FlashCardProps> = ({
   }, [studentAudioText]);
 
   return (
-    <div className="flex h-full w-screen flex-row items-center justify-between gap-12 px-40 text-lg">
-      <div className="flex h-1/3 w-full flex-row items-center justify-center rounded-lg border bg-gray-100 p-10">
-        <p>{card.term}</p>
-      </div>
-      <div className="flex h-1/3 w-full flex-col gap-2">
-        <input
-          type="text"
-          className="h-full rounded-lg border px-10"
-          value={studentInput}
-          onChange={(e) => setStudentInput(e.target.value)}
-          placeholder="Start typing or press icon to speak."
-        />
-        <div className="flex w-full flex-row justify-between">
-          <AudioRecorder textCallBack={setStudentAudioText} />
-          <button
-            onClick={() => checkAnswer()}
-            className="h-fit w-fit rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
-          >
-            Check
-          </button>
+    <div className="flex flex-col h-full justify-evenly items-center">
+      <div className="flex h-[60%] w-screen flex-row items-center justify-between gap-12 px-40 pt-20 text-lg">
+        <div className="flex h-full w-full flex-row items-center justify-center rounded-lg border bg-gray-100 p-10">
+          <p>{card.term}</p>
+        </div>
+        <div className="flex h-full w-full flex-col gap-2">
+          <input
+            type="text"
+            className="h-full rounded-lg border px-10"
+            value={studentInput}
+            onChange={(e) => setStudentInput(e.target.value)}
+            placeholder="Start typing or press icon to speak."
+          />
+          <div className="flex w-full flex-row justify-between">
+            <AudioRecorder textCallBack={setStudentAudioText} />
+            <button
+              onClick={() => checkAnswer()}
+              className="h-fit w-fit rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
+            >
+              Check
+            </button>
+          </div>
         </div>
       </div>
+      {
+        answerExplanation === "" ? <div></div> :
+          <div className="border rounded-lg py-5 px-12 border-red-300 w-3/4">
+            <p>{answerExplanation}</p>
+          </div>
+      }
     </div>
   );
 };
