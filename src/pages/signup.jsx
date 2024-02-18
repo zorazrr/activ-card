@@ -5,7 +5,7 @@ import StyledButton from "~/components/Button";
 
 import { api } from "~/utils/api";
 
-export default function Home() {
+export default function Signup() {
   return (
     <>
       <Head>

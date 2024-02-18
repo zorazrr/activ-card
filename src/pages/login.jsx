@@ -6,7 +6,7 @@ import { Button, HStack } from "@chakra-ui/react";
 
 import { api } from "~/utils/api";
 
-export default function Home() {
+export default function Login() {
   return (
     <>
       <Head>
