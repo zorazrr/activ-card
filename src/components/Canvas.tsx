@@ -6,7 +6,6 @@ import { VStack } from "@chakra-ui/react";
 import { Image } from "openai/resources/images.mjs";
 import { api } from "~/utils/api";
 import StyledButton from "./Button";
-import StyledModal from "./StyledModal";
 
 const colors = [
   "#f44336",
