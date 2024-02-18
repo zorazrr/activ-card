@@ -47,19 +47,6 @@ export default function SetCreationMediumSelection() {
     });
   };
 
-  // useEffect(() => {
-  //   if (subject) {
-  //     void generateFlashcard.refetch();
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [subject]);
-
-  // useEffect(() => {
-  //   if (flashcards.length !== 0) {
-  //     void createSet.mutate({ name: subject, classId: classId });
-  //   }
-  // }, [flashcards]);
-
   return (
     <>
       <div className="p-5 hover:opacity-75">
