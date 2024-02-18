@@ -27,15 +27,17 @@ const StyledModal = ({
       <ModalOverlay />
       {isScan ? (
         <ModalContent justifyContent="center" backgroundColor="white">
-          <ModalHeader>Click to Generate Flashcards</ModalHeader>
+          <ModalHeader alignSelf="center">
+            Click to Generate Flashcards
+          </ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
+          <ModalFooter justifyContent="center">
             <StyledButton
               colorInd={0}
               onClick={onClick}
               label="Generate Flashcards"
             />
-          </ModalBody>
+          </ModalFooter>
         </ModalContent>
       ) : (
         <ModalContent backgroundColor="white" padding={3}>
