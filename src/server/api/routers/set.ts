@@ -34,6 +34,7 @@ export const setRouter = createTRPCRouter({
       const set = await ctx.db.set.create({
         data: {
           name: input.name,
+          description: "",
           classroom_id: input.classId,
           check_mode: CheckMode.AI_CHECK,
           answer_mode: AnswerMode.SPEAKING,
