@@ -10,7 +10,7 @@ const FlashCard: FC<FlashCardProps> = ({ card }) => {
     const [studentInput, setStudentInput] = useState<string>("");
 
     return (
-        <div className="flex flex-row items-center w-screen h-screen px-40 justify-between gap-12">
+        <div className="flex flex-row items-center w-screen h-full px-40 justify-between gap-12">
             <div className="bg-gray-100 border rounded-lg h-1/3 p-10 flex flex-row items-center justify-center w-full">
                 <p>{card.term}</p>
             </div>
