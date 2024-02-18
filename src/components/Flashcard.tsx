@@ -2,6 +2,7 @@ import { type Card, CheckMode, AnswerMode } from "@prisma/client";
 import { use, useEffect, useState, type FC } from "react";
 import { api } from "~/utils/api";
 import AudioRecorder from "./AudioRecorder";
+import { Input, Spinner, Textarea } from "@chakra-ui/react";
 
 interface FlashCardProps {
   card: Card;
@@ -109,15 +110,15 @@ const FlashCard: FC<FlashCardProps> = ({
           <p>{card.term}</p>
         </div>
         <div className="flex h-full w-full flex-col gap-2">
-          <input
-            type="text"
-            className="h-full rounded-lg border px-10"
+          <Textarea
+            h="full"
             value={studentInput}
             onChange={(e) => setStudentInput(e.target.value)}
             placeholder="Start typing or press icon to speak."
           />
           <div className="flex w-full flex-row justify-between">
             <AudioRecorder textCallBack={setStudentAudioText} />
+            {checkAnswerMutation.isLoading || explainAnswerMutation.isLoading && <Spinner />}
             <button
               onClick={() => checkAnswer()}
               className="h-fit w-fit rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"

@@ -3,10 +3,10 @@ import StyledButton from "~/components/Button";
 import StyledFileUpload from "~/components/FileUpload";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { HStack, Modal, VStack, useDisclosure } from "@chakra-ui/react";
+import { HStack, useDisclosure } from "@chakra-ui/react";
 import StyledModal from "~/components/Modal";
 import { api } from "~/utils/api";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { type TermDefPair } from "~/utils/types";
 
 export default function SetCreationMediumSelection() {

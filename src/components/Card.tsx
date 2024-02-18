@@ -1,6 +1,15 @@
 import React from "react";
-import { Box, Card, CardBody, Divider, HStack, Image } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  CardBody,
+  Divider,
+  HStack,
+  Image,
+  VStack,
+} from "@chakra-ui/react";
 import { type Set } from "@prisma/client";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
 const SetCard = (props: Partial<Set>) => (
   <Card>
@@ -9,7 +18,13 @@ const SetCard = (props: Partial<Set>) => (
         <Box w="80%" minH="100%" pt={5}>
           <p className="h4">{props.name}</p>
           <Divider w="100px" />
-          {props.name && <p className="reg-text pt-3">{props.description}</p>}
+          {props.description && (
+            <p className="reg-text pt-3">{props.description}</p>
+          )}
+          <HStack mt="8px">
+            <EditIcon />
+            <DeleteIcon />
+          </HStack>
         </Box>
         <Box w="20%">
           <Image
