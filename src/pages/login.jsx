@@ -8,7 +8,7 @@ import { signIn } from "next-auth/react";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 
-export default function Home() {
+export default function Login() {
   const role = useRouter().query.role;
 
   return (
@@ -55,7 +55,9 @@ export default function Home() {
                 paddingTop: "5px",
                 paddingBottom: "5px",
               }}
-              onClick={() => signIn("google", { callbackUrl: `/${role}/dashboard` })}
+              onClick={() =>
+                signIn("google", { callbackUrl: `/${role}/dashboard` })
+              }
             >
               <Image
                 src={"/assets/google.png"}
@@ -64,9 +66,7 @@ export default function Home() {
                 height={20}
                 style={{ marginRight: "3px" }}
               />
-              <p className="reg-text mr-[20px]">
-                {"Continue with Google"}
-              </p>
+              <p className="reg-text mr-[20px]">{"Continue with Google"}</p>
             </button>
           </div>
           <div

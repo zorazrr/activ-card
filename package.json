@@ -31,10 +31,13 @@
     "@trpc/server": "^10.43.6",
     "aws-sdk": "^2.1560.0",
     "framer-motion": "^11.0.5",
+    "html2canvas": "^1.4.1",
     "next": "^14.0.4",
     "next-auth": "^4.24.5",
     "openai": "^4.28.0",
     "react": "18.2.0",
+    "react-canvas-draw": "^1.2.1",
+    "react-color": "^2.19.3",
     "react-dom": "18.2.0",
     "superjson": "^2.2.1",
     "zod": "^3.22.4"

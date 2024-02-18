@@ -1,13 +1,14 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import Image from "next/image";
+import Img from "next/image";
 import StyledButton from "~/components/Button";
 
 import { api } from "~/utils/api";
+import { useState } from "react";
+import { Image } from "openai/resources/images.mjs";
 
 export default function Home() {
-
   return (
     <>
       <Head>
@@ -18,15 +19,15 @@ export default function Home() {
       <div className="main-class flex items-center justify-between space-x-4">
         <div className="p-5 hover:opacity-75">
           <Link href="/">
-            <Image src="/assets/logo.png" alt="header" width={65} height={65} />
+            <Img src="/assets/logo.png" alt="header" width={65} height={65} />
           </Link>
         </div>
         <div className="main-class flex items-center justify-between space-x-4 p-5">
           <Link href="/login">
-            <StyledButton label="Log In" colorInd={0} onClick={() => { }} />
+            <StyledButton label="Log In" colorInd={0} onClick={() => {}} />
           </Link>
           <Link href="/signup">
-            <StyledButton label="Sign Up" colorInd={1} onClick={() => { }} />
+            <StyledButton label="Sign Up" colorInd={1} onClick={() => {}} />
           </Link>
         </div>
       </div>
@@ -51,7 +52,7 @@ export default function Home() {
               <StyledButton
                 label="Get Started"
                 colorInd={0}
-                onClick={() => { }}
+                onClick={() => {}}
                 style={{ width: "65%", height: "50px" }}
               />
             </Link>
@@ -61,7 +62,7 @@ export default function Home() {
           style={{ marginRight: "10%", marginTop: "5%" }}
           className="custom-image-class relative inline-block"
         >
-          <Image
+          <Img
             src="/assets/big_logo.png" // Assume your image is in the public/images folder
             alt="Logo"
             width={650} // Desired width of the image in pixels
@@ -81,26 +82,26 @@ export default function Home() {
   );
 }
 
-function AuthShowcase() {
-  const { data: sessionData } = useSession();
+// function AuthShowcase() {
+//   const { data: sessionData } = useSession();
 
-  const { data: secretMessage } = api.post.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined },
-  );
+//   const { data: secretMessage } = api.post.getSecretMessage.useQuery(
+//     undefined, // no input
+//     { enabled: sessionData?.user !== undefined },
+//   );
 
-  return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <p className="text-center text-2xl text-white">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
-      </p>
-      <button
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
-    </div>
-  );
-}
+//   return (
+//     <div className="flex flex-col items-center justify-center gap-4">
+//       <p className="text-center text-2xl text-white">
+//         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
+//         {secretMessage && <span> - {secretMessage}</span>}
+//       </p>
+//       <button
+//         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+//         onClick={sessionData ? () => void signOut() : () => void signIn()}
+//       >
+//         {sessionData ? "Sign out" : "Sign in"}
+//       </button>
+//     </div>
+//   );
+// }
