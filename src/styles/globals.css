@@ -20,6 +20,10 @@
   @apply font-roboto text-h4-size font-medium;
 }
 
+.h5 {
+  @apply text-h5-size font-roboto font-semibold;
+}
+
 .reg-text {
   @apply font-roboto text-text-size;
 }
