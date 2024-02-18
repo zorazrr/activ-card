@@ -8,6 +8,7 @@ import { api } from "~/utils/api";
 import StyledButton from "./Button";
 import StyledModal from "./StyledModal";
 import ImageModal from "./ImageModal";
+import Countdown from "./Countdown";
 
 const colors = [
   "#f44336",
@@ -61,6 +62,7 @@ function Canvas({ setCurIndex }: { setCurIndex: Dispatch<any> }) {
           <div className="h4" style={{ color: "white", fontWeight: 500 }}>
             A break to re-center &#10024;
           </div>
+          <Countdown />
           <div>
             <CanvasDraw
               ref={canvasRef}
