@@ -88,5 +88,25 @@ export const gptRouter = createTRPCRouter({
             };
         });
         return termDefPairs
+    }),
+    /**
+     * Check if the student's answer matches the definition
+     * @param term The term to check
+     * @param definition The definition to check
+     * @param studentInput The student's input to check
+     * @returns Whether the student's input matches the definition, binary
+     */
+    checkAnswer: publicProcedure.input(z.object({ term: z.string(), definition: z.string(), studentInput: z.string() })).mutation(async ({ input }) => {
+        const formattedInput = `Term: ${input.term}\nDefinition: ${input.definition}\nStudent Answer: ${input.studentInput}`
+        const completion = await openai.chat.completions.create({
+            messages: [{ "role": "system", "content": "You are a helpful teaching assistant." },
+            { "role": "user", "content": "Given the following term, student answer, and definition, check if the student's answer match the definition." },
+            { "role": "assistant", "content": formattedInput },
+            { "role": "assistant", "content": "Summarize with Yes or No." }],
+            model: "gpt-3.5-turbo",
+        });
+        return {
+            isCorrect: completion.choices[0].message.content.toLowerCase().includes('yes')
+        };
     })
 });

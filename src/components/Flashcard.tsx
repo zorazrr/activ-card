@@ -1,5 +1,6 @@
 import type { Card } from "@prisma/client";
 import { useState, type FC } from "react";
+import { api } from "~/utils/api";
 
 
 interface FlashCardProps {
@@ -10,10 +11,18 @@ interface FlashCardProps {
 
 const FlashCard: FC<FlashCardProps> = ({ card, onCorrectCallback, onIncorrectCallback }) => {
     const [studentInput, setStudentInput] = useState<string>("");
+    const checkAnswerMutation = api.gpt.checkAnswer.useMutation({ retry: false });
 
     const checkAnswer = () => {
-        // TODO: Implement logic to check if studentInput is correct
-        Math.random() > 0.5 ? onCorrectCallback?.() : onIncorrectCallback?.();
+        checkAnswerMutation.mutate({
+            term: card.term,
+            definition: card.definition,
+            studentInput: studentInput
+        }, {
+            onSuccess: ({ isCorrect }) => {
+                isCorrect ? onCorrectCallback?.() : onIncorrectCallback?.();
+            }
+        });
     }
 
     return (
