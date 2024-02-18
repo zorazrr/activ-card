@@ -8,14 +8,16 @@ export const setRouter = createTRPCRouter({
     const sets: Set[] = await ctx.db.set.findMany();
     return sets;
   }),
-  getOneSet: publicProcedure.input(z.object({ setId: z.string() })).query(async ({ ctx, input }) => {
-    const set: Set | null = await ctx.db.set.findUnique({
-      where: {
-        id: input.setId,
-      },
-    });
-    return set;
-  }),
+  getOneSet: publicProcedure
+    .input(z.object({ setId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const set: Set | null = await ctx.db.set.findUnique({
+        where: {
+          id: input.setId,
+        },
+      });
+      return set;
+    }),
   getSetByClassroom: publicProcedure
     .input(z.object({ classId: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -29,8 +31,9 @@ export const setRouter = createTRPCRouter({
       });
       return sets;
     }),
-  createSet: publicProcedure.input(z.object({ name: z.string(), classId: z.string() })).mutation(
-    async ({ ctx, input }) => {
+  createSet: publicProcedure
+    .input(z.object({ name: z.string(), classId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
       const set = await ctx.db.set.create({
         data: {
           name: input.name,
@@ -42,5 +45,5 @@ export const setRouter = createTRPCRouter({
         },
       });
       return set;
-    })
+    }),
 });

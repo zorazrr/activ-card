@@ -17,6 +17,7 @@
     "@aws-sdk/client-textract": "^3.515.0",
     "@aws-sdk/lib-storage": "^3.515.0",
     "@aws-sdk/s3-request-presigner": "^3.515.0",
+    "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",

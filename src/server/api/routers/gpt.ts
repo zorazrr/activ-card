@@ -2,6 +2,7 @@
 import fs from "fs";
 import { z } from "zod";
 import OpenAI from "openai";
+import fs from "fs";
 import {
   DetectDocumentTextCommand,
   TextractClient,
@@ -20,6 +21,17 @@ const s3 = new S3Client({
     secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY!,
   },
 });
+
+const parseDataUrl = (dataUrl: string, fileName: string) => {
+  const regex = /^data:.+\/(.+);base64,(.*)$/;
+  const matches = dataUrl.match(regex);
+  const ext = matches[1];
+  const data = matches[2];
+  const buffer = Buffer.from(data, "base64");
+  const filePath = "./public/assets/" + fileName + "." + ext;
+  fs.writeFileSync(filePath, buffer);
+  return filePath;
+};
 
 export const gptRouter = createTRPCRouter({
   /**
@@ -70,12 +82,12 @@ export const gptRouter = createTRPCRouter({
       return concatenatedString;
     }),
   /**
-   * Generate flashcard based on text and return the term-definition pairs
-   * @param content The content to generate flashcards from
+   * Generate flashcard based on given subject and return the term-definition pairs
+   * @param subject The subject to generate flashcards about
    * @returns The term-definition pairs
    */
-  generateFlashcard: publicProcedure
-    .input(z.object({ content: z.string() }))
+  generateFlashcardsFromPromptedSubject: publicProcedure
+    .input(z.object({ subject: z.string() }))
     .query(async ({ input }) => {
       const completion = await openai.chat.completions.create({
         messages: [
@@ -83,9 +95,9 @@ export const gptRouter = createTRPCRouter({
           {
             role: "user",
             content:
-              "From the given content only, extract 3 (term:definition) pairs, keep it short.",
+              "For the given subject, generate 3 relevant (term:definition) pairs, keep it short.",
           },
-          { role: "assistant", content: input.content },
+          { role: "assistant", content: input.subject },
         ],
         model: "gpt-3.5-turbo",
       });
@@ -100,21 +112,107 @@ export const gptRouter = createTRPCRouter({
       });
       return termDefPairs;
     }),
-  generateImage: publicProcedure.input(z.object({ imagePath: z.string() })).mutation(async ({ input }) => {
+  generateImage: publicProcedure
+    .input(z.object({ imagePath: z.string() }))
+    .mutation(async ({ input }) => {
+      const regex = /^data:.+\/(.+);base64,(.*)$/;
+      const matches = input.imagePath.match(regex);
+      const ext = matches[1];
+      const data = matches[2];
+      const buffer = Buffer.from(data, "base64");
+      const filePath = "./public/assets/drawing." + ext;
+      fs.writeFileSync(filePath, buffer);
 
-    const regex = /^data:.+\/(.+);base64,(.*)$/;
-    const matches = input.imagePath.match(regex);
-    const ext = matches[1];
-    const data = matches[2];
-    const buffer = Buffer.from(data, "base64");
-    const filePath = "./public/assets/drawing." + ext;
-    fs.writeFileSync(filePath, buffer);
+      // Cast the ReadStream to `any` to appease the TypeScript compiler
+      const image = await openai.images.createVariation({
+        image: fs.createReadStream(filePath),
+      });
 
-    // Cast the ReadStream to `any` to appease the TypeScript compiler
-    const image = await openai.images.createVariation({
-      image: fs.createReadStream(filePath),
-    });
-
-    return image.data;
-  }),
+      return image.data;
+    }),
 });
+
+/**
+ * Generate flashcard based on text and return the term-definition pairs
+ * @param content The content to generate flashcards from
+ * @returns The term-definition pairs
+ */
+generateFlashcard: publicProcedure
+  .input(z.object({ content: z.string() }))
+  .query(async ({ input }) => {
+    const completion = await openai.chat.completions.create({
+      messages: [
+        { role: "system", content: "You are a helpful teaching assistant." },
+        {
+          role: "user",
+          content:
+            "From the given content only, extract 3 (term:definition) pairs, keep it short.",
+        },
+        { role: "assistant", content: input.content },
+      ],
+      model: "gpt-3.5-turbo",
+    });
+    const lines = completion.choices[0].message.content.split("\n");
+    const termDefPairs: TermDefPair[] = lines.map((line) => {
+      // Split each line by the first colon to separate the term and the definition
+      const [term, definition] = line.split(/:\s*/);
+      return {
+        term: term.replace(/^\d+\.\s*/, ""), // Remove the numbering
+        def: definition.trim(), // Trim any leading or trailing whitespace
+      };
+    });
+    return termDefPairs;
+  });
+/**
+ * Check if the student's answer matches the definition
+ * @param term The term to check
+ * @param definition The definition to check
+ * @param studentInput The student's input to check
+ * @returns Whether the student's input matches the definition, binary
+ */
+checkAnswer: publicProcedure
+  .input(
+    z.object({
+      term: z.string(),
+      definition: z.string(),
+      studentInput: z.string(),
+    }),
+  )
+  .mutation(async ({ input }) => {
+    const formattedInput = `Term: ${input.term}\nDefinition: ${input.definition}\nStudent Answer: ${input.studentInput}`;
+    const completion = await openai.chat.completions.create({
+      messages: [
+        { role: "system", content: "You are a helpful teaching assistant." },
+        {
+          role: "user",
+          content:
+            "Given the following term, student answer, and definition, check if the student's answer match the definition.",
+        },
+        { role: "assistant", content: formattedInput },
+        { role: "assistant", content: "Summarize with Yes or No." },
+      ],
+      model: "gpt-3.5-turbo",
+    });
+    return {
+      isCorrect: completion.choices[0].message.content
+        .toLowerCase()
+        .includes("yes"),
+    };
+  });
+/**
+ * Transcribe speech to text
+ * @returns The transcribed text
+ */
+speechToText: publicProcedure
+  .input(z.object({ audioUrl: z.string() }))
+  .mutation(async ({ input }) => {
+    const filePath = parseDataUrl(input.audioUrl, "audio");
+    const audioFileWebm = fs.createReadStream(filePath);
+    const transcript = await openai.audio.transcriptions.create({
+      model: "whisper-1",
+      file: audioFileWebm,
+      content_type: "audio/mp3",
+    });
+    console.log(transcript);
+    return transcript;
+  });

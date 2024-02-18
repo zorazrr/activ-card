@@ -1,29 +1,48 @@
 import { HStack, Box, Heading, Text } from "@chakra-ui/react";
-import { useState } from "react";
-import SetCard from "~/components/Card";
+import { useEffect, useState } from "react";
 import DashboardTabs from "~/components/DashboardTabs";
 import Sidebar from "~/components/SideBar/SideBar";
-
-interface Class {
-  className: string;
-}
+import { api } from "~/utils/api";
+import { type Classroom } from "@prisma/client";
 
 export default function TeacherDashboard() {
-  const classes = [
-    { className: "English" },
-    { className: "Math" },
-    { className: "Science" },
-  ] as Class[];
+  const [classrooms, setClassrooms] = useState<Classroom[]>();
+  const [currentClass, setCurrentClass] = useState<Classroom>();
+  const { data } = api.teacher.getTeacherAndClassrooms.useQuery(
+    {
+      teacherId: "65d1242ccdde4a764731c37f",
+    },
+    {
+      onSuccess: (data) => {
+        setClassrooms(data.classroom as Classroom[]);
+        setCurrentClass(data.classroom[0]);
+      },
+    },
+  );
 
-  const [currentClass, setCurrentClass] = useState(classes[0]);
+  // useEffect(() => {
+  //   if (classrooms) {
+  //     console.log(classrooms);
+  //     setCurrentClass(classrooms[0]);
+  //   }
+  // }, [classrooms, currentClass, data]);
+
+  // const classes = [
+  //   { className: "English" },
+  //   { className: "Math" },
+  //   { className: "Science" },
+  // ] as Class[];
+  // setCurrentClass(classrooms[0]);
 
   return (
     <HStack height="100%" className="main-class min-h-screen">
-      <Sidebar classes={classes} setCurrentClass={setCurrentClass} />
+      {classrooms && (
+        <Sidebar classes={classrooms} setCurrentClass={setCurrentClass} />
+      )}
       <Box w="full" h="100%" pt={16} pl={10} style={{ overflowY: "scroll" }}>
-        <Text className="h3 text-darkBlue leading-9">Welcome to</Text>
-        <Text className="h3 text-mediumBlue">{currentClass?.className}</Text>
-        <DashboardTabs />
+        <Text className="h3 leading-9 text-darkBlue">Welcome to</Text>
+        <Text className="h3 text-mediumBlue">{currentClass?.name}</Text>
+        <DashboardTabs currentClass={currentClass} />
       </Box>
     </HStack>
   );
