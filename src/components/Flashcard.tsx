@@ -14,9 +14,8 @@ interface FlashCardProps {
 
 const FlashCard: FC<FlashCardProps> = ({ card, onCorrectCallback, onIncorrectCallback, checkMode, answerMode }) => {
     const [studentInput, setStudentInput] = useState<string>("");
-    const [studentAudioText, setStudentAudioText] = useState<string>("");
+    const [studentAudioText, setStudentAudioText] = useState<string>();
     const checkAnswerMutation = api.gpt.checkAnswer.useMutation({ retry: false });
-    const speechToTextMutation = api.gpt.speechToText.useMutation({ retry: false });
 
     const checkAnswer = () => {
         if (checkMode === CheckMode.AI_CHECK) {
@@ -33,6 +32,7 @@ const FlashCard: FC<FlashCardProps> = ({ card, onCorrectCallback, onIncorrectCal
             studentInput.toLowerCase() === card.definition.toLowerCase() ? onCorrectCallback?.() : onIncorrectCallback?.();
         }
         if (answerMode === AnswerMode.SPEAKING) {
+            console.log("Checking answer with audio");
             checkAnswerMutation.mutate({
                 term: card.term,
                 definition: card.definition,
@@ -44,6 +44,12 @@ const FlashCard: FC<FlashCardProps> = ({ card, onCorrectCallback, onIncorrectCal
             });
         }
     }
+
+    useEffect(() => {
+        if (studentAudioText !== undefined) {
+            checkAnswer();
+        }
+    }, [studentAudioText]);
 
     return (
         <div className="flex flex-row items-center w-screen h-full px-40 justify-between gap-12 text-lg">
