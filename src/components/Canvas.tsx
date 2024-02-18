@@ -8,6 +8,7 @@ import { api } from "~/utils/api";
 import StyledButton from "./Button";
 import StyledModal from "./StyledModal";
 import ImageModal from "./ImageModal";
+import Countdown from "./Countdown";
 
 const colors = [
   "#f44336",
@@ -30,7 +31,7 @@ const colors = [
   "#607d8b",
 ];
 
-function Canvas() {
+function Canvas({ setCurIndex }: { setCurIndex: Dispatch<any> }) {
   const [color, setColor] = useState("#ffffff");
   const canvasRef =
     useRef<React.MutableRefObject<HTMLCanvasElement | undefined>>();
@@ -61,6 +62,7 @@ function Canvas() {
           <div className="h4" style={{ color: "white", fontWeight: 500 }}>
             A break to re-center &#10024;
           </div>
+          <Countdown />
           <div>
             <CanvasDraw
               ref={canvasRef}
@@ -96,7 +98,11 @@ function Canvas() {
           />
         </VStack>
       </div>
-      <ImageModal onClose={onClose} isOpen={isOpen} images={images} />
+      <ImageModal
+        onClose={() => setCurIndex(4)}
+        isOpen={isOpen}
+        images={images}
+      />
     </div>
   );
 }
