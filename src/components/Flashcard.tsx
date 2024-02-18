@@ -1,6 +1,7 @@
 import { Card, CheckMode } from "@prisma/client";
 import { useState, type FC } from "react";
 import { api } from "~/utils/api";
+import AudioRecorder from "./AudioRecorder";
 
 
 interface FlashCardProps {
@@ -13,6 +14,7 @@ interface FlashCardProps {
 const FlashCard: FC<FlashCardProps> = ({ card, onCorrectCallback, onIncorrectCallback, checkMode }) => {
     const [studentInput, setStudentInput] = useState<string>("");
     const checkAnswerMutation = api.gpt.checkAnswer.useMutation({ retry: false });
+    const speechToTextMutation = api.gpt.speechToText.useMutation({ retry: false });
 
     const checkAnswer = () => {
         if (checkMode === CheckMode.AI_CHECK) {
@@ -42,7 +44,10 @@ const FlashCard: FC<FlashCardProps> = ({ card, onCorrectCallback, onIncorrectCal
                     onChange={(e) => setStudentInput(e.target.value)}
                     placeholder="Start typing or press icon to speak." />
                 <div className="w-full flex flex-row justify-between">
-                    <button className="bg-mediumBlue text-white h-fit rounded-lg px-6 py-1 w-fit text-sm">Speak</button>
+                    <button
+                        onClick={() => speechToTextMutation.mutate({})}
+                        className="bg-mediumBlue text-white h-fit rounded-lg px-6 py-1 w-fit text-sm">Speak</button>
+                    <AudioRecorder />
                     <button
                         onClick={() => checkAnswer()}
                         className="bg-darkBlue text-white h-fit rounded-lg px-6 py-1 w-fit text-sm">

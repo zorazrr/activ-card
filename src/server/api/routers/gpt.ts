@@ -6,6 +6,7 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import {
     getSignedUrl,
 } from "@aws-sdk/s3-request-presigner";
+import fs from "fs";
 
 import {
     createTRPCRouter,
@@ -108,5 +109,18 @@ export const gptRouter = createTRPCRouter({
         return {
             isCorrect: completion.choices[0].message.content.toLowerCase().includes('yes')
         };
+    }),
+    /**
+     * Transcribe speech to text
+     * @returns The transcribed text
+     */
+    speechToText: publicProcedure.input(z.object({})).mutation(async ({ input }) => {
+        const audio_file = fs.createReadStream("./test.mp3");
+        const transcript = await openai.audio.transcriptions.create({
+            model: "whisper-1",
+            file: audio_file,
+            content_type: "audio/mpeg",
+        });
+        console.log(transcript);
     })
 });
