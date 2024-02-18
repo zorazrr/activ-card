@@ -29,11 +29,11 @@ export default function Home() {
             className="flex-col items-start justify-between space-y-6"
             style={{ marginTop: "5%" }}
           >
-            <Link href="/login">
+            <Link href="/login?role=teacher">
               <StyledButton
                 label="I'm a Teacher"
                 colorInd={1}
-                onClick={() => {}}
+                onClick={() => { }}
                 style={{
                   width: "50%",
                   paddingTop: "15px",
@@ -42,11 +42,11 @@ export default function Home() {
                 }}
               />
             </Link>
-            <Link href="/login">
+            <Link href="/login?role=student">
               <StyledButton
                 label="I'm a Student"
                 colorInd={2}
-                onClick={() => {}}
+                onClick={() => { }}
                 style={{
                   width: "50%",
                   paddingTop: "15px",

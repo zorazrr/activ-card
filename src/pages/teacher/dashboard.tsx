@@ -4,10 +4,13 @@ import DashboardTabs from "~/components/DashboardTabs";
 import Sidebar from "~/components/SideBar/SideBar";
 import { api } from "~/utils/api";
 import { type Classroom } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
 export default function TeacherDashboard() {
   const [classrooms, setClassrooms] = useState<Classroom[]>();
   const [currentClass, setCurrentClass] = useState<Classroom>();
+  // const { data: session } = useSession();
+  // console.log(session);
   const { data } = api.teacher.getTeacherAndClassrooms.useQuery(
     {
       teacherId: "65d1242ccdde4a764731c37f",
@@ -19,6 +22,7 @@ export default function TeacherDashboard() {
       },
     },
   );
+
 
   // useEffect(() => {
   //   if (classrooms) {
