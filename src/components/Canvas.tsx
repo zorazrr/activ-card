@@ -54,10 +54,13 @@ function Canvas() {
   return (
     <div
       className="h-screen w-screen flex-col items-center justify-center bg-darkBlue"
-      style={{ paddingTop: "10%" }}
+      style={{ paddingTop: "3%" }}
     >
       <div>
         <VStack>
+          <div className="h4" style={{ color: "white", fontWeight: 500 }}>
+            A break to re-center &#10024;
+          </div>
           <div>
             <CanvasDraw
               ref={canvasRef}
@@ -65,11 +68,15 @@ function Canvas() {
               hideGrid={true}
               canvasWidth={500}
               canvasHeight={500}
+              brushRadius={6}
+              lazyRadius={0}
             />
           </div>
+          <br></br>
           <div>
             <CirclePicker onChange={handleChange} colors={colors} />
           </div>
+          <br></br>
           <StyledButton
             onClick={() => {
               console.log(canvasRef.current.getDataURL());
@@ -80,12 +87,11 @@ function Canvas() {
               onOpen();
             }}
             label={"Generate an Image"}
-            colorInd={2}
+            colorInd={1}
             style={{
-              width: "100%",
+              width: "250px",
               paddingLeft: "5%",
               paddingRight: "5%",
-              marginTop: "5%",
             }}
           />
         </VStack>
