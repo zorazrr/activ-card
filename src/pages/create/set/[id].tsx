@@ -7,23 +7,49 @@ import {
   Textarea,
   VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import StyledButton from "~/components/Button";
 import CardPair from "~/components/CardPair";
+import { api } from "~/utils/api";
+import type { TermDefPair } from "~/utils/types";
 
 // pass the set id as query param
 export default function EditSet() {
   const [setName, setSetName] = useState("");
   const [setDescription, setSetDescription] = useState("");
-  const [flashcards, setFlashcards] = useState([
-    { term: "hola", def: "hiii" },
-    { term: "adios", def: "goodbye" },
-    { term: "soy", def: "i am" },
-  ]);
+  const [flashcards, setFlashcards] = useState<TermDefPair[]>([]);
+  const setId = useRouter().query.id as string;
+
+  const { data: cards } = api.card.geCardBySet.useQuery({ setId: setId },
+    {
+      retry: false, enabled: !!setId, refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        if (data) {
+          const mappedCards: TermDefPair[] = data.map((card) => {
+            return { term: card.term, def: card.definition };
+          });
+          setFlashcards([...mappedCards]);
+        }
+      }
+    });
+
+  const { data: set } = api.set.getOneSet.useQuery({ setId: setId }, {
+    retry: false, enabled: !!setId, refetchOnWindowFocus: false, onSuccess: (data) => {
+      if (data) {
+        setSetName(data.name);
+        setSetDescription(data.description);
+      }
+    }
+  });
 
   const addCard = () => {
     setFlashcards([...flashcards, { term: "", def: "" }]);
   };
+
+  if (!cards || !set) {
+    return <div>Loading...</div>
+  }
 
   return (
     <VStack padding={16} w="100%">
