@@ -48,12 +48,14 @@ export default function Home() {
             ActiveCard
           </div>
           <div style={{ margin: "auto" }}>
-            <StyledButton
-              label="Get Started"
-              colorInd={0}
-              onClick={() => {}}
-              style={{ width: "65%", height: "50px" }}
-            />
+            <Link href="/signup">
+              <StyledButton
+                label="Get Started"
+                colorInd={0}
+                onClick={() => {}}
+                style={{ width: "65%", height: "50px" }}
+              />
+            </Link>
           </div>
         </div>
         <div
@@ -74,6 +76,7 @@ export default function Home() {
             <h1>Active Learning &#129309; Meets &#129309; Flashcards </h1>
           </div>
         </div>
+        {/* {<AuthShowcase />} */}
       </div>
     </>
   );
