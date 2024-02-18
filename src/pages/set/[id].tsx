@@ -1,20 +1,20 @@
+import { Card } from "@prisma/client";
 import { useRouter } from "next/router";
+import FlashCard from "~/components/Flashcard";
 import { api } from "~/utils/api";
 
 const Set = () => {
     const setId = useRouter().query.id;
-    const { data: cards } = api.card.geCardBySet.useQuery({ setId: setId as string }, { enabled: !!setId, retry: false });
+    const { data: cards } = api.card.geCardBySet.useQuery({ setId: setId as string },
+        { enabled: !!setId, retry: false, refetchOnWindowFocus: false });
+
+    if (!cards) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div>
-            {
-                cards?.map((card) => (
-                    <div key={card.id}>
-                        <p className="text-lg">{card.term}</p>
-                        <p>{card.definition}</p>
-                    </div>
-                ))
-            }
+            <FlashCard card={cards[0]!} />
         </div>
     )
 }
