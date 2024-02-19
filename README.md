@@ -3,7 +3,7 @@
 AI-powered active learning suite for 4th - 8th students and teachers, with multimedia support, LLM-assisted question generation and answer validation, and iterative creation.
 
 <p align="center">
-<img src="https://github.com/zorazrr/activ-card/blob/main/public/assets/flashcard.png" alt="Flashcard Demo" width="400">
+<img src="https://github.com/zorazrr/activ-card/blob/main/public/assets/flashcard.png" alt="Flashcard Demo" width="600">
 </p>
 
 ## Getting Started
