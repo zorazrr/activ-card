@@ -1,12 +1,46 @@
-# Create T3 App
+# ActiveCard
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+AI-powered active learning suite for 4th - 8th students and teachers, with multimedia support, LLM-assisted question generation and answer validation, and iterative creation.
 
-## What's next? How do I make an app with this?
+<p align="center">
+<img src="https://github.com/zorazrr/activ-card/blob/main/public/assets/flashcard.png" alt="Flashcard Demo" width="400">
+</p>
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Getting Started
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+Clone this repository
+
+```
+git clone https://github.com/zorazrr/activ-card.git
+```
+
+Create a `.env` file 
+
+```
+DATABASE_URL=
+NEXTAUTH_URL=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+OPENAI_API_KEY=
+REACT_APP_AWS_ACCESS_KEY_ID=
+REACT_APP_AWS_SECRET_ACCESS_KEY=
+REACT_APP_AWS_REGION=
+REACT_APP_S3_BUCKET_NAME=
+```
+
+Running the app
+
+```
+yarn && yarn dev
+```
+
+Then go to http://localhost:3000 in your browser.
+
+
+
+## Technology
+
+This project uses the [T3 Stack](https://create.t3.gg/).
 
 - [Next.js](https://nextjs.org)
 - [NextAuth.js](https://next-auth.js.org)
@@ -14,15 +48,7 @@ If you are not familiar with the different technologies used in this project, pl
 - [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
 
-## Learn More
+Additional technologies used:
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+- [OpenAI API](https://platform.openai.com/docs/overview)
+- [AWS](https://aws.amazon.com/) (S3 and Textract)
