@@ -79,11 +79,13 @@ function Canvas({ setCurIndex }: { setCurIndex: Dispatch<any> }) {
           <br></br>
           <StyledButton
             onClick={() => {
-              // console.log(canvasRef.current.getDataURL());
-              setDataURL(canvasRef.current.getDataURL());
-              generateImage.mutate({
-                imagePath: canvasRef.current.getDataURL(),
-              });
+              if (canvasRef.current) {
+                const dataURL = canvasRef.current.getDataURL();
+                setDataURL(dataURL);
+                generateImage.mutate({
+                  imagePath: dataURL,
+                });
+              }
               onOpen();
             }}
             label={"Generate an Image"}
