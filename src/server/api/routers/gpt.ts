@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
-import OpenAI from "openai";
+import OpenAI, { toFile } from "openai";
 import fs from "fs";
 import {
   DetectDocumentTextCommand,
@@ -147,26 +147,21 @@ export const gptRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       const regex = /^data:.+\/(.+);base64,(.*)$/;
       const matches = input.imagePath.match(regex);
-      const ext = matches[1];
       const data = matches[2];
       const buffer = Buffer.from(data, "base64");
-      const filePath = "./public/assets/drawing." + ext;
-      fs.writeFileSync(filePath, buffer);
+
+      buffer.name = "image.png";
+
+      const file = await toFile(buffer);
 
       const res = await openai.images.edit({
-        image: fs.createReadStream(filePath),
+        image: file,
         prompt:
           "Fill in empty spaces with bright polka dots related to the art style given",
         n: 1,
         size: "1024x1024",
       });
 
-      // Cast the ReadStream to `any` to appease the TypeScript compiler
-      // const image = await openai.images.createVariation({
-      //   image: fs.createReadStream(filePath),
-      // });
-
-      // return image.data;
       return res.data;
     }),
   /**
