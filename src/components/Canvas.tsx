@@ -42,8 +42,6 @@ function Canvas({ setCurIndex }: { setCurIndex: Dispatch<any> }) {
   const { onClose, onOpen, isOpen } = useDisclosure();
 
   const handleChange = (color, event) => {
-    console.log("color");
-    console.log(color.hex);
     setColor(color.hex);
   };
 
@@ -81,7 +79,7 @@ function Canvas({ setCurIndex }: { setCurIndex: Dispatch<any> }) {
           <br></br>
           <StyledButton
             onClick={() => {
-              console.log(canvasRef.current.getDataURL());
+              // console.log(canvasRef.current.getDataURL());
               setDataURL(canvasRef.current.getDataURL());
               generateImage.mutate({
                 imagePath: canvasRef.current.getDataURL(),
