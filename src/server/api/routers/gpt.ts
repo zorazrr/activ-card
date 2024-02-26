@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
-import OpenAI from "openai";
+import OpenAI, { toFile } from "openai";
 import fs from "fs";
 import {
   DetectDocumentTextCommand,
@@ -147,27 +147,46 @@ export const gptRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       const regex = /^data:.+\/(.+);base64,(.*)$/;
       const matches = input.imagePath.match(regex);
-      const ext = matches[1];
       const data = matches[2];
       const buffer = Buffer.from(data, "base64");
-      const filePath = "./public/assets/drawing." + ext;
-      fs.writeFileSync(filePath, buffer);
 
-      const res = await openai.images.edit({
-        image: fs.createReadStream(filePath),
-        prompt:
-          "Fill in empty spaces with bright polka dots related to the art style given",
+      buffer.name = "image.png";
+
+      const file = await toFile(buffer);
+
+      const res = await openai.chat.completions.create({
+        model: "gpt-4-vision-preview",
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: "Describe this image very briefly and in a way that it can be recreated by someone if explained to them. If you find yourself describing or seeing anything inappropriate, then instead describe an image you think would be kid friendly to generate.",
+              },
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:image/jpeg;base64,${data}`,
+                  detail: "low",
+                },
+              },
+            ],
+          },
+        ],
+        max_tokens: 100,
+      });
+
+      const imgPrompt = res.choices[0].message.content;
+
+      const img = await openai.images.generate({
+        model: "dall-e-3",
+        prompt: imgPrompt + " Make it simplistic cartoon style and for kids.",
         n: 1,
         size: "1024x1024",
       });
 
-      // Cast the ReadStream to `any` to appease the TypeScript compiler
-      // const image = await openai.images.createVariation({
-      //   image: fs.createReadStream(filePath),
-      // });
-
-      // return image.data;
-      return res.data;
+      return img.data;
     }),
   /**
    * Check if the student's answer matches the definition
