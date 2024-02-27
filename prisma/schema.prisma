@@ -94,6 +94,7 @@ enum AnswerMode {
 enum Role {
   TEACHER
   STUDENT
+  UNKNOWN
 }
 
 model Session {
@@ -113,7 +114,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   createdAt     DateTime  @default(now())
-  role          Role?     @default(STUDENT)
+  role          Role?     @default(UNKNOWN)
 }
 
 model VerificationToken {

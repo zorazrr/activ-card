@@ -8,7 +8,6 @@ import { useSession } from "next-auth/react";
 import ProtectedPage from "~/components/ProtectedPage";
 
 export default function TeacherDashboard() {
-  const { data: session } = useSession();
   const [classrooms, setClassrooms] = useState<Classroom[]>();
   const [currentClass, setCurrentClass] = useState<Classroom>();
   const { data } = api.teacher.getTeacherAndClassrooms.useQuery(
