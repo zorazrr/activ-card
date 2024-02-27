@@ -65,7 +65,7 @@ export default function EditSet() {
             onChange={(e) => setSetName(e.target.value)}
           />
           <StyledButton
-            onClick={() => window.location.href = `../../teacher/dashboard`}
+            onClick={() => window.location.href = `../../dashboard`}
             colorInd={0}
             label="Create"
           />
