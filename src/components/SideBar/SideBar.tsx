@@ -38,12 +38,12 @@ const Sidebar = ({
       zIndex="sticky"
     >
       <HStack px={2} gap={0}>
-        <div className="py-5 pl-2 hover:opacity-75">
-          <Link href="/">
+        <div className="py-6 pl-2 hover:opacity-75">
+          <Link href="/" className="flex flex-col 2xl:flex-row">
             <Image src="/assets/logo.png" alt="header" width={65} height={65} />
+            <Heading className="main-class text-white">ActiveCard</Heading>
           </Link>
         </div>
-        <Heading className="main-class text-white">ActiveCard</Heading>
       </HStack>
       <VStack spacing={0}>
         {classes.map((c) => {

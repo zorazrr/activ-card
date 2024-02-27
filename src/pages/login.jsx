@@ -1,15 +1,22 @@
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
-import StyledButton from "~/components/Button";
-import { Button, HStack } from "@chakra-ui/react";
-import { signIn } from "next-auth/react";
+import { HStack } from "@chakra-ui/react";
+import { signIn, useSession } from "next-auth/react";
 
-import { api } from "~/utils/api";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Login() {
-  const role = useRouter().query.role;
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (session) {
+      router.push("/dashboard");
+    }
+  }, [session, status]);
 
   return (
     <>
@@ -56,7 +63,7 @@ export default function Login() {
                 paddingBottom: "5px",
               }}
               onClick={() =>
-                signIn("google", { callbackUrl: `/${role}/dashboard` })
+                signIn("google", { callbackUrl: `/dashboard` })
               }
             >
               <Image
