@@ -25,8 +25,10 @@ const Sets = ({
     },
   );
 
-  if (!sets) {
-    return <Spinner />; // or any other fallback content
+  if (sets === undefined) {
+    return;
+  } else if (sets == null) {
+    return <Spinner />;
   }
 
   return (

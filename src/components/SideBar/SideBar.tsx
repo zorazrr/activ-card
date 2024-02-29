@@ -1,10 +1,11 @@
 import {
-  useDisclosure,
   VStack,
   useRadioGroup,
   Heading,
   Box,
   HStack,
+  Text,
+  IconButton,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +13,7 @@ import Link from "next/link";
 import React, { type Dispatch, type SetStateAction } from "react";
 import ClassRadioButton from "./ClassRadioButton";
 import { type Classroom } from "@prisma/client";
+import { AddIcon } from "@chakra-ui/icons";
 
 const Sidebar = ({
   classes,
@@ -45,22 +47,50 @@ const Sidebar = ({
           </Link>
         </div>
       </HStack>
-      <VStack spacing={0}>
-        {classes.map((c) => {
-          const radio = getRadioProps({ value: c.name });
-          return (
-            <ClassRadioButton
-              key={c.name}
-              {...radio}
-              gap={0}
-              setCurrentClass={setCurrentClass}
-              classObject={c}
-            >
-              {c.name}
-            </ClassRadioButton>
-          );
-        })}
-      </VStack>
+
+      {classes.length ? (
+        <VStack>
+          {classes.map((c) => {
+            const radio = getRadioProps({ value: c.name });
+            return (
+              <ClassRadioButton
+                key={c.name}
+                {...radio}
+                gap={0}
+                setCurrentClass={setCurrentClass}
+                classObject={c}
+              >
+                {c.name}
+              </ClassRadioButton>
+            );
+          })}
+          <IconButton
+            variant="outline"
+            colorScheme="cyan"
+            aria-label="Add card"
+            size={"xl"}
+            icon={<AddIcon />}
+          />
+        </VStack>
+      ) : (
+        <VStack
+          spacing={4}
+          height="70vh"
+          align={"center"}
+          justifyContent={"center"}
+        >
+          <IconButton
+            variant="outline"
+            aria-label="Add card"
+            fontSize="20px"
+            icon={<AddIcon color="white" />} // Apply color directly to the icon
+            _hover={{ bg: "blue.200", borderColor: "blue.200" }}
+          />
+          <Text className={"h5"} color="white">
+            Add Class
+          </Text>
+        </VStack>
+      )}
     </Box>
   );
 };

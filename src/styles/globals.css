@@ -21,7 +21,7 @@
 }
 
 .h5 {
-  @apply font-roboto text-h5-size font-semibold;
+  @apply font-roboto text-h5-size font-medium;
 }
 
 .reg-text {
