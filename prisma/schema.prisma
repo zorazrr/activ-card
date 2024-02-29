@@ -55,6 +55,8 @@ model Classroom {
 
 model Student {
   id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  user_id   String           @db.ObjectId @unique
+  user     User     @relation(fields: [user_id], references: [id])
   name          String
   classroom_ids String[]      @db.ObjectId
   classrooms    Classroom[]   @relation(fields: [classroom_ids], references: [id])
@@ -64,6 +66,8 @@ model Student {
 
 model Teacher {
   id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  user_id   String        @db.ObjectId @unique
+  user     User     @relation(fields: [user_id], references: [id])
   name      String
   classroom Classroom[]
 }
@@ -115,6 +119,8 @@ model User {
   sessions      Session[]
   createdAt     DateTime  @default(now())
   role          Role?     @default(UNKNOWN)
+  teacher       Teacher?
+  student       Student?
 }
 
 model Account {
