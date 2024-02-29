@@ -7,7 +7,7 @@ import { type Classroom } from "@prisma/client";
 const DashboardTabs = ({
   currentClass,
 }: {
-  currentClass: Classroom | undefined;
+  currentClass: Classroom | null | undefined;
 }) => {
   return (
     <Tabs variant="enclosed" pt={5}>

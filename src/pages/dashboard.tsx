@@ -8,38 +8,26 @@ import { useSession } from "next-auth/react";
 import ProtectedPage from "~/components/ProtectedPage";
 
 export default function TeacherDashboard() {
-  const [classrooms, setClassrooms] = useState<Classroom[]>();
-  const [currentClass, setCurrentClass] = useState<Classroom>();
+  const { data: session, status } = useSession();
+  const [classrooms, setClassrooms] = useState<Classroom[]>([]);
+  const [currentClass, setCurrentClass] = useState<Classroom | null>(null);
+  const teacherId = session?.user?.id;
   const { data } = api.teacher.getTeacherAndClassrooms.useQuery(
     {
-      teacherId: "65d1242ccdde4a764731c37f",
+      teacherId: teacherId!,
     },
     {
-      onSuccess: (data) => {
-        setClassrooms(data.classroom as Classroom[]);
-        setCurrentClass(data.classroom[0]);
+      onSuccess: (res) => {
+        if (res) {
+          setClassrooms(res?.classroom as Classroom[]);
+          setCurrentClass(res?.classroom[0]);
+        }
       },
+      enabled: !!teacherId,
+      refetchOnWindowFocus: false,
+      retry: false,
     },
   );
-
-  // useEffect(() => {
-  //   session ? console.log("You are logged in as:", session?.user?.email) : window.location.href = "/login";
-  // }, [session])
-
-
-  // useEffect(() => {
-  //   if (classrooms) {
-  //     console.log(classrooms);
-  //     setCurrentClass(classrooms[0]);
-  //   }
-  // }, [classrooms, currentClass, data]);
-
-  // const classes = [
-  //   { className: "English" },
-  //   { className: "Math" },
-  //   { className: "Science" },
-  // ] as Class[];
-  // setCurrentClass(classrooms[0]);
 
   return (
     <ProtectedPage requiredRole={Role.TEACHER}>

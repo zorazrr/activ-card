@@ -18,7 +18,7 @@ const Sidebar = ({
   setCurrentClass,
 }: {
   classes: Classroom[];
-  setCurrentClass: Dispatch<SetStateAction<Classroom | undefined>>;
+  setCurrentClass: Dispatch<SetStateAction<Classroom | null>>;
 }) => {
   const { getRadioProps } = useRadioGroup({
     name: "classList",
@@ -39,7 +39,7 @@ const Sidebar = ({
     >
       <HStack px={2} gap={0}>
         <div className="py-6 pl-2 hover:opacity-75">
-          <Link href="/" className="flex flex-col 2xl:flex-row">
+          <Link href="/dashboard" className="flex flex-col 2xl:flex-row">
             <Image src="/assets/logo.png" alt="header" width={65} height={65} />
             <Heading className="main-class text-white">ActiveCard</Heading>
           </Link>
