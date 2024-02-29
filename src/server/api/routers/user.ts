@@ -43,6 +43,7 @@ export const userRouter = createTRPCRouter({
           user_id: input.userId,
         },
       });
+      // TODO : Create student on set role
 
       return updatedUser;
     }),
