@@ -17,10 +17,14 @@ export const userRouter = createTRPCRouter({
 
       console.log(getRoleEnum(input.role));
 
-      if (!user || user.role !== Role.UNKNOWN) {
+      if (user && user.role !== Role.UNKNOWN) {
+        return user; // ensures user role is set only once
+      }
+
+      if (!user) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "User not found or user already assigned role",
+          message: "User not found",
         });
       }
 
