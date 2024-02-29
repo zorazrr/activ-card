@@ -10,9 +10,9 @@ export const teacherRouter = createTRPCRouter({
   getTeacherAndClassrooms: publicProcedure
     .input(z.object({ teacherId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const teacher: Teacher = await ctx.db.teacher.findUnique({
+      const teacher: Teacher | null = await ctx.db.teacher.findUnique({
         where: {
-          id: input.teacherId,
+          user_id: input.teacherId,
         },
         include: {
           classroom: true,
