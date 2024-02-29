@@ -63,7 +63,11 @@ export default function Login() {
                 paddingBottom: "5px",
               }}
               onClick={() =>
-                signIn("google", { callbackUrl: `/redirect?role=${router.query.role}` })
+                signIn("google", {
+                  callbackUrl: router.query.role
+                    ? `/redirect?role=${router.query.role}`
+                    : `/redirect`,
+                })
               }
             >
               <Image

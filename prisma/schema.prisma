@@ -117,14 +117,6 @@ model User {
   role          Role?     @default(UNKNOWN)
 }
 
-model VerificationToken {
-  identifier String   @id @default(auto()) @map("_id") @db.ObjectId
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-}
-
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
   userId            String  @db.ObjectId
