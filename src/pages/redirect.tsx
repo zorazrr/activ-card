@@ -33,6 +33,7 @@ const Redirect = () => {
       },
       {
         onSuccess: async () => {
+          onClose();
           await signIn("google", {
             callbackUrl: "/dashboard",
             redirect: false,
@@ -44,7 +45,6 @@ const Redirect = () => {
   };
 
   useEffect(() => {
-    console.log(router.query.role);
     if (!router.query.role && !session?.user.id) return;
     if (status === "loading") return;
     if (!session?.user.id) return;
@@ -58,7 +58,6 @@ const Redirect = () => {
       },
       {
         onSuccess: async (response) => {
-          console.log(response);
           if (response.role == Role.UNKNOWN) {
             onOpen();
             return;
