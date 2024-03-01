@@ -68,11 +68,12 @@ const Sidebar = ({
           })}
           <IconButton
             variant="outline"
-            colorScheme="cyan"
+            color="white"
             aria-label="Add card"
-            size={"xl"}
             icon={<AddIcon />}
             onClick={onAddClass}
+            mt={"1vh"}
+            _hover={{ bg: "blue.200", borderColor: "blue.200" }}
           />
         </VStack>
       ) : (
