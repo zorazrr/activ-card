@@ -18,9 +18,11 @@ import { AddIcon } from "@chakra-ui/icons";
 const Sidebar = ({
   classes,
   setCurrentClass,
+  onAddClass,
 }: {
   classes: Classroom[];
   setCurrentClass: Dispatch<SetStateAction<Classroom | null>>;
+  onAddClass: () => void;
 }) => {
   const { getRadioProps } = useRadioGroup({
     name: "classList",
@@ -70,6 +72,7 @@ const Sidebar = ({
             aria-label="Add card"
             size={"xl"}
             icon={<AddIcon />}
+            onClick={onAddClass}
           />
         </VStack>
       ) : (

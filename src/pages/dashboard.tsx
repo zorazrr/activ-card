@@ -1,4 +1,12 @@
-import { HStack, Box, Heading, Text, Flex, IconButton } from "@chakra-ui/react";
+import {
+  HStack,
+  Box,
+  Heading,
+  Text,
+  Flex,
+  IconButton,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import DashboardTabs from "~/components/DashboardTabs";
 import Sidebar from "~/components/SideBar/SideBar";
@@ -7,8 +15,10 @@ import { Role, type Classroom } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import ProtectedPage from "~/components/ProtectedPage";
 import { AddIcon } from "@chakra-ui/icons";
+import AddClassModal from "~/components/AddClassModal";
 
 export default function TeacherDashboard() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: session, status } = useSession();
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
   const [currentClass, setCurrentClass] = useState<Classroom | null>(null);
@@ -30,11 +40,26 @@ export default function TeacherDashboard() {
     },
   );
 
+  const onAddClass = () => {
+    onOpen();
+  };
+
+  const handleClose = () => {
+    onClose();
+    // redirect to new page
+  };
+
+  const addClassroom = api.classroom.addClassroomForTeacher.useMutation();
+
   return (
     <ProtectedPage requiredRole={Role.TEACHER}>
       <HStack height="100%" className="main-class min-h-screen">
         {classrooms && (
-          <Sidebar classes={classrooms} setCurrentClass={setCurrentClass} />
+          <Sidebar
+            classes={classrooms}
+            setCurrentClass={setCurrentClass}
+            onAddClass={onAddClass}
+          />
         )}
         {classrooms.length ? (
           <>
@@ -65,15 +90,22 @@ export default function TeacherDashboard() {
               borderRadius={20}
               variant="outline"
               aria-label="Add card"
-              fontSize="50px"
+              fontSize="5vh"
               bg={"gray.200"}
               icon={<AddIcon color="blue.900" />}
               _hover={{ bg: "gray.300", borderColor: "gray.300" }}
               p={20}
+              onClick={onAddClass}
             />
             <Text className="h3 leading-9 text-darkBlue" textAlign="center">
               Add Class To Get Started
             </Text>
+            <AddClassModal
+              isOpen={isOpen}
+              onClose={handleClose}
+              addClassAPI={addClassroom}
+              teacherId={session?.user.id}
+            />
           </Flex>
         )}
       </HStack>
