@@ -54,7 +54,6 @@ const Sets = ({
             icon={<AddIcon color="blue.900" />}
             _hover={{ bg: "gray.300", borderColor: "gray.300" }}
             p={20}
-            ml={"2vh"}
           />
         </Link>
       </HStack>
