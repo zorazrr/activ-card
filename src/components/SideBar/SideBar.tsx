@@ -6,11 +6,12 @@ import {
   HStack,
   Text,
   IconButton,
+  Spinner,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import Link from "next/link";
 
-import React, { type Dispatch, type SetStateAction } from "react";
+import React, { useEffect, type Dispatch, type SetStateAction } from "react";
 import ClassRadioButton from "./ClassRadioButton";
 import { type Classroom } from "@prisma/client";
 import { AddIcon } from "@chakra-ui/icons";
@@ -18,19 +19,30 @@ import { AddIcon } from "@chakra-ui/icons";
 const Sidebar = ({
   classes,
   setCurrentClass,
+  currentClass,
   onAddClass,
+  isLoading,
 }: {
   classes: Classroom[];
+  currentClass: Classroom;
   setCurrentClass: Dispatch<SetStateAction<Classroom | null>>;
   onAddClass: () => void;
+  isLoading: boolean;
 }) => {
   const { getRadioProps } = useRadioGroup({
     name: "classList",
-    defaultValue: classes[0]?.name,
+    defaultValue: currentClass ? currentClass.name : "",
     onChange: (nextValue) => {
       console.log("Selected class:", nextValue);
     },
   });
+
+  useEffect(() => {
+    if (currentClass) {
+      const radioProps = getRadioProps({ value: currentClass.name });
+      radioProps.onChange(currentClass.name);
+    }
+  }, [currentClass, getRadioProps]);
 
   return (
     <Box
@@ -40,6 +52,9 @@ const Sidebar = ({
       position="sticky"
       top="0"
       zIndex="sticky"
+      display="flex-col"
+      alignItems="center"
+      justifyContent={"center"}
     >
       <HStack px={2} gap={0}>
         <div className="py-6 pl-2 hover:opacity-75">
@@ -49,8 +64,18 @@ const Sidebar = ({
           </Link>
         </div>
       </HStack>
-
-      {classes.length ? (
+      {isLoading ? (
+        <div
+          style={{
+            marginLeft: "50%",
+            marginRight: "50%",
+            marginTop: "100%",
+            marginBottom: "100%",
+          }}
+        >
+          <Spinner color={"white"} />
+        </div>
+      ) : classes.length ? (
         <VStack>
           {classes.map((c) => {
             const radio = getRadioProps({ value: c.name });
@@ -89,6 +114,7 @@ const Sidebar = ({
             fontSize="20px"
             icon={<AddIcon color="white" />} // Apply color directly to the icon
             _hover={{ bg: "blue.200", borderColor: "blue.200" }}
+            onClick={onAddClass}
           />
           <Text className={"h5"} color="white">
             Add Class

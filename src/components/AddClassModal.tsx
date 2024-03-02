@@ -13,12 +13,13 @@ import {
   Input,
 } from "@chakra-ui/react";
 import { Classroom } from "@prisma/client";
+import { useRouter } from "next/router";
 
 const AddClassModal = ({ isOpen, onClose, addClassAPI, teacherId }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [secondPageData, setSecondPageData] = useState<Classroom | null>(null);
   const [value, setValue] = useState("");
-  const [] = useState();
+  const router = useRouter();
 
   const handleInputChange = (e: {
     target: { value: React.SetStateAction<string> };
@@ -27,6 +28,7 @@ const AddClassModal = ({ isOpen, onClose, addClassAPI, teacherId }) => {
   };
 
   const handleClose = () => {
+    router.push(`/dashboard?class=${secondPageData?.id}`);
     setSecondPageData(null);
     setCurrentPage(1);
     setValue("");

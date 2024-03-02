@@ -6,6 +6,7 @@ import {
   Flex,
   IconButton,
   useDisclosure,
+  Spinner,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import DashboardTabs from "~/components/DashboardTabs";
@@ -16,22 +17,33 @@ import { useSession } from "next-auth/react";
 import ProtectedPage from "~/components/ProtectedPage";
 import { AddIcon } from "@chakra-ui/icons";
 import AddClassModal from "~/components/AddClassModal";
+import { useRouter } from "next/router";
 
 export default function TeacherDashboard() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
   const [currentClass, setCurrentClass] = useState<Classroom | null>(null);
   const teacherId = session?.user?.id;
-  const { data } = api.teacher.getTeacherAndClassrooms.useQuery(
+  const router = useRouter();
+
+  const { data, isLoading } = api.teacher.getTeacherAndClassrooms.useQuery(
     {
       teacherId: teacherId!,
     },
     {
       onSuccess: (res) => {
         if (res) {
-          setClassrooms(res?.classroom as Classroom[]);
-          setCurrentClass(res?.classroom[0]);
+          setClassrooms(res.classroom as Classroom[]);
+          if (router.query.class) {
+            res.classroom.forEach((item: Classroom, index: number) => {
+              if (item.id == router.query.class) {
+                setCurrentClass(res.classroom[index]);
+              }
+            });
+          } else {
+            setCurrentClass(res.classroom[0]);
+          }
         }
       },
       enabled: !!teacherId,
@@ -54,14 +66,22 @@ export default function TeacherDashboard() {
   return (
     <ProtectedPage requiredRole={Role.TEACHER}>
       <HStack height="100%" className="main-class min-h-screen">
-        {classrooms && (
-          <Sidebar
-            classes={classrooms}
-            setCurrentClass={setCurrentClass}
-            onAddClass={onAddClass}
-          />
-        )}
-        {classrooms.length ? (
+        <Sidebar
+          classes={classrooms}
+          currentClass={currentClass}
+          setCurrentClass={setCurrentClass}
+          onAddClass={onAddClass}
+          isLoading={isLoading}
+        />
+        {isLoading ? (
+          <div
+            style={{
+              margin: "auto",
+            }}
+          >
+            <Spinner />
+          </div>
+        ) : classrooms.length ? (
           <>
             {" "}
             <Box
@@ -100,14 +120,14 @@ export default function TeacherDashboard() {
             <Text className="h3 leading-9 text-darkBlue" textAlign="center">
               Add Class To Get Started
             </Text>
-            <AddClassModal
-              isOpen={isOpen}
-              onClose={handleClose}
-              addClassAPI={addClassroom}
-              teacherId={session?.user.id}
-            />
           </Flex>
         )}
+        <AddClassModal
+          isOpen={isOpen}
+          onClose={handleClose}
+          addClassAPI={addClassroom}
+          teacherId={session?.user.id}
+        />
       </HStack>
     </ProtectedPage>
   );
