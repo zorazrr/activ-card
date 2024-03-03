@@ -17,7 +17,7 @@ import { useRouter } from "next/router";
 
 const AddClassModal = ({ isOpen, onClose, addClassAPI, teacherId }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [secondPageData, setSecondPageData] = useState<Classroom | null>(null);
+  const [createdClass, setCreatedClass] = useState<Classroom | null>(null);
   const [value, setValue] = useState("");
   const router = useRouter();
 
@@ -28,8 +28,8 @@ const AddClassModal = ({ isOpen, onClose, addClassAPI, teacherId }) => {
   };
 
   const handleClose = () => {
-    router.push(`/dashboard?class=${secondPageData?.id}`);
-    setSecondPageData(null);
+    router.push(`/dashboard?class=${createdClass?.id}`);
+    setCreatedClass(null);
     setCurrentPage(1);
     setValue("");
     onClose();
@@ -41,7 +41,7 @@ const AddClassModal = ({ isOpen, onClose, addClassAPI, teacherId }) => {
         { teacherId: teacherId, className: value },
         {
           onSuccess: async (response: Classroom) => {
-            setSecondPageData(response);
+            setCreatedClass(response);
             setCurrentPage(2);
           },
         },
@@ -69,7 +69,7 @@ const AddClassModal = ({ isOpen, onClose, addClassAPI, teacherId }) => {
               </Button>
             </>
           )}
-          {currentPage === 2 && secondPageData && <div>hi</div>}
+          {currentPage === 2 && createdClass && <div>Class Code</div>}
         </ModalBody>
         <ModalFooter>
           <Button onClick={handleClose}>Close</Button>
