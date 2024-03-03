@@ -1,15 +1,8 @@
 import React from "react";
-import {
-  Box,
-  Card,
-  CardBody,
-  Divider,
-  HStack,
-  Image,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Card, CardBody, Divider, HStack, Image } from "@chakra-ui/react";
 import { type Set } from "@prisma/client";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import Link from "next/link";
 
 const SetCard = (props: Partial<Set>) => (
   <Card>
@@ -22,7 +15,9 @@ const SetCard = (props: Partial<Set>) => (
             <p className="reg-text pt-3">{props.description}</p>
           )}
           <HStack mt="8px">
-            <EditIcon />
+            <Link href={`/create/set/${props.id}`} key={props.id}>
+              <EditIcon />
+            </Link>
             <DeleteIcon />
           </HStack>
         </Box>
