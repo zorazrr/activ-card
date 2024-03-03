@@ -2,12 +2,17 @@ import { useEffect, useState } from "react";
 import Card from "../Card";
 import { type Classroom, type Set } from "@prisma/client";
 import { api } from "~/utils/api";
-import { Box, HStack, Spinner } from "@chakra-ui/react";
+import { Box, HStack, Icon, IconButton, Spinner } from "@chakra-ui/react";
 import Link from "next/link";
 import CardNew from "../CardNew";
+import { AddIcon } from "@chakra-ui/icons";
 
-const Sets = ({ currentClass }: { currentClass: Classroom | undefined }) => {
-  const [sets, setSets] = useState<Set[] | undefined>();
+const Sets = ({
+  currentClass,
+}: {
+  currentClass: Classroom | undefined | null;
+}) => {
+  const [sets, setSets] = useState<Set[] | undefined | null>();
 
   const { data } = api.set.getSetByClassroom.useQuery(
     {
@@ -21,8 +26,10 @@ const Sets = ({ currentClass }: { currentClass: Classroom | undefined }) => {
     },
   );
 
-  if (!sets) {
-    return <Spinner />; // or any other fallback content
+  if (sets === undefined) {
+    return;
+  } else if (sets == null) {
+    return <Spinner />;
   }
 
   return (
@@ -30,10 +37,25 @@ const Sets = ({ currentClass }: { currentClass: Classroom | undefined }) => {
       <HStack wrap="wrap">
         {sets?.map((set) => (
           <Link href={`/set/${set.id}`} key={set.id}>
-            <Card key={set.name} name={set.name} description={set.description} />
+            <Card
+              key={set.name}
+              name={set.name}
+              description={set.description}
+            />
           </Link>
         ))}
-        <Link href={`/create/set/medium?classId=${currentClass!.id}`}><CardNew /></Link>
+        <Link href={`/create/set/medium?classId=${currentClass!.id}`}>
+          <IconButton
+            borderRadius={20}
+            variant="outline"
+            aria-label="Add card"
+            fontSize="5vh"
+            bg={"gray.200"}
+            icon={<AddIcon color="blue.900" />}
+            _hover={{ bg: "gray.300", borderColor: "gray.300" }}
+            p={20}
+          />
+        </Link>
       </HStack>
     </div>
   );
