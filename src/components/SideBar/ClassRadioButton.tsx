@@ -33,16 +33,19 @@ const ClassRadioButton = ({
       <Box
         {...checkbox}
         cursor="pointer"
-        borderBottom="1px gray"
         color="white"
         h="100%"
         _checked={{
           bg: "#4A729D",
           color: "white",
-          borderColor: "teal.600",
+          borderBottom: "0.1vh solid #1A3F67",
+          borderRight: "0.125vh solid #1A3F67",
         }}
-        _focus={{
-          border: "1px white",
+        _hover={{
+          bg: "#4A729D",
+          color: "white",
+          borderBottom: "0.1vh solid #1A3F67",
+          borderRight: "0.125vh solid #1A3F67",
         }}
         px={5}
         py={3}

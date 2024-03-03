@@ -76,14 +76,13 @@ const Sidebar = ({
           <Spinner color={"white"} />
         </div>
       ) : classes.length ? (
-        <VStack>
+        <VStack gap={0}>
           {classes.map((c) => {
             const radio = getRadioProps({ value: c.name });
             return (
               <ClassRadioButton
                 key={c.name}
                 {...radio}
-                gap={0}
                 setCurrentClass={setCurrentClass}
                 classObject={c}
               >

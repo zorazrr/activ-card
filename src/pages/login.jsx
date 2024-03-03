@@ -18,7 +18,7 @@ export default function Login() {
         <Flex height="100vh" alignItems="center" justifyContent="center">
           <Spinner thickness="4px" size="xl" />
         </Flex>
-      );
+      ); // TODO: Fix this and move returns in useEffect to separate state variable
     }
     if (session) {
       router.push("/dashboard");
