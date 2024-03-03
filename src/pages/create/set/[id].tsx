@@ -21,9 +21,12 @@ export default function EditSet() {
   const [flashcards, setFlashcards] = useState<TermDefPair[]>([]);
   const setId = useRouter().query.id as string;
 
-  const { data: cards } = api.card.geCardBySet.useQuery({ setId: setId },
+  const { data: cards } = api.card.geCardBySet.useQuery(
+    { setId: setId },
     {
-      retry: false, enabled: !!setId, refetchOnWindowFocus: false,
+      retry: false,
+      enabled: !!setId,
+      refetchOnWindowFocus: false,
       onSuccess: (data) => {
         if (data) {
           const mappedCards: TermDefPair[] = data.map((card) => {
@@ -31,24 +34,31 @@ export default function EditSet() {
           });
           setFlashcards([...mappedCards]);
         }
-      }
-    });
+      },
+    },
+  );
 
-  const { data: set } = api.set.getOneSet.useQuery({ setId: setId }, {
-    retry: false, enabled: !!setId, refetchOnWindowFocus: false, onSuccess: (data) => {
-      if (data) {
-        setSetName(data.name);
-        setSetDescription(data.description);
-      }
-    }
-  });
+  const { data: set } = api.set.getOneSet.useQuery(
+    { setId: setId },
+    {
+      retry: false,
+      enabled: !!setId,
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        if (data) {
+          setSetName(data.name);
+          setSetDescription(data.description);
+        }
+      },
+    },
+  );
 
   const addCard = () => {
     setFlashcards([...flashcards, { term: "", def: "" }]);
   };
 
   if (!cards || !set) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
@@ -65,7 +75,9 @@ export default function EditSet() {
             onChange={(e) => setSetName(e.target.value)}
           />
           <StyledButton
-            onClick={() => window.location.href = `../../dashboard`}
+            onClick={() =>
+              (window.location.href = `../../dashboard?class=${set.classroom_id}`)
+            }
             colorInd={0}
             label="Create"
           />
