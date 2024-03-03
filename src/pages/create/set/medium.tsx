@@ -94,7 +94,6 @@ export default function SetCreationMediumSelection() {
       <StyledModal
         isOpen={isOpen}
         onClose={onClose}
-        isScan={false}
         onClick={createNewSet}
         setSubject={setSubject}
       />
