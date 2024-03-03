@@ -27,7 +27,7 @@ export default function TeacherDashboard() {
   const teacherId = session?.user?.id;
   const router = useRouter();
 
-  const { data, isLoading } = api.teacher.getTeacherAndClassrooms.useQuery(
+  const { isLoading, refetch } = api.teacher.getTeacherAndClassrooms.useQuery(
     {
       teacherId: teacherId!,
     },
@@ -57,8 +57,8 @@ export default function TeacherDashboard() {
   };
 
   const handleClose = () => {
+    refetch();
     onClose();
-    // redirect to new page
   };
 
   const addClassroom = api.classroom.addClassroomForTeacher.useMutation();
