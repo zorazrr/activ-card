@@ -1,14 +1,7 @@
-import {
-  Box,
-  Divider,
-  HStack,
-  Input,
-  Text,
-  Textarea,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, HStack, Input, Text, Textarea, VStack } from "@chakra-ui/react";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import StyledButton from "~/components/Button";
 import CardPair from "~/components/CardPair";
 import { api } from "~/utils/api";
@@ -21,9 +14,27 @@ export default function EditSet() {
   const [flashcards, setFlashcards] = useState<TermDefPair[]>([]);
   const setId = useRouter().query.id as string;
 
-  const { data: cards } = api.card.geCardBySet.useQuery({ setId: setId },
+  const updateCard = ({
+    id,
+    term,
+    def,
+  }: {
+    id: number;
+    term: string;
+    def: string;
+  }) => {
+    if (flashcards?.[id]) {
+      flashcards[id].term = term;
+      flashcards[id].def = def;
+    }
+  };
+
+  const { data: cards } = api.card.geCardBySet.useQuery(
+    { setId: setId },
     {
-      retry: false, enabled: !!setId, refetchOnWindowFocus: false,
+      retry: false,
+      enabled: !!setId,
+      refetchOnWindowFocus: false,
       onSuccess: (data) => {
         if (data) {
           const mappedCards: TermDefPair[] = data.map((card) => {
@@ -31,24 +42,50 @@ export default function EditSet() {
           });
           setFlashcards([...mappedCards]);
         }
-      }
-    });
+      },
+    },
+  );
 
-  const { data: set } = api.set.getOneSet.useQuery({ setId: setId }, {
-    retry: false, enabled: !!setId, refetchOnWindowFocus: false, onSuccess: (data) => {
+  const { data: set } = api.set.getOneSet.useQuery(
+    { setId: setId },
+    {
+      retry: false,
+      enabled: !!setId,
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        if (data) {
+          setSetName(data.name);
+          setSetDescription(data.description);
+        }
+      },
+    },
+  );
+
+  const updateSetMutation = api.set.updateSet.useMutation({
+    retry: false,
+    onSuccess: (data) => {
       if (data) {
-        setSetName(data.name);
-        setSetDescription(data.description);
+        window.location.href = `../../dashboard`;
+        console.log(data);
       }
-    }
+    },
   });
+
+  const updateSet = () => {
+    updateSetMutation.mutate({
+      setId: setId,
+      setName: setName,
+      setDescription: setDescription,
+      cards: flashcards,
+    });
+  };
 
   const addCard = () => {
     setFlashcards([...flashcards, { term: "", def: "" }]);
   };
 
   if (!cards || !set) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
@@ -64,11 +101,7 @@ export default function EditSet() {
             value={setName}
             onChange={(e) => setSetName(e.target.value)}
           />
-          <StyledButton
-            onClick={() => window.location.href = `../../dashboard`}
-            colorInd={0}
-            label="Create"
-          />
+          <StyledButton onClick={updateSet} colorInd={0} label="Create" />
         </HStack>
         <Textarea
           className="main-class tiny-text"
@@ -88,7 +121,13 @@ export default function EditSet() {
         </HStack>
 
         {flashcards?.map((flashcard, id) => (
-          <CardPair key={id} term={flashcard.term} def={flashcard.def} />
+          <CardPair
+            key={id}
+            term={flashcard.term}
+            def={flashcard.def}
+            idx={id}
+            updateCard={updateCard}
+          />
         ))}
       </Box>
       <StyledButton colorInd={0} onClick={addCard} label="Add Card" />

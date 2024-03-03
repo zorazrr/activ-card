@@ -1,10 +1,27 @@
-import { Card, CardBody, Divider, Flex, Textarea } from "@chakra-ui/react";
-import { useState } from "react";
-import { type TermDefPair } from "~/utils/types";
+import { Card, CardBody, Flex, Textarea } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { type TermDefPair, type CardUpdateParams } from "~/utils/types";
+import { api } from "~/utils/api";
 
-const CardPair = ({ term, def }: TermDefPair) => {
+const CardPair = ({
+  term,
+  def,
+  idx,
+  updateCard,
+}: TermDefPair & {
+  idx: number;
+  updateCard: (props: CardUpdateParams) => void;
+}) => {
   const [cardTerm, setCardTerm] = useState(term);
   const [cardDef, setCardDef] = useState(def);
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      updateCard({ id: idx, term: cardTerm, def: cardDef });
+    }, 3000);
+
+    return () => clearTimeout(delayDebounce);
+  }, [cardTerm, cardDef]);
 
   return (
     <Card w="100%" h="220px" mb={3} borderRadius={3}>

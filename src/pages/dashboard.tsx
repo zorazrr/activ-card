@@ -12,7 +12,7 @@ export default function TeacherDashboard() {
   const [currentClass, setCurrentClass] = useState<Classroom>();
   const { data } = api.teacher.getTeacherAndClassrooms.useQuery(
     {
-      teacherId: "65d1242ccdde4a764731c37f",
+      teacherId: "65e02d8dc28288af3137635d",
     },
     {
       onSuccess: (data) => {
@@ -25,7 +25,6 @@ export default function TeacherDashboard() {
   // useEffect(() => {
   //   session ? console.log("You are logged in as:", session?.user?.email) : window.location.href = "/login";
   // }, [session])
-
 
   // useEffect(() => {
   //   if (classrooms) {
