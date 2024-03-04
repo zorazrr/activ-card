@@ -9,7 +9,7 @@ const StyledFileUpload = ({ classId }: { classId: string }) => {
   const [flashcards, setFlashcards] = useState<TermDefPair[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const uploadUrl = api.gpt.getPresignedUrl.useQuery(
-    { fileName: file ? file.name : "" },
+    { fileName: file ? file.name : "test" },
     { retry: false, enabled: false },
   );
   const extractText = api.gpt.extractText.useQuery(
@@ -39,18 +39,17 @@ const StyledFileUpload = ({ classId }: { classId: string }) => {
   const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0] != null) {
       setFile(e.target.files[0]);
-      uploadFile(e.target.files[0]);
     }
   };
 
-  const uploadFile = async (file: File) => {
-    if (!file) {
-      alert("Please choose a file to upload first.");
-      return;
-    }
-    setIsLoading(true);
+  useEffect(() => {
+    const uploadFile = async () => {
+      if (!file) {
+        alert("Please choose a file to upload first.");
+        return;
+      }
+      setIsLoading(true);
 
-    try {
       const urlResponse = await uploadUrl.refetch();
       const presignedUrl = urlResponse.data!;
       await fetch(presignedUrl, {
@@ -58,11 +57,12 @@ const StyledFileUpload = ({ classId }: { classId: string }) => {
         body: file,
       });
       await extractText.refetch();
-    } catch (err) {
-      alert("File upload failed. Try again!");
-      console.error(err);
+    };
+
+    if (file) {
+      uploadFile();
     }
-  };
+  }, [file]);
 
   useEffect(() => {
     if (extractedText) {
