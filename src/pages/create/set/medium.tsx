@@ -3,7 +3,7 @@ import StyledButton from "~/components/Button";
 import StyledFileUpload from "~/components/FileUpload";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { HStack, useDisclosure } from "@chakra-ui/react";
+import { HStack, Spinner, VStack, useDisclosure } from "@chakra-ui/react";
 import StyledModal from "~/components/Modal";
 import { api } from "~/utils/api";
 import { useState } from "react";
@@ -12,6 +12,7 @@ import { type TermDefPair } from "~/utils/types";
 export default function SetCreationMediumSelection() {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [flashcards, setFlashcards] = useState<TermDefPair[]>([]);
   const [subject, setSubject] = useState<string>("");
@@ -62,39 +63,49 @@ export default function SetCreationMediumSelection() {
         <div className="text-center" style={{ marginTop: "5%" }}>
           <div className="h2 text-darkBlue">Create a Set</div>
           <br></br>
-          <HStack spacing={8}>
-            <StyledFileUpload classId={router.query.classId as string} />
-            <StyledButton
-              label="Generate Using AI"
-              colorInd={1}
-              onClick={onOpen}
-              style={{
-                width: "120%",
-                paddingTop: "13px",
-                paddingBottom: "13px",
-                marginRight: "5%",
-              }}
-            />
-            <div style={{ marginLeft: "25px " }}>
+          <VStack spacing={8}>
+            <HStack spacing={8}>
+              <StyledFileUpload
+                classId={router.query.classId as string}
+                setIsLoading={setIsLoading}
+              />
               <StyledButton
-                label="Create from Scratch"
+                label="Generate Using AI"
                 colorInd={1}
-                onClick={() => {}}
+                onClick={onOpen}
                 style={{
                   width: "120%",
                   paddingTop: "13px",
                   paddingBottom: "13px",
-                  marginRight: "10%",
+                  marginRight: "5%",
                 }}
               />
-            </div>
-          </HStack>
+              <div style={{ marginLeft: "25px " }}>
+                <StyledButton
+                  label="Create from Scratch"
+                  colorInd={1}
+                  onClick={() => {}}
+                  style={{
+                    width: "120%",
+                    paddingTop: "13px",
+                    paddingBottom: "13px",
+                    marginRight: "10%",
+                  }}
+                />
+              </div>
+            </HStack>
+            {isLoading && (
+              <>
+                <Spinner size={"xl"} />
+                <div className="h4 text-darkBlue">Building your deck...</div>
+              </>
+            )}
+          </VStack>
         </div>
       </div>
       <StyledModal
         isOpen={isOpen}
         onClose={onClose}
-        isScan={false}
         onClick={createNewSet}
         setSubject={setSubject}
       />

@@ -5,6 +5,7 @@ import {
   type BoxProps,
 } from "@chakra-ui/react";
 import { type Classroom } from "@prisma/client";
+import { useRouter } from "next/router";
 
 interface ClassRadioButtonProps
   extends Omit<UseRadioProps, "onChange">,
@@ -18,6 +19,7 @@ const ClassRadioButton = ({
   setCurrentClass,
   ...props
 }: ClassRadioButtonProps) => {
+  const router = useRouter();
   const { getInputProps, getRadioProps } = useRadio(props);
 
   const input = getInputProps();
@@ -25,6 +27,7 @@ const ClassRadioButton = ({
 
   const handleClick = () => {
     setCurrentClass(classObject);
+    router.push(`/dashboard?class=${classObject.id}`);
   };
 
   return (
@@ -33,16 +36,19 @@ const ClassRadioButton = ({
       <Box
         {...checkbox}
         cursor="pointer"
-        borderBottom="1px gray"
         color="white"
         h="100%"
         _checked={{
           bg: "#4A729D",
           color: "white",
-          borderColor: "teal.600",
+          borderBottom: "0.1vh solid #1A3F67",
+          borderRight: "0.125vh solid #1A3F67",
         }}
-        _focus={{
-          border: "1px white",
+        _hover={{
+          bg: "#4A729D",
+          color: "white",
+          borderBottom: "0.1vh solid #1A3F67",
+          borderRight: "0.125vh solid #1A3F67",
         }}
         px={5}
         py={3}

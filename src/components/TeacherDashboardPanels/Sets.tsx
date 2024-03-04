@@ -14,7 +14,7 @@ const Sets = ({
 }) => {
   const [sets, setSets] = useState<Set[] | undefined | null>();
 
-  const { data } = api.set.getSetByClassroom.useQuery(
+  const { data, isLoading } = api.set.getSetByClassroom.useQuery(
     {
       classId: currentClass?.id,
     },
@@ -26,10 +26,19 @@ const Sets = ({
     },
   );
 
-  if (sets === undefined) {
-    return;
-  } else if (sets == null) {
-    return <Spinner />;
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "70vh",
+        }}
+      >
+        <Spinner size={"xl"} />
+      </div>
+    );
   }
 
   return (
