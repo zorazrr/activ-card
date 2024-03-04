@@ -26,7 +26,7 @@ const Sets = ({
     },
   );
 
-  if (true) {
+  if (isLoading) {
     return (
       <div
         style={{
