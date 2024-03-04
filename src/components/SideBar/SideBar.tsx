@@ -31,16 +31,14 @@ const Sidebar = ({
 }) => {
   const { getRadioProps } = useRadioGroup({
     name: "classList",
-    defaultValue: currentClass ? currentClass.name : "",
-    onChange: (nextValue) => {
-      console.log("Selected class:", nextValue);
-    },
+    defaultValue: currentClass ? currentClass.id : "",
+    onChange: (nextValue) => {},
   });
 
   useEffect(() => {
     if (currentClass) {
-      const radioProps = getRadioProps({ value: currentClass.name });
-      radioProps.onChange(currentClass.name);
+      const radioProps = getRadioProps({ value: currentClass.id });
+      radioProps.onChange(currentClass.id);
     }
   }, [currentClass, getRadioProps]);
 
@@ -78,7 +76,7 @@ const Sidebar = ({
       ) : classes.length ? (
         <VStack gap={0}>
           {classes.map((c) => {
-            const radio = getRadioProps({ value: c.name });
+            const radio = getRadioProps({ value: c.id });
             return (
               <ClassRadioButton
                 key={c.name}
