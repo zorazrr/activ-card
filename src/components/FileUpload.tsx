@@ -1,13 +1,18 @@
 import { Spinner } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import type { TermDefPair } from "~/utils/types";
 
-const StyledFileUpload = ({ classId }: { classId: string }) => {
+const StyledFileUpload = ({
+  classId,
+  setIsLoading,
+}: {
+  classId: string;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+}) => {
   const [file, setFile] = useState<File>();
   const [extractedText, setExtractedText] = useState<string>("");
   const [flashcards, setFlashcards] = useState<TermDefPair[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const uploadUrl = api.gpt.getPresignedUrl.useQuery(
     { fileName: file ? file.name : "test" },
     { retry: false, enabled: false },
@@ -79,31 +84,24 @@ const StyledFileUpload = ({ classId }: { classId: string }) => {
 
   return (
     <>
-      {isLoading ? (
-        <>
-          <Spinner />
-          <div>hi</div>
-        </>
-      ) : (
-        <div className="py-2">
-          <label
-            className="reg-text w-32 cursor-pointer rounded-md bg-mediumBlue py-2 text-white hover:opacity-75"
-            style={{
-              width: "50%",
-              padding: "15px",
-              paddingBottom: "15px",
-              marginBottom: "3%",
-            }}
-          >
-            Upload Materials
-            <input
-              type="file"
-              onChange={handleFileInput}
-              style={{ display: "none" }}
-            />
-          </label>
-        </div>
-      )}
+      <div className="py-2">
+        <label
+          className="reg-text w-32 cursor-pointer rounded-md bg-mediumBlue py-2 text-white hover:opacity-75"
+          style={{
+            width: "50%",
+            padding: "15px",
+            paddingBottom: "15px",
+            marginBottom: "3%",
+          }}
+        >
+          Upload Materials
+          <input
+            type="file"
+            onChange={handleFileInput}
+            style={{ display: "none" }}
+          />
+        </label>
+      </div>
     </>
   );
 };
