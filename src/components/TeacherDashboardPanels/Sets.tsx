@@ -14,7 +14,7 @@ const Sets = ({
 }) => {
   const [sets, setSets] = useState<Set[] | undefined | null>();
 
-  const { data, isLoading } = api.set.getSetByClassroom.useQuery(
+  const { data, isLoading, refetch } = api.set.getSetByClassroom.useQuery(
     {
       classId: currentClass?.id,
     },
@@ -25,6 +25,12 @@ const Sets = ({
       retry: false,
     },
   );
+
+  const deleteSet = api.set.deleteSet.useMutation({
+    onSuccess: (data) => {
+      refetch();
+    },
+  });
 
   if (isLoading) {
     return (
@@ -44,15 +50,18 @@ const Sets = ({
   return (
     <div>
       <HStack wrap="wrap">
-        {sets?.map((set) => (
-          <Link href={`/set/${set.id}`} key={set.id}>
+        {sets?.map((set) => {
+          console.log(sets);
+          return (
             <Card
-              key={set.name}
+              key={set.id}
               name={set.name}
               description={set.description}
+              id={set.id}
+              deleteSet={deleteSet}
             />
-          </Link>
-        ))}
+          );
+        })}
         <Link href={`/create/set/medium?classId=${currentClass!.id}`}>
           <IconButton
             borderRadius={20}
