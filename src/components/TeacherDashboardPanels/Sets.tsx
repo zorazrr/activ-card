@@ -14,6 +14,12 @@ const Sets = ({
 }) => {
   const [sets, setSets] = useState<Set[] | undefined | null>();
 
+  const deleteSet = api.set.deleteSet.useMutation({
+    onSuccess: (data) => {
+      console.log("success"); // TODO: Replace this with a refetch
+    },
+  });
+
   const { data, isLoading } = api.set.getSetByClassroom.useQuery(
     {
       classId: currentClass?.id,
@@ -46,10 +52,13 @@ const Sets = ({
       <HStack wrap="wrap">
         {sets?.map((set) => (
           <Link href={`/set/${set.id}`} key={set.id}>
+            {/* TODO FIX THIS */}
             <Card
               key={set.name}
               name={set.name}
               description={set.description}
+              id={set.id}
+              deleteSet={deleteSet}
             />
           </Link>
         ))}

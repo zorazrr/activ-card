@@ -5,13 +5,18 @@ import {
   CardBody,
   Divider,
   HStack,
+  IconButton,
   Image,
   VStack,
 } from "@chakra-ui/react";
 import { type Set } from "@prisma/client";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
-const SetCard = (props: Partial<Set>) => (
+interface SetCardProps extends Partial<Set> {
+  deleteSet: any; // TODO: Fix this
+}
+
+const SetCard = (props: SetCardProps) => (
   <Card>
     <CardBody h="100%" paddingY={0} paddingRight={0}>
       <HStack h="220px" w="400px">
@@ -23,7 +28,15 @@ const SetCard = (props: Partial<Set>) => (
           )}
           <HStack mt="8px">
             <EditIcon />
-            <DeleteIcon />
+
+            <IconButton
+              variant="outline"
+              aria-label="Delete card"
+              bg={"gray.200"}
+              icon={<DeleteIcon color="blue.900" />}
+              _hover={{ bg: "gray.300", borderColor: "gray.300" }}
+              onClick={() => props?.deleteSet?.mutate({ setId: props.id })}
+            />
           </HStack>
         </Box>
         <Box w="20%">
