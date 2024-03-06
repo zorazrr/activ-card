@@ -1,5 +1,4 @@
 import { Box, HStack, Input, Text, Textarea, VStack } from "@chakra-ui/react";
-import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import StyledButton from "~/components/Button";
@@ -13,6 +12,7 @@ export default function EditSet() {
   const [setDescription, setSetDescription] = useState("");
   const [flashcards, setFlashcards] = useState<TermDefPair[]>([]);
   const setId = useRouter().query.id as string;
+  const isEdit = !!(useRouter().query?.isEdit as string);
 
   const updateCard = ({
     id,
@@ -101,7 +101,11 @@ export default function EditSet() {
             value={setName}
             onChange={(e) => setSetName(e.target.value)}
           />
-          <StyledButton onClick={updateSet} colorInd={0} label="Create" />
+          <StyledButton
+            onClick={updateSet}
+            colorInd={0}
+            label={isEdit ? "Update Set" : "Create"}
+          />
         </HStack>
         <Textarea
           className="main-class tiny-text"

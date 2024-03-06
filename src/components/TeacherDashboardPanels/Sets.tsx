@@ -29,14 +29,13 @@ const Sets = ({ currentClass }: { currentClass: Classroom | undefined }) => {
     <div>
       <HStack wrap="wrap">
         {sets?.map((set) => (
-          <Link href={`/set/${set.id}`} key={set.id}>
-            <Card
-              key={set.name}
-              name={set.name}
-              description={set.description}
-              id={set.id}
-            />
-          </Link>
+          <Card
+            key={set.name}
+            name={set.name}
+            description={set.description}
+            id={set.id}
+            classroom_id={currentClass?.id}
+          />
         ))}
         <Link href={`/create/set/medium?classId=${currentClass!.id}`}>
           <CardNew />
