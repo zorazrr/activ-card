@@ -13,7 +13,7 @@ import Canvas from "~/components/Canvas";
 
 const Set = ({ tempIdx }: number | undefined) => {
   const setId = useRouter().query.id;
-  const { data: cards } = api.card.geCardBySet.useQuery(
+  const { data: cards } = api.card.getCardsBySet.useQuery(
     { setId: setId as string },
     { enabled: !!setId, retry: false, refetchOnWindowFocus: false },
   );

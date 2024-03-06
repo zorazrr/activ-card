@@ -29,7 +29,7 @@ export default function EditSet() {
     }
   };
 
-  const { data: cards } = api.card.geCardBySet.useQuery(
+  const { data: cards } = api.card.getCardsBySet.useQuery(
     { setId: setId },
     {
       retry: false,
