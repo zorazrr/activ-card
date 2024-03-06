@@ -1,4 +1,5 @@
 import { Box, HStack, Input, Text, Textarea, VStack } from "@chakra-ui/react";
+import { Card } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import StyledButton from "~/components/Button";
@@ -39,23 +40,6 @@ export default function EditSet() {
     setFlashcards(updatedFlashcards);
   };
 
-  const { data: cards } = api.card.getCardsBySet.useQuery(
-    { setId: setId },
-    {
-      retry: false,
-      enabled: !!setId,
-      refetchOnWindowFocus: false,
-      onSuccess: (data) => {
-        if (data) {
-          const mappedCards: CardInfo[] = data.map((card) => {
-            return { term: card.term, def: card.definition, id: card.id };
-          });
-          setFlashcards([...mappedCards]);
-        }
-      },
-    },
-  );
-
   const { data: set } = api.set.getOneSet.useQuery(
     { setId: setId },
     {
@@ -66,6 +50,10 @@ export default function EditSet() {
         if (data) {
           setSetName(data.name);
           setSetDescription(data.description);
+          const mappedCards: CardInfo[] = data.cards.map((card: Card) => {
+            return { term: card.term, def: card.definition, id: card.id };
+          });
+          setFlashcards([...mappedCards]);
         }
       },
     },
@@ -94,7 +82,7 @@ export default function EditSet() {
     setTempId((prevId) => prevId + 1);
   };
 
-  if (!cards || !set) {
+  if (!set?.cards || !set) {
     return <div>Loading...</div>;
   }
 
