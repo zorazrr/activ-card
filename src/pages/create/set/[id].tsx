@@ -1,18 +1,19 @@
 import { Box, HStack, Input, Text, Textarea, VStack } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StyledButton from "~/components/Button";
 import CardPair from "~/components/CardPair";
 import { api } from "~/utils/api";
-import type { TermDefPair } from "~/utils/types";
+import type { CardInfo, TermDefPair } from "~/utils/types";
 
 // pass the set id as query param
 export default function EditSet() {
   const [setName, setSetName] = useState("");
   const [setDescription, setSetDescription] = useState("");
-  const [flashcards, setFlashcards] = useState<TermDefPair[]>([]);
+  const [flashcards, setFlashcards] = useState<CardInfo[]>([]);
   const setId = useRouter().query.id as string;
   const isEdit = !!(useRouter().query?.isEdit as string);
+  const [tempId, setTempId] = useState<number>(0);
 
   const updateCard = ({
     id,
@@ -23,10 +24,19 @@ export default function EditSet() {
     term: string;
     def: string;
   }) => {
-    if (flashcards?.[id]) {
-      flashcards[id].term = term;
-      flashcards[id].def = def;
-    }
+    const updatedFlashcards = flashcards.map((flashcard, idx) => {
+      if (idx === id) {
+        return { ...flashcard, term: term, def: def };
+      }
+      return flashcard;
+    });
+
+    setFlashcards(updatedFlashcards);
+  };
+
+  const removeCard = ({ id }: { id: number }) => {
+    const updatedFlashcards = flashcards.filter((_, idx) => idx !== id);
+    setFlashcards(updatedFlashcards);
   };
 
   const { data: cards } = api.card.getCardsBySet.useQuery(
@@ -37,8 +47,8 @@ export default function EditSet() {
       refetchOnWindowFocus: false,
       onSuccess: (data) => {
         if (data) {
-          const mappedCards: TermDefPair[] = data.map((card) => {
-            return { term: card.term, def: card.definition };
+          const mappedCards: CardInfo[] = data.map((card) => {
+            return { term: card.term, def: card.definition, id: card.id };
           });
           setFlashcards([...mappedCards]);
         }
@@ -80,7 +90,8 @@ export default function EditSet() {
   };
 
   const addCard = () => {
-    setFlashcards([...flashcards, { term: "", def: "" }]);
+    setFlashcards([...flashcards, { term: "", def: "", id: String(tempId) }]);
+    setTempId((prevId) => prevId + 1);
   };
 
   if (!cards || !set) {
@@ -125,11 +136,12 @@ export default function EditSet() {
 
         {flashcards?.map((flashcard, id) => (
           <CardPair
-            key={id}
+            key={flashcard.id}
             term={flashcard.term}
             def={flashcard.def}
             idx={id}
             updateCard={updateCard}
+            removeCard={removeCard}
           />
         ))}
       </Box>
