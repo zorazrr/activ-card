@@ -31,14 +31,15 @@ const AudioRecorder = ({
       console.log("Permission granted");
       setPermission(true);
       setStream(streamData);
+      return streamData;
     } catch (error) {
       console.error(error);
     }
   };
 
   const startRecording = async () => {
-    console.log("Start recording");
     if (stream) {
+      console.log("Start recording");
       setRecordingStatus("recording");
       const media = new MediaRecorder(stream);
       mediaRecorder.current = media;
@@ -53,6 +54,23 @@ const AudioRecorder = ({
       };
       setAudioChunks(localAudioChunks);
       console.log("Recording started");
+    } else {
+      const streamData = await getMicrophonePermission();
+      if (streamData) {
+        const media = new MediaRecorder(streamData);
+        mediaRecorder.current = media;
+        console.log(media.state);
+        media.start();
+        console.log(media.state);
+        const localAudioChunks: Blob[] = [];
+        media.ondataavailable = (event) => {
+          if (typeof event.data === "undefined") return;
+          if (event.data.size === 0) return;
+          localAudioChunks.push(event.data);
+        };
+        setAudioChunks(localAudioChunks);
+        console.log("Recording started");
+      }
     }
   };
 
@@ -106,14 +124,6 @@ const AudioRecorder = ({
           Stop
         </button>
       )}
-      <button onClick={() => getMicrophonePermission()} className="text-xs">
-        Grant Permission
-      </button>
-      {/* {audio ? (
-            <div>
-                <audio src={audio} controls></audio>
-            </div>
-        ) : null} */}
     </div>
   );
 };
