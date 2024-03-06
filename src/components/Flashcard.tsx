@@ -23,9 +23,9 @@ const FlashCard: FC<FlashCardProps> = ({
   const [studentAudioText, setStudentAudioText] = useState<string>();
   const [answerExplanation, setAnswerExplanation] = useState<string>("");
   const checkAnswerMutation = api.gpt.checkAnswer.useMutation({ retry: false });
-  const explainAnswerMutation = api.gpt.explainAnswer.useMutation({ retry: false });
-
-
+  const explainAnswerMutation = api.gpt.explainAnswer.useMutation({
+    retry: false,
+  });
 
   const checkAnswer = () => {
     if (checkMode === CheckMode.AI_CHECK) {
@@ -48,7 +48,7 @@ const FlashCard: FC<FlashCardProps> = ({
                 },
                 {
                   onSuccess: (data) => {
-                    setAnswerExplanation(data!)
+                    setAnswerExplanation(data!);
                   },
                 },
               );
@@ -83,7 +83,7 @@ const FlashCard: FC<FlashCardProps> = ({
                 },
                 {
                   onSuccess: (data) => {
-                    setAnswerExplanation(data!)
+                    setAnswerExplanation(data!);
                   },
                 },
               );
@@ -104,7 +104,7 @@ const FlashCard: FC<FlashCardProps> = ({
   }, [studentAudioText]);
 
   return (
-    <div className="flex flex-col h-full justify-evenly items-center">
+    <div className="flex h-full flex-col items-center justify-evenly">
       <div className="flex h-[60%] w-screen flex-row items-center justify-between gap-12 px-40 pt-20 text-lg">
         <div className="flex h-full w-full flex-row items-center justify-center rounded-lg border bg-gray-100 p-10">
           <p>{card.term}</p>
@@ -118,7 +118,6 @@ const FlashCard: FC<FlashCardProps> = ({
           />
           <div className="flex w-full flex-row justify-between">
             <AudioRecorder textCallBack={setStudentAudioText} />
-            {checkAnswerMutation.isLoading || explainAnswerMutation.isLoading && <Spinner />}
             <button
               onClick={() => checkAnswer()}
               className="h-fit w-fit rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
@@ -128,12 +127,15 @@ const FlashCard: FC<FlashCardProps> = ({
           </div>
         </div>
       </div>
-      {
-        answerExplanation === "" ? <div></div> :
-          <div className="border rounded-lg py-5 px-12 border-red-300 w-3/4">
-            <p>{answerExplanation}</p>
-          </div>
-      }
+      {checkAnswerMutation.isLoading || explainAnswerMutation.isLoading ? (
+        <Spinner />
+      ) : answerExplanation === "" ? (
+        <div></div>
+      ) : (
+        <div className="w-3/4 rounded-lg border border-red-300 px-12 py-5">
+          <p>{answerExplanation}</p>
+        </div>
+      )}
     </div>
   );
 };
