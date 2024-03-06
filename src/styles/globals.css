@@ -21,11 +21,15 @@
 }
 
 .h5 {
-  @apply font-roboto text-h5-size font-semibold;
+  @apply font-roboto text-h5-size font-medium;
 }
 
 .reg-text {
   @apply font-roboto text-text-size;
+}
+
+.h4-5 {
+  @apply text-h4-5-size font-roboto font-medium;
 }
 
 .typewriter > h1 {

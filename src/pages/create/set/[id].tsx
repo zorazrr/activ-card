@@ -66,7 +66,6 @@ export default function EditSet() {
     onSuccess: (data) => {
       if (data) {
         window.location.href = `../../dashboard`;
-        console.log(data);
       }
     },
   });
