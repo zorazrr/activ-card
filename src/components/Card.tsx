@@ -12,7 +12,7 @@ import {
 import { type Set } from "@prisma/client";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-import { UseTRPCMutationResult } from "@trpc/react-query/shared";
+import { type UseTRPCMutationResult } from "@trpc/react-query/shared";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -35,6 +35,12 @@ const SetCard = (props: SetCardProps) => {
   const onCardClick = () => {
     router.push(`/set/${props.id}`);
   };
+
+  const onEdit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
+    window.location.href = `/create/set/${props.id}?isEdit=true`;
+  };
+
   return (
     <Card
       p={3}
@@ -97,7 +103,7 @@ const SetCard = (props: SetCardProps) => {
             <HStack mb={"1vh"}>
               <IconButton
                 variant="outline"
-                aria-label="Delete card"
+                aria-label="Edit card"
                 backgroundColor={"white"}
                 icon={<EditIcon color="blue.900" />}
                 sx={{
@@ -106,9 +112,7 @@ const SetCard = (props: SetCardProps) => {
                     filter: "brightness(200%)",
                   },
                 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
+                onClick={onEdit}
               />
 
               <IconButton
@@ -140,7 +144,7 @@ const SetCard = (props: SetCardProps) => {
                 style={{ margin: "auto" }}
               >
                 <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                  Delete Customer
+                  Delete Set
                 </AlertDialogHeader>
 
                 <AlertDialogBody>

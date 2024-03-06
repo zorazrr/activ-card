@@ -4,7 +4,7 @@ import type { Set, Card } from "@prisma/client";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const cardRouter = createTRPCRouter({
-  geCardBySet: publicProcedure
+  getCardsBySet: publicProcedure
     .input(z.object({ setId: z.string() }))
     .query(async ({ ctx, input }) => {
       const cards: Card[] = await ctx.db.card.findMany({

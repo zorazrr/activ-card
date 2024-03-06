@@ -59,4 +59,44 @@ export const setRouter = createTRPCRouter({
       });
       return set;
     }),
+  updateSet: publicProcedure
+    .input(
+      z.object({
+        setId: z.string(),
+        setName: z.string(),
+        setDescription: z.string(),
+        cards: z.array(z.object({ term: z.string(), def: z.string() })),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Delete existing cards
+      await ctx.db.card.deleteMany({
+        where: {
+          set: {
+            id: input.setId,
+          },
+        },
+      });
+
+      // Create new cards
+      const setUpdate = await ctx.db.set.update({
+        where: {
+          id: input.setId,
+        },
+        data: {
+          name: input.setName,
+          description: input.setDescription,
+          cards: {
+            createMany: {
+              data: input.cards.map((card) => ({
+                term: card.term,
+                definition: card.def,
+              })),
+            },
+          },
+        },
+      });
+
+      return setUpdate;
+    }),
 });

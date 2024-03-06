@@ -48,6 +48,18 @@ export default function SetCreationMediumSelection() {
     });
   };
 
+  const createSetFromScratch = api.set.createSet.useMutation({
+    retry: false,
+    onSuccess: (data) => (window.location.href = `../set/${data.id}`),
+  });
+
+  const createNewSetFromScratch = async () => {
+    createSetFromScratch.mutate({
+      classId: router.query.classId as string,
+      name: subject,
+    });
+  };
+
   return (
     <>
       <div className="p-5 hover:opacity-75">
@@ -84,7 +96,7 @@ export default function SetCreationMediumSelection() {
                 <StyledButton
                   label="Create from Scratch"
                   colorInd={1}
-                  onClick={() => {}}
+                  onClick={createNewSetFromScratch}
                   style={{
                     width: "120%",
                     paddingTop: "13px",
