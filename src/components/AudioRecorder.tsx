@@ -38,25 +38,49 @@ const AudioRecorder = ({
   };
 
   const startRecording = async () => {
-    if (stream) {
-      console.log("Start recording");
-      setRecordingStatus("recording");
-      const media = new MediaRecorder(stream);
-      mediaRecorder.current = media;
-      console.log(media.state);
-      media.start();
-      console.log(media.state);
-      const localAudioChunks: Blob[] = [];
-      media.ondataavailable = (event) => {
-        if (typeof event.data === "undefined") return;
-        if (event.data.size === 0) return;
-        localAudioChunks.push(event.data);
-      };
-      setAudioChunks(localAudioChunks);
-      console.log("Recording started");
+    if (permission) {
+      if (stream) {
+        console.log("Case 1");
+        console.log("Start recording");
+        setRecordingStatus("recording");
+        const media = new MediaRecorder(stream);
+        mediaRecorder.current = media;
+        console.log(media.state);
+        media.start();
+        console.log(media.state);
+        const localAudioChunks: Blob[] = [];
+        media.ondataavailable = (event) => {
+          if (typeof event.data === "undefined") return;
+          if (event.data.size === 0) return;
+          localAudioChunks.push(event.data);
+        };
+        setAudioChunks(localAudioChunks);
+        console.log("Recording started");
+      } else {
+        const streamData = await getMicrophonePermission();
+        if (streamData) {
+          console.log("Case 2");
+          setRecordingStatus("recording");
+          const media = new MediaRecorder(streamData);
+          mediaRecorder.current = media;
+          console.log(media.state);
+          media.start();
+          console.log(media.state);
+          const localAudioChunks: Blob[] = [];
+          media.ondataavailable = (event) => {
+            if (typeof event.data === "undefined") return;
+            if (event.data.size === 0) return;
+            localAudioChunks.push(event.data);
+          };
+          setAudioChunks(localAudioChunks);
+          console.log("Recording started");
+        }
+      }
     } else {
+      console.log("Case 3");
       const streamData = await getMicrophonePermission();
       if (streamData) {
+        setRecordingStatus("recording");
         const media = new MediaRecorder(streamData);
         mediaRecorder.current = media;
         console.log(media.state);
