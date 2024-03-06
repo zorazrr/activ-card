@@ -12,7 +12,7 @@ export const teacherRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const teacher: Teacher | null = await ctx.db.teacher.findUnique({
         where: {
-          user_id: input.teacherId,
+          id: input.teacherId,
         },
         include: {
           classroom: true,
