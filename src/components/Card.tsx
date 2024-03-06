@@ -144,7 +144,7 @@ const SetCard = (props: SetCardProps) => {
                 style={{ margin: "auto" }}
               >
                 <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                  Delete Customer
+                  Delete Set
                 </AlertDialogHeader>
 
                 <AlertDialogBody>
