@@ -58,12 +58,14 @@ const Sets = ({
               name={set.name}
               description={set.description}
               id={set.id}
+              numCards={set.cards ? set.cards?.length : 0}
               deleteSet={deleteSet}
             />
           );
         })}
         <Link href={`/create/set/medium?classId=${currentClass!.id}`}>
           <IconButton
+            mt={5}
             borderRadius={20}
             variant="outline"
             aria-label="Add card"

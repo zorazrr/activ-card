@@ -25,6 +25,9 @@ export const setRouter = createTRPCRouter({
         where: {
           id: input.setId,
         },
+        include: {
+          cards: true,
+        },
       });
       return set;
     }),

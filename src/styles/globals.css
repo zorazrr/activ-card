@@ -28,6 +28,10 @@
   @apply font-roboto text-text-size;
 }
 
+.h4-5 {
+  @apply text-h4-5-size font-roboto font-medium;
+}
+
 .typewriter > h1 {
   color: #1a3f67;
   font-family: "Roboto";

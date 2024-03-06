@@ -4,10 +4,9 @@ import {
   Button,
   Card,
   CardBody,
-  Divider,
   HStack,
   IconButton,
-  Image,
+  Tag,
   useDisclosure,
 } from "@chakra-ui/react";
 import { type Set } from "@prisma/client";
@@ -26,6 +25,7 @@ import {
 
 interface SetCardProps extends Partial<Set> {
   deleteSet: UseTRPCMutationResult<any, any, any, any>;
+  numCards: number;
 }
 
 const SetCard = (props: SetCardProps) => {
@@ -37,38 +37,75 @@ const SetCard = (props: SetCardProps) => {
   };
   return (
     <Card
+      p={3}
+      borderRadius="10"
       onClick={onCardClick}
+      backgroundColor="#4A729D"
+      color="white"
       style={{ cursor: "pointer" }}
-      // _hover={{ transform: "scale(1.05)", boxShadow: "lg" }}
       marginRight={5}
+      marginTop={5}
       sx={{
         transition: "filter 0.1s",
         "&:hover": {
-          filter: "brightness(95%)",
+          filter: "brightness(110%)",
+          "& .tag-no-brightness-change": {
+            filter: "brightness(90%)",
+          },
         },
-      }} // TODO: which of these two styling methods?
+      }}
     >
       <CardBody h="100%" paddingY={0} paddingRight={0}>
-        <HStack h="25vh" w="40vh">
+        <HStack h="25vh" w="41vh">
           <Box
-            w="120%"
             minH="100%"
             display={"flex"}
             flexDirection={"column"}
-            justifyContent={"space-around"}
+            justifyContent={"space-between"}
           >
-            <p className="h4">{props.name}</p>
-            <Divider w="100px" />
-            {props.description && (
-              <p className="reg-text pt-3">{props.description}</p>
-            )}
-            <HStack mt="8px">
+            <Box
+              minH="100%"
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"space-between"}
+            >
+              <div style={{ paddingBottom: "2vh" }}>
+                <p className="h4-5">{props.name}</p>
+                {props.description && (
+                  <p className="reg-text pt-3">{props.description}</p>
+                )}
+              </div>
+              <div>
+                <Tag
+                  size={"sm"}
+                  width="8vh"
+                  p={2}
+                  style={{ display: "flex", justifyContent: "center" }}
+                  colorScheme="telegram"
+                  className="tag-no-brightness-change"
+                  sx={{
+                    transition: "filter 0.1s",
+                    "&:hover": {
+                      filter: "brightness(100%)",
+                    },
+                  }}
+                >
+                  {`${props.numCards} Cards`}
+                </Tag>
+              </div>
+            </Box>
+            <HStack mb={"1vh"}>
               <IconButton
                 variant="outline"
                 aria-label="Delete card"
-                bg={"gray.200"}
+                backgroundColor={"white"}
                 icon={<EditIcon color="blue.900" />}
-                _hover={{ bg: "gray.300", borderColor: "gray.300" }}
+                sx={{
+                  transition: "filter 0.1s",
+                  "&:hover": {
+                    filter: "brightness(200%)",
+                  },
+                }}
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
@@ -77,26 +114,20 @@ const SetCard = (props: SetCardProps) => {
               <IconButton
                 variant="outline"
                 aria-label="Delete card"
-                bg={"gray.200"}
+                backgroundColor={"white"}
                 icon={<DeleteIcon color="blue.900" />}
-                _hover={{ bg: "gray.300", borderColor: "gray.300" }}
+                sx={{
+                  transition: "filter 0.1s",
+                  "&:hover": {
+                    filter: "brightness(200%)",
+                  },
+                }}
                 onClick={(e) => {
                   e.stopPropagation();
                   onOpen();
                 }}
               />
             </HStack>
-          </Box>
-          <Box w="20%">
-            <Image
-              src={`https://picsum.photos/seed/${props.name}/400/400`}
-              alt="Set cover image"
-              objectFit="cover"
-              w="100%"
-              h="25vh"
-              borderTopRightRadius="md"
-              borderBottomRightRadius="md"
-            />
           </Box>
           <AlertDialog
             isOpen={isOpen}
