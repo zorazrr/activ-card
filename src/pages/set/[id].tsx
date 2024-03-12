@@ -8,10 +8,15 @@ import {
   ChevronRightIcon,
   InfoOutlineIcon,
 } from "@chakra-ui/icons";
-import CanvasWrapper from "~/components/CanvasWrapper";
 import Canvas from "~/components/Canvas";
 
-const Set = ({ tempIdx }: number | undefined) => {
+const Set = ({
+  tempIdx,
+  pomodoroConst = 5,
+}: {
+  tempIdx: number | undefined;
+  pomodoroConst?: number;
+}) => {
   const setId = useRouter().query.id;
   const { data: cards } = api.card.getCardsBySet.useQuery(
     { setId: setId as string },
@@ -21,7 +26,11 @@ const Set = ({ tempIdx }: number | undefined) => {
     { setId: setId as string },
     { enabled: !!setId, retry: false, refetchOnWindowFocus: false },
   );
-  const [curIndex, setCurIndex] = useState(tempIdx ? tempIdx : 0);
+  const [curIndex, setCurIndex] = useState<number>(tempIdx ? tempIdx : 0);
+
+  // Tracks the farthest card they have attempted to answer
+  const [maxIndex, setMaxIndex] = useState<number>(curIndex);
+  const [showCanvas, setShowCanvas] = useState<boolean>(false);
   const toast = useToast();
 
   if (!cards || !set) {
@@ -29,7 +38,24 @@ const Set = ({ tempIdx }: number | undefined) => {
   }
 
   const handleCorrectAnswer = () => {
-    setCurIndex(curIndex + 1);
+    // Set is async
+    setCurIndex(() => {
+      const newCurIndex = curIndex + 1;
+
+      // If they get a previous card right, their max index reached should not increase
+      setMaxIndex((prevMaxIndex) => {
+        const newMaxIndex = Math.max(newCurIndex, prevMaxIndex);
+
+        // Make sure the user cannot go back and replay the Pomodoro if they just played and haven't answered the next question
+        if (prevMaxIndex !== newMaxIndex && newMaxIndex % pomodoroConst == 0) {
+          setShowCanvas(true);
+        }
+        return newMaxIndex;
+      });
+
+      return newCurIndex;
+    });
+
     toast({
       title: "That is correct!",
       status: "success",
@@ -51,8 +77,8 @@ const Set = ({ tempIdx }: number | undefined) => {
 
   return (
     <div className="flex h-screen w-screen flex-col items-start justify-start">
-      {curIndex >= 3 && curIndex < 4 ? (
-        <Canvas setCurIndex={setCurIndex} />
+      {showCanvas ? (
+        <Canvas setShowCanvas={setShowCanvas} />
       ) : (
         <>
           <p className="w-full pt-8 text-center font-bold">
@@ -65,7 +91,7 @@ const Set = ({ tempIdx }: number | undefined) => {
           {curIndex >= 0 && curIndex < cards.length ? (
             <FlashCard
               key={cards[curIndex]!.id}
-              card={cards[curIndex]!}
+              card={cards[curIndex]}
               onCorrectCallback={() => {
                 handleCorrectAnswer();
               }}
@@ -93,7 +119,10 @@ const Set = ({ tempIdx }: number | undefined) => {
               </button>
               <button
                 onClick={() => setCurIndex(curIndex + 1)}
-                disabled={curIndex === cards.length - 1}
+                // If the user is at the end or if the user has not attempted to answer the question, disable the next button
+                disabled={
+                  curIndex === cards.length - 1 || maxIndex === curIndex
+                }
                 className="flex flex-row items-center justify-center p-8"
               >
                 Next

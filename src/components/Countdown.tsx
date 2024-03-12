@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
+import { type Dispatch, useEffect, useState } from "react";
 
-const Countdown = () => {
+const Countdown = ({ setShowCanvas }: { setShowCanvas: Dispatch<any> }) => {
   const [seconds, setSeconds] = useState(60);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setSeconds((prevSeconds) => (prevSeconds > 0 ? prevSeconds - 1 : 0));
+
+      if (seconds === 0) {
+        setShowCanvas(false);
+      }
     }, 1000);
 
     return () => clearInterval(interval);
