@@ -5,11 +5,13 @@ const Countdown = ({ setShowCanvas }: { setShowCanvas: Dispatch<any> }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setSeconds((prevSeconds) => (prevSeconds > 0 ? prevSeconds - 1 : 0));
+      setSeconds((prevSeconds) => {
+        if (prevSeconds === 0) {
+          setShowCanvas(false);
+        }
 
-      if (seconds === 0) {
-        setShowCanvas(false);
-      }
+        return prevSeconds > 0 ? prevSeconds - 1 : 0;
+      });
     }, 1000);
 
     return () => clearInterval(interval);
