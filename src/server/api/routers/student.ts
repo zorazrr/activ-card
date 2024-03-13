@@ -39,10 +39,6 @@ export const studentRouter = createTRPCRouter({
         },
       });
 
-      console.log(classCodeInfo);
-      console.log(input.classCode);
-      console.log(input.studentId);
-
       if (!classCodeInfo) {
         throw new TRPCError({
           code: "NOT_FOUND",

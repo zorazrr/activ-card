@@ -26,7 +26,6 @@ const JoinClassModal = ({
   studentId: string;
 }) => {
   const [joinedClass, setJoinedClass] = useState<Classroom | null>(null);
-  const [classCode, setClassCode] = useState<ClassCode | null>(null);
   const [value, setValue] = useState("");
   const router = useRouter();
 
@@ -50,7 +49,6 @@ const JoinClassModal = ({
         {
           onSuccess: async (response: AddClassRes) => {
             setJoinedClass(response.class);
-            setClassCode(response.classCode);
           },
         },
       );
