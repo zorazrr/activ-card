@@ -16,7 +16,7 @@ const Sets = ({
 
   const { data, isLoading, refetch } = api.set.getSetByClassroom.useQuery(
     {
-      classId: currentClass?.id,
+      classId: currentClass?.id!,
     },
     {
       onSuccess: (data) => setSets(data),
