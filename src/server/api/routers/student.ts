@@ -35,7 +35,7 @@ export const studentRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const classCodeInfo = await ctx.db.classCode.findUnique({
         where: {
-          code: input.classCode,
+          code: input.classCode.toUpperCase(),
         },
       });
 
