@@ -56,6 +56,27 @@ export const classroomRouter = createTRPCRouter({
         },
       });
 
-      return classroom;
+      // generate classroom code
+
+      const classCode = await ctx.db.classCode.create({
+        data: {
+          code: genClassCode(4),
+          classroom_id: classroom.id,
+        },
+      });
+
+      return {
+        class: classroom,
+        classCode: classCode,
+      };
     }),
 });
+
+const genClassCode = (length: number) => {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+};

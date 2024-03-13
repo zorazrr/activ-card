@@ -11,13 +11,17 @@ import {
   FormControl,
   FormLabel,
   Input,
+  HStack,
 } from "@chakra-ui/react";
-import { Classroom } from "@prisma/client";
+import { ClassCode, Classroom } from "@prisma/client";
 import { useRouter } from "next/router";
+import { AddClassRes } from "~/utils/types";
+import { PinInput, PinInputField } from "@chakra-ui/react";
 
 const AddClassModal = ({ isOpen, onClose, addClassAPI, teacherId }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [createdClass, setCreatedClass] = useState<Classroom | null>(null);
+  const [classCode, setClassCode] = useState<ClassCode | null>("");
   const [value, setValue] = useState("");
   const router = useRouter();
 
@@ -40,8 +44,9 @@ const AddClassModal = ({ isOpen, onClose, addClassAPI, teacherId }) => {
       const apiResponse = await addClassAPI.mutate(
         { teacherId: teacherId, className: value },
         {
-          onSuccess: async (response: Classroom) => {
-            setCreatedClass(response);
+          onSuccess: async (response: AddClassRes) => {
+            setCreatedClass(response.class);
+            setClassCode(response.classCode);
             setCurrentPage(2);
           },
         },
@@ -53,7 +58,9 @@ const AddClassModal = ({ isOpen, onClose, addClassAPI, teacherId }) => {
     <Modal isOpen={isOpen} onClose={handleClose} size={"full"}>
       <ModalOverlay />
       <ModalContent backgroundColor={"white"}>
-        <ModalHeader>Enter Class Name</ModalHeader>
+        <ModalHeader>
+          {currentPage === 1 ? "Enter Class Name" : "Join Through Code Below"}
+        </ModalHeader>
         <ModalBody>
           {currentPage === 1 && (
             <>
@@ -69,7 +76,21 @@ const AddClassModal = ({ isOpen, onClose, addClassAPI, teacherId }) => {
               </Button>
             </>
           )}
-          {currentPage === 2 && createdClass && <div>Class Code</div>}
+          {currentPage === 2 && createdClass && classCode && (
+            <HStack>
+              <PinInput
+                type="alphanumeric"
+                isDisabled
+                value={classCode.code}
+                size="lg"
+              >
+                <PinInputField bg="gray.300" />
+                <PinInputField bg="gray.300" />
+                <PinInputField bg="gray.300" />
+                <PinInputField bg="gray.300" />
+              </PinInput>
+            </HStack>
+          )}
         </ModalBody>
         <ModalFooter>
           <Button onClick={handleClose}>Close</Button>
