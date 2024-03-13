@@ -47,12 +47,12 @@ export const classroomRouter = createTRPCRouter({
           id: teacher.id,
         },
         data: {
-          classroom: {
+          classrooms: {
             connect: { id: classroom.id }, // Connect the new classroom to the teacher
           },
         },
         include: {
-          classroom: true, // Include the classrooms in the returned object
+          classrooms: true, // Include the classrooms in the returned object
         },
       });
 
