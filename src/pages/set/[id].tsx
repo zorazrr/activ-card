@@ -102,6 +102,7 @@ const Set = ({
               answerMode={set?.answer_mode}
             />
           ) : (
+            // TODO: Replace with return to dashboard / restart set options
             <div>No card available</div>
           )}
           <div className="w-screen flex-col items-center justify-center">
@@ -111,7 +112,6 @@ const Set = ({
             <div className="flex flex-row justify-between">
               <button
                 onClick={() => setCurIndex(curIndex - 1)}
-                disabled={curIndex === 0}
                 className={`flex flex-row items-center justify-center p-8 ${curIndex === 0 ? "invisible" : "visible"}`}
               >
                 <Icon as={ChevronLeftIcon} />
@@ -119,11 +119,8 @@ const Set = ({
               </button>
               <button
                 onClick={() => setCurIndex(curIndex + 1)}
-                // If the user is at the end or if the user has not attempted to answer the question, disable the next button
-                disabled={
-                  curIndex === cards.length - 1 || maxIndex === curIndex
-                }
-                className={`flex flex-row items-center justify-center p-8 ${curIndex === cards.length - 1 || maxIndex === curIndex ? "invisible" : "visible"}`}
+                // If the user is at the end or if the user has not attempted to answer the question, hide the next button
+                className={`flex flex-row items-center justify-center p-8 ${maxIndex === curIndex ? "invisible" : "visible"}`}
               >
                 Next
                 <Icon as={ChevronRightIcon} />
