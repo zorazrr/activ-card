@@ -149,9 +149,13 @@ export default function TeacherDashboard() {
               onClick={onAddClass}
             />
             <Text className="h3 leading-9 text-darkBlue" textAlign="center">
-              Add Class To Get Started
+              {session?.user.role &&
+                session.user.role == Role.TEACHER &&
+                "Add Class To Get Started"}
+              {session?.user.role &&
+                session.user.role == Role.STUDENT &&
+                "Join Class To Get Started"}
             </Text>
-            {/* TODO: FIX "Text" */}
           </Flex>
         )}
         {session?.user.role && session.user.role == Role.TEACHER && (

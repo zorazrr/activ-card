@@ -8,6 +8,9 @@ import {
   ModalBody,
   Button,
   Input,
+  HStack,
+  PinInput,
+  PinInputField,
 } from "@chakra-ui/react";
 import { ClassCode, Classroom } from "@prisma/client";
 import { useRouter } from "next/router";
@@ -29,10 +32,9 @@ const JoinClassModal = ({
   const [value, setValue] = useState("");
   const router = useRouter();
 
-  const handleInputChange = (e: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setValue(e.target.value);
+  const handleInputChange = (value: string) => {
+    console.log(value);
+    setValue(value);
   };
 
   const handleClose = () => {
@@ -49,6 +51,7 @@ const JoinClassModal = ({
         {
           onSuccess: async (response: AddClassRes) => {
             setJoinedClass(response.class);
+            handleClose();
           },
         },
       );
@@ -62,12 +65,18 @@ const JoinClassModal = ({
         <ModalHeader>Join Through Code Below</ModalHeader>
         <ModalBody>
           <>
-            <Input
-              value={value}
-              onChange={handleInputChange}
-              placeholder="Enter your code"
-              size="sm"
-            />
+            <HStack>
+              <PinInput
+                onChange={handleInputChange}
+                type="alphanumeric"
+                size="lg"
+              >
+                <PinInputField bg="gray.300" />
+                <PinInputField bg="gray.300" />
+                <PinInputField bg="gray.300" />
+                <PinInputField bg="gray.300" />
+              </PinInput>
+            </HStack>
 
             <Button type="submit" onClick={handleJoinClass}>
               Submit
