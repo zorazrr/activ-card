@@ -17,11 +17,22 @@ import { ClassCode, Classroom } from "@prisma/client";
 import { useRouter } from "next/router";
 import { AddClassRes } from "~/utils/types";
 import { PinInput, PinInputField } from "@chakra-ui/react";
+import { UseTRPCMutationResult } from "@trpc/react-query/shared";
 
-const AddClassModal = ({ isOpen, onClose, addClassAPI, teacherId }) => {
+const AddClassModal = ({
+  isOpen,
+  onClose,
+  addClassAPI,
+  teacherId,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  addClassAPI: UseTRPCMutationResult<any, any, any, any>;
+  teacherId: string;
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [createdClass, setCreatedClass] = useState<Classroom | null>(null);
-  const [classCode, setClassCode] = useState<ClassCode | null>("");
+  const [classCode, setClassCode] = useState<ClassCode | null>(null);
   const [value, setValue] = useState("");
   const router = useRouter();
 
