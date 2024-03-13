@@ -13,7 +13,7 @@ import Link from "next/link";
 
 import React, { useEffect, type Dispatch, type SetStateAction } from "react";
 import ClassRadioButton from "./ClassRadioButton";
-import { type Classroom } from "@prisma/client";
+import { Role, type Classroom } from "@prisma/client";
 import { AddIcon } from "@chakra-ui/icons";
 
 const Sidebar = ({
@@ -22,12 +22,14 @@ const Sidebar = ({
   currentClass,
   onAddClass,
   isLoading,
+  accountType,
 }: {
   classes: Classroom[];
   currentClass: Classroom;
   setCurrentClass: Dispatch<SetStateAction<Classroom | null>>;
   onAddClass: () => void;
   isLoading: boolean;
+  accountType: Role | undefined;
 }) => {
   const { getRadioProps } = useRadioGroup({
     name: "classList",

@@ -37,13 +37,21 @@ export const userRouter = createTRPCRouter({
         },
       });
 
-      await ctx.db.teacher.create({
-        data: {
-          name: input.name,
-          user_id: input.userId,
-        },
-      });
-      // TODO : Create student on set role
+      if (getRoleEnum(input.role) == Role.TEACHER) {
+        await ctx.db.teacher.create({
+          data: {
+            name: input.name,
+            user_id: input.userId,
+          },
+        });
+      } else if (getRoleEnum(input.role) == Role.STUDENT) {
+        await ctx.db.student.create({
+          data: {
+            name: input.name,
+            user_id: input.userId,
+          },
+        });
+      }
 
       return updatedUser;
     }),
