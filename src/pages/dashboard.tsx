@@ -123,8 +123,10 @@ export default function TeacherDashboard() {
             >
               <Text className="h3 leading-9 text-darkBlue">Welcome to</Text>
               <Text className="h3 text-mediumBlue">{currentClass?.name}</Text>
-              <DashboardTabs currentClass={currentClass} />
-              {/* // TODO: Pass down class change */}
+              <DashboardTabs
+                currentClass={currentClass}
+                accountType={session?.user.role}
+              />
             </Box>
           </>
         ) : (
