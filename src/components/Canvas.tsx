@@ -1,5 +1,5 @@
 // import dynamic from "next/dynamic";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, type Dispatch } from "react";
 import CanvasDraw from "react-canvas-draw";
 import { CirclePicker } from "react-color";
 import { VStack, useDisclosure } from "@chakra-ui/react";
@@ -31,7 +31,7 @@ const colors = [
   "#607d8b",
 ];
 
-function Canvas({ setCurIndex }: { setCurIndex: Dispatch<any> }) {
+function Canvas({ setShowCanvas }: { setShowCanvas: Dispatch<any> }) {
   const [color, setColor] = useState("#ffffff");
   const canvasRef =
     useRef<React.MutableRefObject<HTMLCanvasElement | undefined>>();
@@ -60,7 +60,7 @@ function Canvas({ setCurIndex }: { setCurIndex: Dispatch<any> }) {
           <div className="h4" style={{ color: "white", fontWeight: 500 }}>
             A break to re-center &#10024;
           </div>
-          <Countdown />
+          <Countdown setShowCanvas={setShowCanvas} />
           <div>
             <CanvasDraw
               ref={canvasRef}
@@ -99,7 +99,7 @@ function Canvas({ setCurIndex }: { setCurIndex: Dispatch<any> }) {
         </VStack>
       </div>
       <ImageModal
-        onClose={() => setCurIndex(4)}
+        onClose={() => setShowCanvas(false)}
         isOpen={isOpen}
         images={images}
       />
