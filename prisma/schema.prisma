@@ -73,11 +73,11 @@ model Student {
 }
 
 model Teacher {
-  id        String      @id @default(auto()) @map("_id") @db.ObjectId
-  user_id   String      @unique @db.ObjectId
-  user      User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  name      String
-  classroom Classroom[]
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  user_id    String      @unique @db.ObjectId
+  user       User        @relation(fields: [user_id], references: [id])
+  name       String
+  classrooms Classroom[]
 }
 
 model Set {

@@ -37,7 +37,7 @@ const Redirect = () => {
           onClose();
           await signIn("google", {
             callbackUrl: "/dashboard",
-            redirect: false,
+            redirect: true,
           });
         },
       },
@@ -66,7 +66,7 @@ const Redirect = () => {
           } else {
             await signIn("google", {
               callbackUrl: "/dashboard",
-              redirect: false,
+              redirect: true,
             });
           }
         },

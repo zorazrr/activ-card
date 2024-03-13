@@ -24,33 +24,61 @@ export default function TeacherDashboard() {
   const { data: session } = useSession();
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
   const [currentClass, setCurrentClass] = useState<Classroom | null>(null);
-  const teacherId = session?.user?.id;
+  const id = session?.user?.id;
   const router = useRouter();
 
-  const { isLoading, refetch } = api.teacher.getTeacherAndClassrooms.useQuery(
-    {
-      teacherId: teacherId!,
-    },
-    {
-      onSuccess: (res) => {
-        if (res) {
-          setClassrooms(res.classroom as Classroom[]);
-          if (router.query.class) {
-            res.classroom.forEach((item: Classroom, index: number) => {
-              if (item.id == router.query.class) {
-                setCurrentClass(res.classroom[index]);
+  const { isLoading, refetch } =
+    session?.user.role == Role.TEACHER
+      ? api.teacher.getTeacherAndClassrooms.useQuery(
+          {
+            teacherId: id!,
+          },
+          {
+            onSuccess: (res) => {
+              if (res) {
+                setClassrooms(res.classrooms as Classroom[]);
+                if (router.query.class) {
+                  res.classrooms.forEach((item: Classroom, index: number) => {
+                    if (item.id == router.query.class) {
+                      setCurrentClass(res.classrooms[index]);
+                    }
+                  });
+                } else {
+                  setCurrentClass(res.classrooms[0]);
+                }
               }
-            });
-          } else {
-            setCurrentClass(res.classroom[0]);
-          }
-        }
-      },
-      enabled: !!teacherId,
-      refetchOnWindowFocus: false,
-      retry: false,
-    },
-  );
+            },
+            enabled:
+              !!id && session?.user.role && session?.user.role == Role.TEACHER,
+            refetchOnWindowFocus: false,
+            retry: false,
+          },
+        )
+      : api.student.getStudentAndClassrooms.useQuery(
+          {
+            studentId: id!,
+          },
+          {
+            onSuccess: (res) => {
+              if (res) {
+                setClassrooms(res.classrooms as Classroom[]);
+                if (router.query.class) {
+                  res.classrooms.forEach((item: Classroom, index: number) => {
+                    if (item.id == router.query.class) {
+                      setCurrentClass(res.classrooms[index]);
+                    }
+                  });
+                } else {
+                  setCurrentClass(res.classrooms[0]);
+                }
+              }
+            },
+            enabled:
+              !!id && session?.user.role && session?.user.role == Role.STUDENT,
+            refetchOnWindowFocus: false,
+            retry: false,
+          },
+        );
 
   const onAddClass = () => {
     onOpen();
@@ -62,9 +90,10 @@ export default function TeacherDashboard() {
   };
 
   const addClassroom = api.classroom.addClassroomForTeacher.useMutation();
+  const joinClassroom = api.student.joinStudentToClassroom.useMutation();
 
   return (
-    <ProtectedPage requiredRole={Role.TEACHER}>
+    <ProtectedPage>
       <HStack height="100%" className="main-class min-h-screen">
         <Sidebar
           classes={classrooms}
@@ -72,6 +101,7 @@ export default function TeacherDashboard() {
           setCurrentClass={setCurrentClass}
           onAddClass={onAddClass}
           isLoading={isLoading}
+          accountType={session?.user.role}
         />
         {isLoading ? (
           <div
@@ -94,6 +124,7 @@ export default function TeacherDashboard() {
               <Text className="h3 leading-9 text-darkBlue">Welcome to</Text>
               <Text className="h3 text-mediumBlue">{currentClass?.name}</Text>
               <DashboardTabs currentClass={currentClass} />
+              {/* // TODO: Pass down class change */}
             </Box>
           </>
         ) : (
@@ -115,19 +146,25 @@ export default function TeacherDashboard() {
               icon={<AddIcon color="blue.900" />}
               _hover={{ bg: "gray.300", borderColor: "gray.300" }}
               p={20}
-              onClick={onAddClass}
+              onClick={onAddClass} // TODO FIX THIS
             />
             <Text className="h3 leading-9 text-darkBlue" textAlign="center">
               Add Class To Get Started
             </Text>
+            {/* TODO: FIX "Text" */}
           </Flex>
         )}
-        <AddClassModal
-          isOpen={isOpen}
-          onClose={handleClose}
-          addClassAPI={addClassroom}
-          teacherId={session?.user.id}
-        />
+        {
+          session?.user.role && session.user.role == Role.TEACHER && (
+            <AddClassModal
+              isOpen={isOpen}
+              onClose={handleClose}
+              addClassAPI={addClassroom}
+              teacherId={session?.user.id}
+            />
+          )
+          // TODO: Show a different modal for student
+        }
       </HStack>
     </ProtectedPage>
   );
