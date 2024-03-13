@@ -112,7 +112,7 @@ const Set = ({
               <button
                 onClick={() => setCurIndex(curIndex - 1)}
                 disabled={curIndex === 0}
-                className="flex flex-row items-center justify-center p-8"
+                className={`flex flex-row items-center justify-center p-8 ${curIndex === 0 ? "invisible" : "visible"}`}
               >
                 <Icon as={ChevronLeftIcon} />
                 Back
@@ -123,7 +123,7 @@ const Set = ({
                 disabled={
                   curIndex === cards.length - 1 || maxIndex === curIndex
                 }
-                className="flex flex-row items-center justify-center p-8"
+                className={`flex flex-row items-center justify-center p-8 ${curIndex === cards.length - 1 || maxIndex === curIndex ? "invisible" : "visible"}`}
               >
                 Next
                 <Icon as={ChevronRightIcon} />
