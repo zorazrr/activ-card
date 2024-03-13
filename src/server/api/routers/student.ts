@@ -39,6 +39,10 @@ export const studentRouter = createTRPCRouter({
         },
       });
 
+      console.log(classCodeInfo);
+      console.log(input.classCode);
+      console.log(input.studentId);
+
       if (!classCodeInfo) {
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -48,7 +52,7 @@ export const studentRouter = createTRPCRouter({
 
       const student = await ctx.db.student.update({
         where: {
-          id: input.studentId,
+          user_id: input.studentId,
         },
         data: {
           classrooms: {
