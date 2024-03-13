@@ -44,19 +44,27 @@ model SetProgress {
 }
 
 model Classroom {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
   name        String
-  student_ids String[]  @db.ObjectId
-  students    Student[] @relation(fields: [student_ids], references: [id])
-  teacher_id  String    @db.ObjectId
-  teacher     Teacher   @relation(fields: [teacher_id], references: [id])
+  student_ids String[]   @db.ObjectId
+  students    Student[]  @relation(fields: [student_ids], references: [id])
+  teacher_id  String     @db.ObjectId
+  teacher     Teacher    @relation(fields: [teacher_id], references: [id])
   sets        Set[]
+  classCode   ClassCode?
+}
+
+model ClassCode {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  code         String    @unique
+  classroom_id String    @unique @db.ObjectId
+  class        Classroom @relation(fields: [classroom_id], references: [id], onDelete: Cascade)
 }
 
 model Student {
   id            String        @id @default(auto()) @map("_id") @db.ObjectId
   user_id       String        @unique @db.ObjectId
-  user          User          @relation(fields: [user_id], references: [id])
+  user          User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
   name          String
   classroom_ids String[]      @db.ObjectId
   classrooms    Classroom[]   @relation(fields: [classroom_ids], references: [id])

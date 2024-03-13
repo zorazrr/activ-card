@@ -88,10 +88,10 @@ const Set = ({
               <Icon as={InfoOutlineIcon} color="lightgray" />
             </Tooltip>
           </p>
-          {curIndex >= 0 && curIndex < cards.length ? (
+          {curIndex >= 0 && curIndex < cards.length && cards[curIndex] ? (
             <FlashCard
               key={cards[curIndex]!.id}
-              card={cards[curIndex]}
+              card={cards[curIndex]!}
               onCorrectCallback={() => {
                 handleCorrectAnswer();
               }}

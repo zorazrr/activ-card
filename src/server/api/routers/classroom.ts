@@ -47,15 +47,36 @@ export const classroomRouter = createTRPCRouter({
           id: teacher.id,
         },
         data: {
-          classroom: {
+          classrooms: {
             connect: { id: classroom.id }, // Connect the new classroom to the teacher
           },
         },
         include: {
-          classroom: true, // Include the classrooms in the returned object
+          classrooms: true, // Include the classrooms in the returned object
         },
       });
 
-      return classroom;
+      // generate classroom code
+
+      const classCode = await ctx.db.classCode.create({
+        data: {
+          code: genClassCode(4), // TODO_VASU: Make sure this code doesn't already exist in the DB
+          classroom_id: classroom.id,
+        },
+      });
+
+      return {
+        class: classroom,
+        classCode: classCode,
+      };
     }),
 });
+
+const genClassCode = (length: number) => {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+};

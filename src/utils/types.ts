@@ -1,3 +1,5 @@
+import { Classroom, ClassCode } from "@prisma/client";
+
 interface TermDefPair {
   term: string;
   def: string;
@@ -21,4 +23,9 @@ interface CardRemoveParams {
   id: number;
 }
 
-export type { CardUpdateParams, CardRemoveParams, CardInfo };
+interface AddClassRes {
+  class: Classroom;
+  classCode: ClassCode;
+}
+
+export type { CardUpdateParams, CardRemoveParams, CardInfo, AddClassRes };

@@ -8,7 +8,7 @@ import {
   useDisclosure,
   Spinner,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DashboardTabs from "~/components/DashboardTabs";
 import Sidebar from "~/components/SideBar/SideBar";
 import { api } from "~/utils/api";
@@ -17,6 +17,7 @@ import { useSession } from "next-auth/react";
 import ProtectedPage from "~/components/ProtectedPage";
 import { AddIcon } from "@chakra-ui/icons";
 import AddClassModal from "~/components/AddClassModal";
+import JoinClassModal from "~/components/JoinClassModal";
 import { useRouter } from "next/router";
 
 export default function TeacherDashboard() {
@@ -101,7 +102,6 @@ export default function TeacherDashboard() {
           setCurrentClass={setCurrentClass}
           onAddClass={onAddClass}
           isLoading={isLoading}
-          accountType={session?.user.role}
         />
         {isLoading ? (
           <div
@@ -123,8 +123,10 @@ export default function TeacherDashboard() {
             >
               <Text className="h3 leading-9 text-darkBlue">Welcome to</Text>
               <Text className="h3 text-mediumBlue">{currentClass?.name}</Text>
-              <DashboardTabs currentClass={currentClass} />
-              {/* // TODO: Pass down class change */}
+              <DashboardTabs
+                currentClass={currentClass}
+                accountType={session?.user.role}
+              />
             </Box>
           </>
         ) : (
@@ -146,25 +148,34 @@ export default function TeacherDashboard() {
               icon={<AddIcon color="blue.900" />}
               _hover={{ bg: "gray.300", borderColor: "gray.300" }}
               p={20}
-              onClick={onAddClass} // TODO FIX THIS
+              onClick={onAddClass}
             />
             <Text className="h3 leading-9 text-darkBlue" textAlign="center">
-              Add Class To Get Started
+              {session?.user.role &&
+                session.user.role == Role.TEACHER &&
+                "Add Class To Get Started"}
+              {session?.user.role &&
+                session.user.role == Role.STUDENT &&
+                "Join Class To Get Started"}
             </Text>
-            {/* TODO: FIX "Text" */}
           </Flex>
         )}
-        {
-          session?.user.role && session.user.role == Role.TEACHER && (
-            <AddClassModal
-              isOpen={isOpen}
-              onClose={handleClose}
-              addClassAPI={addClassroom}
-              teacherId={session?.user.id}
-            />
-          )
-          // TODO: Show a different modal for student
-        }
+        {session?.user.role && session.user.role == Role.TEACHER && (
+          <AddClassModal
+            isOpen={isOpen}
+            onClose={handleClose}
+            addClassAPI={addClassroom}
+            teacherId={session?.user.id}
+          />
+        )}
+        {session?.user.role && session.user.role == Role.STUDENT && (
+          <JoinClassModal
+            isOpen={isOpen}
+            onClose={handleClose}
+            joinClassAPI={joinClassroom}
+            studentId={session?.user.id}
+          />
+        )}
       </HStack>
     </ProtectedPage>
   );

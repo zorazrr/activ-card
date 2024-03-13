@@ -49,7 +49,7 @@ export default function EditSet() {
       onSuccess: (data) => {
         if (data) {
           setSetName(data.name);
-          setSetDescription(data.description);
+          setSetDescription(data.description!);
           const mappedCards: CardInfo[] = data.cards.map((card: Card) => {
             return { term: card.term, def: card.definition, id: card.id };
           });
