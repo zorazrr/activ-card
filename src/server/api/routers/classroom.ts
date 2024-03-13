@@ -60,7 +60,7 @@ export const classroomRouter = createTRPCRouter({
 
       const classCode = await ctx.db.classCode.create({
         data: {
-          code: genClassCode(4),
+          code: genClassCode(4), // TODO_VASU: Make sure this code doesn't already exist in the DB
           classroom_id: classroom.id,
         },
       });
