@@ -101,7 +101,6 @@ export default function TeacherDashboard() {
           setCurrentClass={setCurrentClass}
           onAddClass={onAddClass}
           isLoading={isLoading}
-          accountType={session?.user.role}
         />
         {isLoading ? (
           <div
