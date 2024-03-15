@@ -1,11 +1,9 @@
 import {
-  Box,
   CircularProgress,
   CircularProgressLabel,
   HStack,
   Select,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
@@ -14,11 +12,7 @@ import {
   Tr,
   VStack,
 } from "@chakra-ui/react";
-import ProgressBar from "../Progress/ProgressBar";
 import ProgressMetric from "../Progress/ProgressMetric";
-import { Card, Student } from "@prisma/client";
-import { useState } from "react";
-import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 
 const Metrics = () => {
   const students = [
