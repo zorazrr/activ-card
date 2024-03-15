@@ -31,6 +31,7 @@ const Redirect = () => {
         userId: session!.user?.id,
         role: role,
         name: session!.user.name || "",
+        email: session!.user.email || "",
       },
       {
         onSuccess: async () => {
@@ -57,6 +58,7 @@ const Redirect = () => {
           ? (router.query.role as string)
           : session.user.role,
         name: session.user.name || "",
+        email: session.user.email || "",
       },
       {
         onSuccess: async (response) => {

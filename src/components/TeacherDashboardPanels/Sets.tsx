@@ -12,6 +12,7 @@ const Sets = ({
 }: {
   currentClass: Classroom | undefined | null;
 }) => {
+  console.log(currentClass);
   const [sets, setSets] = useState<Set[] | undefined | null>();
 
   const { data, isLoading, refetch } = api.set.getSetByClassroom.useQuery(
@@ -75,6 +76,7 @@ const Sets = ({
             _hover={{ bg: "gray.300", borderColor: "gray.300" }}
             p={20}
           />
+          {/* TODO: Remove this for student */}
         </Link>
       </HStack>
     </div>

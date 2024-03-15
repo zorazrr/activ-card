@@ -13,7 +13,7 @@ import Link from "next/link";
 
 import React, { useEffect, type Dispatch, type SetStateAction } from "react";
 import ClassRadioButton from "./ClassRadioButton";
-import { Role, type Classroom } from "@prisma/client";
+import { type Classroom } from "@prisma/client";
 import { AddIcon } from "@chakra-ui/icons";
 
 const Sidebar = ({
@@ -115,6 +115,7 @@ const Sidebar = ({
           />
           <Text className={"h5"} color="white">
             Add Class
+            {/* // TODO: Make this conditional */}
           </Text>
         </VStack>
       )}
