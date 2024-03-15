@@ -29,14 +29,14 @@ const DashboardTabs = ({
         </TabPanel>
         <TabPanel overflowY="scroll"></TabPanel>
         {accountType && accountType == Role.TEACHER && (
-          <>
-            <TabPanel overflowY="scroll">
-              <StudentRoster />
-            </TabPanel>
-            <TabPanel overflowY="scroll">
-              <Metrics />
-            </TabPanel>
-          </>
+          <TabPanel overflowY="scroll">
+            <StudentRoster currentClass={currentClass} />
+          </TabPanel>
+        )}
+        {accountType && accountType == Role.TEACHER && (
+          <TabPanel overflowY="scroll">
+            <Metrics />
+          </TabPanel>
         )}
       </TabPanels>
     </Tabs>

@@ -52,7 +52,7 @@ const AddClassModal = ({
 
   const handleCreateClass = async () => {
     if (teacherId) {
-      const apiResponse = await addClassAPI.mutate(
+      await addClassAPI.mutate(
         { teacherId: teacherId, className: value },
         {
           onSuccess: async (response: AddClassRes) => {
