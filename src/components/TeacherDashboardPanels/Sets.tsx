@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Card from "../Card";
-import { type Classroom, type Set } from "@prisma/client";
+import { Role, type Classroom, type Set } from "@prisma/client";
 import { api } from "~/utils/api";
 import { Box, HStack, Icon, IconButton, Spinner } from "@chakra-ui/react";
 import Link from "next/link";
@@ -9,8 +9,10 @@ import { AddIcon } from "@chakra-ui/icons";
 
 const Sets = ({
   currentClass,
+  accountType,
 }: {
   currentClass: Classroom | undefined | null;
+  accountType: Role | undefined;
 }) => {
   console.log(currentClass);
   const [sets, setSets] = useState<Set[] | undefined | null>();
@@ -65,18 +67,19 @@ const Sets = ({
           );
         })}
         <Link href={`/create/set/medium?classId=${currentClass!.id}`}>
-          <IconButton
-            mt={5}
-            borderRadius={20}
-            variant="outline"
-            aria-label="Add card"
-            fontSize="5vh"
-            bg={"gray.200"}
-            icon={<AddIcon color="blue.900" />}
-            _hover={{ bg: "gray.300", borderColor: "gray.300" }}
-            p={20}
-          />
-          {/* TODO: Remove this for student */}
+          {accountType && accountType == Role.TEACHER && (
+            <IconButton
+              mt={5}
+              borderRadius={20}
+              variant="outline"
+              aria-label="Add card"
+              fontSize="5vh"
+              bg={"gray.200"}
+              icon={<AddIcon color="blue.900" />}
+              _hover={{ bg: "gray.300", borderColor: "gray.300" }}
+              p={20}
+            />
+          )}
         </Link>
       </HStack>
     </div>
