@@ -22,12 +22,14 @@ const Sidebar = ({
   currentClass,
   onAddClass,
   isLoading,
+  accountType,
 }: {
   classes: Classroom[];
   currentClass: Classroom;
   setCurrentClass: Dispatch<SetStateAction<Classroom | null>>;
   onAddClass: () => void;
   isLoading: boolean;
+  accountType: Role | undefined;
 }) => {
   const { getRadioProps } = useRadioGroup({
     name: "classList",
@@ -114,7 +116,8 @@ const Sidebar = ({
             onClick={onAddClass}
           />
           <Text className={"h5"} color="white">
-            Add Class
+            {accountType && accountType == Role.STUDENT && "Join Class"}
+            {accountType && accountType == Role.TEACHER && "Add Class"}
           </Text>
         </VStack>
       )}

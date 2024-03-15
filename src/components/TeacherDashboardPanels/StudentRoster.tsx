@@ -10,23 +10,15 @@ import {
   Td,
   HStack,
 } from "@chakra-ui/react";
+import { Classroom, Student } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
-const StudentRoster = () => {
-  // mock students
-  const students = [
-    { name: "Alice Lara", email: "alice@gmail.com" },
-    { name: "Archna Sobti", email: "archna@gmail.com" },
-    { name: "Bob Kinsey", email: "bob@gmail.com" },
-    { name: "Charlie McIntosh", email: "charlie@gmail.com" },
-    { name: "David Zhang", email: "david@gmail.com" },
-    { name: "Eva Franz", email: "eva@gmail.com" },
-    { name: "Frank Evans", email: "frank@gmail.com" },
-    { name: "Grace Todd", email: "grace@gmail.com" },
-    { name: "Henry Cavill", email: "henry@gmail.com" },
-    { name: "Ivy June", email: "ivy@gmail.com" },
-    { name: "Vasu Chalasani", email: "vasu@gmail.com" },
-    { name: "Zora Zhang", email: "zora@gmail.com" },
-  ];
+const StudentRoster = ({
+  currentClass,
+}: {
+  currentClass: Classroom | undefined | null;
+}) => {
+  const { data: session, status } = useSession();
 
   return (
     <div>
@@ -40,15 +32,15 @@ const StudentRoster = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {students.map((student) => (
+            {currentClass?.students.map((student: Student) => (
               <>
                 <Tr key={student.name}>
                   <Td>{student.name}</Td>
                   <Td>{student.email}</Td>
                   <Td>
                     <HStack gap={4}>
-                      <EditIcon w={8} h={8} color="darkGray" />
-                      <DeleteIcon w={8} h={8} color="darkGray" />
+                      {/* <EditIcon w={8} h={8} color="darkGray" /> */}
+                      {/* <DeleteIcon w={8} h={8} color="darkGray" /> */}
                     </HStack>
                   </Td>
                 </Tr>

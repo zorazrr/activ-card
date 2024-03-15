@@ -7,7 +7,14 @@ import { getRoleEnum } from "~/utils/helpers";
 
 export const userRouter = createTRPCRouter({
   setUserRole: publicProcedure
-    .input(z.object({ name: z.string(), userId: z.string(), role: z.string() }))
+    .input(
+      z.object({
+        name: z.string(),
+        userId: z.string(),
+        role: z.string(),
+        email: z.string(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.db.user.findUnique({
         where: {
@@ -48,6 +55,7 @@ export const userRouter = createTRPCRouter({
         await ctx.db.student.create({
           data: {
             name: input.name,
+            email: input.email,
             user_id: input.userId,
           },
         });

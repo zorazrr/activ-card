@@ -37,8 +37,8 @@ const JoinClassModal = ({
     setValue(value);
   };
 
-  const handleClose = () => {
-    router.push(`/dashboard?class=${joinedClass?.id}`);
+  const handleClose = (classRoom: Classroom) => {
+    router.push(`/dashboard?class=${classRoom?.id}`);
     setJoinedClass(null);
     setValue("");
     onClose();
@@ -51,7 +51,7 @@ const JoinClassModal = ({
         {
           onSuccess: async (response: AddClassRes) => {
             setJoinedClass(response.class);
-            handleClose();
+            handleClose(response.class);
           },
         },
       );
