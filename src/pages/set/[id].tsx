@@ -2,7 +2,15 @@ import { useEffect, useState } from "react"; // Import useState hook
 import { useRouter } from "next/router";
 import FlashCard from "~/components/Flashcard";
 import { api } from "~/utils/api";
-import { Icon, Spinner, Tooltip, useToast } from "@chakra-ui/react";
+import {
+  HStack,
+  Icon,
+  Spinner,
+  Tooltip,
+  VStack,
+  useToast,
+} from "@chakra-ui/react";
+import { MdHome } from "react-icons/md";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -11,6 +19,7 @@ import {
 import Canvas from "~/components/Canvas";
 import { type Card } from "@prisma/client";
 import ProgressBar from "~/components/Progress/ProgressBar";
+import StyledButton from "~/components/Button";
 
 const Set = ({
   tempIdx,
@@ -94,6 +103,17 @@ const Set = ({
     });
   };
 
+  const restartSet = () => {
+    setFlashcards(cards);
+    setCurIndex(0);
+    setMaxIndex(0);
+    setShowCanvas(false); // Redundant but in case
+  };
+
+  const navigateHome = () => {
+    window.location.href = `../dashboard`;
+  };
+
   return (
     <div className="flex h-screen w-screen flex-col items-start justify-start">
       {showCanvas ? (
@@ -101,40 +121,59 @@ const Set = ({
       ) : (
         <>
           <p className="w-full pb-16 pt-8 text-center font-bold">
+            <Icon
+              as={MdHome}
+              position="absolute"
+              left={5}
+              boxSize={6}
+              onClick={navigateHome}
+            />
             {set.name}
             &nbsp;
             <Tooltip label={`Mode: ${set.check_mode}, ${set.answer_mode}`}>
               <Icon as={InfoOutlineIcon} color="lightgray" />
             </Tooltip>
           </p>
-          <ProgressBar
-            percentage={(100 * maxIndex) / cards.length}
-            shouldApplyMargin={true}
-          />
           {curIndex >= 0 &&
           flashcards &&
           curIndex < flashcards.length &&
           flashcards[curIndex] ? (
-            <FlashCard
-              key={flashcards[curIndex]!.id}
-              card={flashcards[curIndex]!}
-              onCorrectCallback={() => {
-                handleCorrectAnswer();
-              }}
-              onIncorrectCallback={() => {
-                handleIncorrectAnswer();
-              }}
-              checkMode={set?.check_mode}
-              answerMode={set?.answer_mode}
-              moveCurrentCardToEnd={moveCurrentCardToEnd}
-              curIndex={curIndex}
-              maxIndex={maxIndex}
-              setLength={flashcards.length}
-              setMaxIndex={setMaxIndex}
-            />
+            <>
+              <ProgressBar
+                percentage={(100 * maxIndex) / cards.length}
+                shouldApplyMargin={true}
+              />
+              <FlashCard
+                key={flashcards[curIndex]!.id}
+                card={flashcards[curIndex]!}
+                onCorrectCallback={() => {
+                  handleCorrectAnswer();
+                }}
+                onIncorrectCallback={() => {
+                  handleIncorrectAnswer();
+                }}
+                checkMode={set?.check_mode}
+                answerMode={set?.answer_mode}
+                moveCurrentCardToEnd={moveCurrentCardToEnd}
+                curIndex={curIndex}
+                maxIndex={maxIndex}
+                setLength={flashcards.length}
+                setMaxIndex={setMaxIndex}
+              />
+            </>
           ) : (
-            // TODO: Replace with return to dashboard / restart set options
-            <div>No card available</div>
+            <div className="flex h-full w-screen flex-col items-center justify-center gap-y-5">
+              <StyledButton
+                label="Return Home"
+                onClick={navigateHome}
+                colorInd={0}
+              />
+              <StyledButton
+                label="Restart Set"
+                onClick={restartSet}
+                colorInd={1}
+              />
+            </div>
           )}
           <div className="align-center w-screen flex-col items-center justify-center">
             <div className="flex flex-row justify-between">
