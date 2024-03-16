@@ -38,6 +38,7 @@ function Canvas({ setShowCanvas }: { setShowCanvas: Dispatch<any> }) {
 
   const [images, setImages] = useState<Image[] | undefined>();
   const [dataURL, setDataURL] = useState("");
+  const [didSubmit, setDidSubmit] = useState(false);
 
   const { onClose, onOpen, isOpen } = useDisclosure();
 
@@ -60,7 +61,7 @@ function Canvas({ setShowCanvas }: { setShowCanvas: Dispatch<any> }) {
           <div className="h4" style={{ color: "white", fontWeight: 500 }}>
             A break to re-center &#10024;
           </div>
-          <Countdown setShowCanvas={setShowCanvas} />
+          <Countdown setShowCanvas={setShowCanvas} didSubmit={didSubmit} />
           <div>
             <CanvasDraw
               ref={canvasRef}
@@ -79,6 +80,7 @@ function Canvas({ setShowCanvas }: { setShowCanvas: Dispatch<any> }) {
           <br></br>
           <StyledButton
             onClick={() => {
+              setDidSubmit(true);
               if (canvasRef.current) {
                 const dataURL = canvasRef.current.getDataURL();
                 setDataURL(dataURL);
