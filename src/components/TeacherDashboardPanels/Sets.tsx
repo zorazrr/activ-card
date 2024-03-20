@@ -14,7 +14,6 @@ const Sets = ({
   currentClass: Classroom | undefined | null;
   accountType: Role | undefined;
 }) => {
-  console.log(currentClass);
   const [sets, setSets] = useState<Set[] | undefined | null>();
 
   const { data, isLoading, refetch } = api.set.getSetByClassroom.useQuery(
@@ -54,7 +53,6 @@ const Sets = ({
     <div>
       <HStack wrap="wrap">
         {sets?.map((set) => {
-          console.log(sets);
           return (
             <Card
               key={set.id}
