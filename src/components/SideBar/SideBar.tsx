@@ -87,7 +87,7 @@ const Sidebar = ({
             <Spinner color={"white"} />
           </div>
         ) : classes.length ? (
-          <VStack gap={0} overflow="scroll" height="80vh">
+          <VStack gap={0} overflowY="scroll" overflowX="hidden" height="80vh">
             <div className=" w-full">
               <Divider mb={2} />
               <div
