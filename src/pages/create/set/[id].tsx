@@ -122,6 +122,13 @@ export default function EditSet() {
     window.location.href = "../../dashboard";
   };
 
+  useEffect(() => {
+    if (!flashcards || flashcards.length === 0) {
+      setFlashcards([{ term: "", def: "", id: String(tempId) }]);
+      setTempId((prevId) => prevId + 1);
+    }
+  }, [flashcards]);
+
   if (!set?.cards || !set) {
     return <div>Loading...</div>;
   }
