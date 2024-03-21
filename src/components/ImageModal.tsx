@@ -3,13 +3,11 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
-  ModalBody,
   ModalCloseButton,
   type ModalProps,
   Spinner,
-  VStack,
   Button,
+  Flex, // Use Flex instead of Box for layout control
 } from "@chakra-ui/react";
 import { Badge, Role } from "@prisma/client";
 import NextImage from "next/image";
@@ -18,6 +16,7 @@ import { type Image } from "openai/resources/images.mjs";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import StyledButton from "./Button";
 
 const ImageModal = ({
   isOpen,
@@ -64,34 +63,62 @@ const ImageModal = ({
   }, [fileName]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
       <ModalOverlay />
-      <ModalContent minH="300px" backgroundColor={"white"}>
-        <ModalHeader>Your Badge</ModalHeader>
+      <ModalContent
+        minH="50vh"
+        backgroundColor={"white"}
+        display="flex"
+        flexDirection="column" // Ensure vertical stacking
+        style={{ marginTop: "15vh" }}
+      >
+        <ModalHeader textAlign={"center"}>
+          {images?.[0]?.url && "Congratulations on your New Creation!"}
+        </ModalHeader>
         <ModalCloseButton />
-        <VStack>
-          {images?.[0]?.url ? (
+        {/* TODO: Put party streamer animation when sticker is revealed */}
+        <Flex
+          flex="1" // Flex property allows this container to expand
+          flexDirection="column" // Stack children vertically
+          justifyContent="center" // Center children vertically
+          alignItems="center" // Center children horizontally
+        >
+          {images && images[0]?.url ? (
             <>
               <NextImage
                 src={images[0].url}
-                width="500"
-                height="500"
+                width="600"
+                height="600"
                 alt="Your Badges"
+                style={{
+                  paddingLeft: "5vh",
+                  paddingBottom: "2.5vh",
+                  paddingRight: "5vh",
+                }}
               />
               {session && session.user.role == Role.STUDENT && (
-                <Button
-                  onClick={() => {
-                    setFileName(`uploads/${Date.now()}_${session.user.id}`);
-                  }}
-                >
-                  Save It
-                </Button>
+                <div style={{ paddingBottom: "2.5vh" }}>
+                  <StyledButton
+                    label="Save It"
+                    onClick={() => {
+                      setFileName(`uploads/${Date.now()}_${session.user.id}`);
+                    }}
+                    colorInd={1}
+                  ></StyledButton>
+                </div>
               )}
             </>
           ) : (
-            <Spinner />
+            <Flex
+              justifyContent="center" // Center spinner horizontally
+              alignItems="center" // Center spinner vertically
+              width="100%" // Take up full width
+              height="100%" // Take up the remaining height
+            >
+              <Spinner size="xl" /> {/* Optionally adjust the size */}
+            </Flex>
           )}
-        </VStack>
+        </Flex>
       </ModalContent>
     </Modal>
   );
