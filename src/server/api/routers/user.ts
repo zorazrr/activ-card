@@ -22,8 +22,6 @@ export const userRouter = createTRPCRouter({
         },
       });
 
-      console.log(getRoleEnum(input.role));
-
       if (user && user.role !== Role.UNKNOWN) {
         return user; // ensures user role is set only once
       }

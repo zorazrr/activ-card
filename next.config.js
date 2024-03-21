@@ -18,7 +18,10 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: ["oaidalleapiprodscus.blob.core.windows.net"],
+    domains: [
+      "oaidalleapiprodscus.blob.core.windows.net",
+      `${process.env.REACT_APP_S3_BUCKET_NAME}.s3.${process.env.REACT_APP_AWS_REGION}.amazonaws.com`,
+    ],
   },
 };
 

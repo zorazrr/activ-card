@@ -15,11 +15,14 @@ datasource db {
 }
 
 model Badge {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  url         String
-  student_id  String        @db.ObjectId
-  student     Student       @relation(fields: [student_id], references: [id])
-  SetProgress SetProgress[]
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  filename     String
+  student_id   String    @db.ObjectId
+  student      Student   @relation(fields: [student_id], references: [id])
+  set_id       String    @db.ObjectId
+  set          Set       @relation(fields: [set_id], references: [id])
+  classroom_id String    @db.ObjectId
+  classroom    Classroom @relation(fields: [classroom_id], references: [id], onDelete: Cascade)
 }
 
 model Card {
@@ -40,7 +43,6 @@ model SetProgress {
   student         Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
   completed_cards Card[]
   badge_id        String  @db.ObjectId
-  badge           Badge   @relation(fields: [badge_id], references: [id])
 }
 
 model Classroom {
@@ -52,6 +54,7 @@ model Classroom {
   teacher     Teacher    @relation(fields: [teacher_id], references: [id])
   sets        Set[]
   classCode   ClassCode?
+  badge       Badge[]
 }
 
 model ClassCode {
@@ -92,6 +95,7 @@ model Set {
   check_mode   CheckMode
   answer_mode  AnswerMode
   pomodoro     Boolean
+  badge        Badge[]
 }
 
 enum CheckMode {

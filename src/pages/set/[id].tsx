@@ -117,7 +117,7 @@ const Set = ({
   return (
     <div className="flex h-screen w-screen flex-col items-start justify-start">
       {showCanvas ? (
-        <Canvas setShowCanvas={setShowCanvas} />
+        <Canvas setShowCanvas={setShowCanvas} setId={setId as string} />
       ) : (
         <>
           <p className="w-full pb-16 pt-8 text-center font-bold">

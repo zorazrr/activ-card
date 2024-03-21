@@ -43,7 +43,10 @@ const AddClassModal = ({
   };
 
   const handleClose = () => {
-    router.push(`/dashboard?class=${createdClass?.id}`);
+    if (createdClass) {
+      router.push(`/dashboard?class=${createdClass?.id}`);
+    }
+
     setCreatedClass(null);
     setCurrentPage(1);
     setValue("");
