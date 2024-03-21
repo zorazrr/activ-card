@@ -21,11 +21,14 @@ import {
   NumberIncrementStepper,
   NumberInputField,
   NumberInputStepper,
+  Tooltip,
+  Icon,
 } from "@chakra-ui/react";
 import StyledModal from "~/components/Modal";
 import { api } from "~/utils/api";
 import { useState } from "react";
 import { type TermDefPair } from "~/utils/types";
+import { InfoOutlineIcon } from "@chakra-ui/icons";
 
 export default function SetCreationMediumSelection() {
   const router = useRouter();
@@ -136,7 +139,12 @@ export default function SetCreationMediumSelection() {
             <form onSubmit={handleSubmit}>
               <VStack spacing={8} w="100%">
                 <FormControl w="100%">
-                  <FormLabel>Type of Set</FormLabel>
+                  <FormLabel>
+                    Type of Set &nbsp;{" "}
+                    <Tooltip label={`Mode:}`}>
+                      <Icon as={InfoOutlineIcon} color="gray" />
+                    </Tooltip>
+                  </FormLabel>
                   <RadioGroup name="setType" defaultValue="Assignment" w="100%">
                     <HStack
                       spacing="auto"
@@ -145,8 +153,9 @@ export default function SetCreationMediumSelection() {
                       gap="5%"
                     >
                       <Radio value="Assignment" w="20%">
-                        Assignment
+                        Assignment &nbsp;
                       </Radio>
+
                       <Radio value="Inverted Classroom" w="20%">
                         Inverted Classroom
                       </Radio>
@@ -175,7 +184,12 @@ export default function SetCreationMediumSelection() {
                   </Select>
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Enable Focus</FormLabel>
+                  <FormLabel>
+                    Enable Pomodoro Focus &nbsp;
+                    <Tooltip label={`Mode:}`}>
+                      <Icon as={InfoOutlineIcon} color="gray" />
+                    </Tooltip>
+                  </FormLabel>
                   <RadioGroup
                     defaultValue="Yes"
                     w="100%"
@@ -193,22 +207,43 @@ export default function SetCreationMediumSelection() {
                   </RadioGroup>
                 </FormControl>
                 {isFocusEnabled && (
-                  <FormControl>
-                    <FormLabel>
-                      Number of Cards Between Pomodoro Breaks
-                    </FormLabel>
-                    <NumberInput
-                      name="pomodoroIntervalLength"
-                      defaultValue={5}
-                      min={3}
-                    >
-                      <NumberInputField />
-                      <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                      </NumberInputStepper>
-                    </NumberInput>
-                  </FormControl>
+                  <>
+                    <FormControl>
+                      <FormLabel>
+                        Number of Cards Between Pomodoro Breaks &nbsp;
+                        <Tooltip label={`Mode:}`}>
+                          <Icon as={InfoOutlineIcon} color="gray" />
+                        </Tooltip>
+                      </FormLabel>
+                      <NumberInput
+                        name="pomodoroIntervalLength"
+                        defaultValue={5}
+                        min={3}
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel>
+                        Length (in Seconds) of Pomodoro Break
+                      </FormLabel>
+                      <NumberInput
+                        name="pomodoroTimeLimit"
+                        defaultValue={60}
+                        min={180}
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                    </FormControl>
+                  </>
                 )}
                 {/* <FormControl w="100%">
                   <FormLabel>Enable Review</FormLabel>
