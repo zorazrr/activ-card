@@ -9,7 +9,7 @@ import {
   Tag,
   useDisclosure,
 } from "@chakra-ui/react";
-import { type Set } from "@prisma/client";
+import { Role, type Set } from "@prisma/client";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import { type UseTRPCMutationResult } from "@trpc/react-query/shared";
@@ -26,6 +26,7 @@ import {
 interface SetCardProps extends Partial<Set> {
   deleteSet: UseTRPCMutationResult<any, any, any, any>;
   numCards: number;
+  accountType: Role | undefined;
 }
 
 const SetCard = (props: SetCardProps) => {
@@ -104,38 +105,40 @@ const SetCard = (props: SetCardProps) => {
                 </Tag>
               </div>
             </Box>
-            <HStack mb={"1vh"}>
-              <IconButton
-                variant="outline"
-                aria-label="Edit card"
-                backgroundColor={"white"}
-                icon={<EditIcon color="blue.900" />}
-                sx={{
-                  transition: "filter 0.1s",
-                  "&:hover": {
-                    filter: "brightness(200%)",
-                  },
-                }}
-                onClick={onEdit}
-              />
+            {props.accountType && props.accountType == Role.TEACHER && (
+              <HStack mb={"1vh"}>
+                <IconButton
+                  variant="outline"
+                  aria-label="Edit card"
+                  backgroundColor={"white"}
+                  icon={<EditIcon color="blue.900" />}
+                  sx={{
+                    transition: "filter 0.1s",
+                    "&:hover": {
+                      filter: "brightness(200%)",
+                    },
+                  }}
+                  onClick={onEdit}
+                />
 
-              <IconButton
-                variant="outline"
-                aria-label="Delete card"
-                backgroundColor={"white"}
-                icon={<DeleteIcon color="blue.900" />}
-                sx={{
-                  transition: "filter 0.1s",
-                  "&:hover": {
-                    filter: "brightness(200%)",
-                  },
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onOpen();
-                }}
-              />
-            </HStack>
+                <IconButton
+                  variant="outline"
+                  aria-label="Delete card"
+                  backgroundColor={"white"}
+                  icon={<DeleteIcon color="blue.900" />}
+                  sx={{
+                    transition: "filter 0.1s",
+                    "&:hover": {
+                      filter: "brightness(200%)",
+                    },
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpen();
+                  }}
+                />
+              </HStack>
+            )}
           </Box>
           <AlertDialog
             isOpen={isOpen}
