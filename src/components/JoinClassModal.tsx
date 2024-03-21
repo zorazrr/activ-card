@@ -37,8 +37,11 @@ const JoinClassModal = ({
     setValue(value);
   };
 
-  const handleClose = (classRoom: Classroom) => {
-    router.push(`/dashboard?class=${classRoom?.id}`);
+  const handleClose = (classRoom: Classroom | undefined) => {
+    if (classRoom) {
+      router.push(`/dashboard?class=${classRoom?.id}`);
+    }
+
     setJoinedClass(null);
     setValue("");
     onClose();
@@ -59,7 +62,7 @@ const JoinClassModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} size={"full"}>
+    <Modal isOpen={isOpen} onClose={() => handleClose(undefined)} size={"full"}>
       <ModalOverlay />
       <ModalContent backgroundColor={"white"}>
         <ModalHeader>Join Through Code Below</ModalHeader>

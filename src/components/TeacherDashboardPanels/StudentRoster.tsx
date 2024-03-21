@@ -11,15 +11,12 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { Classroom, Student } from "@prisma/client";
-import { useSession } from "next-auth/react";
 
 const StudentRoster = ({
   currentClass,
 }: {
   currentClass: Classroom | undefined | null;
 }) => {
-  const { data: session, status } = useSession();
-
   return (
     <div>
       <TableContainer>
