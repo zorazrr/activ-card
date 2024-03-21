@@ -25,7 +25,7 @@ const DashboardTabs = ({
       </TabList>
       <TabPanels>
         <TabPanel overflowY="scroll">
-          <Sets currentClass={currentClass} />
+          <Sets accountType={accountType} currentClass={currentClass} />
         </TabPanel>
         <TabPanel overflowY="scroll"></TabPanel>
         {accountType && accountType == Role.TEACHER && (

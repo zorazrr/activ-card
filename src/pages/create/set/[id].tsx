@@ -1,8 +1,22 @@
-import { Box, HStack, Input, Text, Textarea, VStack } from "@chakra-ui/react";
-import { Card } from "@prisma/client";
+import { ChevronLeftIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Divider,
+  HStack,
+  Icon,
+  Input,
+  Text,
+  Textarea,
+  VStack,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { type Card } from "@prisma/client";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import StyledButton from "~/components/Button";
+import CancelSetCreationOrUpdateModal from "~/components/CancelSetCreationOrUpdateModal";
+import CancelSetCreationModal from "~/components/CancelSetCreationOrUpdateModal";
 import CardPair from "~/components/CardPair";
 import { api } from "~/utils/api";
 import type { CardInfo, TermDefPair } from "~/utils/types";
@@ -15,6 +29,10 @@ export default function EditSet() {
   const setId = useRouter().query.id as string;
   const isEdit = !!(useRouter().query?.isEdit as string);
   const [tempId, setTempId] = useState<number>(0);
+  const [attemptedCreateWithoutSetName, setAttemptedCreateWithoutSetName] =
+    useState(false);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const updateCard = ({
     id,
@@ -69,6 +87,11 @@ export default function EditSet() {
   });
 
   const updateSet = () => {
+    if (!setName) {
+      setAttemptedCreateWithoutSetName(true);
+      return;
+    }
+
     updateSetMutation.mutate({
       setId: setId,
       setName: setName,
@@ -82,29 +105,76 @@ export default function EditSet() {
     setTempId((prevId) => prevId + 1);
   };
 
+  // Define the hook outside the object literal
+  const deleteSetMutation = api.set.deleteSet.useMutation({
+    retry: false,
+    onSuccess: () => {
+      window.location.href = `../../dashboard`;
+    },
+  });
+
+  // Use the hook inside the object literal
+  const deleteSet = () => {
+    deleteSetMutation.mutate({ setId: setId });
+  };
+
+  const navigateHome = () => {
+    window.location.href = "../../dashboard";
+  };
+
+  useEffect(() => {
+    if (!flashcards || flashcards.length === 0) {
+      setFlashcards([{ term: "", def: "", id: String(tempId) }]);
+      setTempId((prevId) => prevId + 1);
+    }
+  }, [flashcards]);
+
   if (!set?.cards || !set) {
     return <div>Loading...</div>;
   }
 
   return (
     <VStack padding={16} w="100%">
+      <CancelSetCreationOrUpdateModal
+        onClose={onClose}
+        isOpen={isOpen}
+        onClick={isEdit ? navigateHome : deleteSet}
+        isEdit={isEdit}
+        isCentered
+      />
+      <button
+        onClick={onOpen}
+        className={`absolute left-1 top-1 flex flex-row items-center justify-center p-8`}
+      >
+        <Icon as={ChevronLeftIcon} />
+        Back
+      </button>
       <Box w="80%">
-        <HStack mb={3}>
+        <HStack>
           <Input
             border="none"
             _hover={{ border: "none" }}
             className="h1"
             fontSize="5xl"
             placeholder="Set Name"
+            py={8}
             value={setName}
             onChange={(e) => setSetName(e.target.value)}
+            isInvalid={!setName && attemptedCreateWithoutSetName}
+            errorBorderColor="crimson"
           />
+
           <StyledButton
             onClick={updateSet}
             colorInd={0}
             label={isEdit ? "Update Set" : "Create"}
           />
         </HStack>
+        <p
+          className={`mb-2 text-xs text-red-700 ${!setName && attemptedCreateWithoutSetName ? "visible" : "invisible"}`}
+        >
+          You must give this set a name
+        </p>
         <Textarea
           className="main-class tiny-text"
           placeholder="Description (optional)"
@@ -112,7 +182,7 @@ export default function EditSet() {
           onChange={(e) => setSetDescription(e.target.value)}
           mb={2}
         />
-        {/* <Divider /> */}
+        <Divider mt={8} mb={2} />
         <HStack>
           <Text w="50%" className="h5" mt={3} mb={1} pl={1}>
             Terms

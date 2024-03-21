@@ -7,6 +7,7 @@ import {
   Text,
   IconButton,
   Spinner,
+  Divider,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -48,7 +49,7 @@ const Sidebar = ({
     <Box
       w="20%"
       h="100%"
-      className="main-class bg-darkBlue"
+      className="main-class overflow-y-scroll bg-darkBlue"
       position="sticky"
       top="0"
       zIndex="sticky"
@@ -77,6 +78,11 @@ const Sidebar = ({
         </div>
       ) : classes.length ? (
         <VStack gap={0}>
+          <Divider mb={2} />
+          <div className="main-class ml-10 w-full text-h5-size font-semibold text-white">
+            Classes
+          </div>
+          <Divider mt={2} />
           {classes.map((c) => {
             const radio = getRadioProps({ value: c.id });
             return (

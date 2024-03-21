@@ -13,11 +13,11 @@ import {
   Input,
   HStack,
 } from "@chakra-ui/react";
-import { ClassCode, Classroom } from "@prisma/client";
+import { type ClassCode, type Classroom } from "@prisma/client";
 import { useRouter } from "next/router";
-import { AddClassRes } from "~/utils/types";
+import { type AddClassRes } from "~/utils/types";
 import { PinInput, PinInputField } from "@chakra-ui/react";
-import { UseTRPCMutationResult } from "@trpc/react-query/shared";
+import { type UseTRPCMutationResult } from "@trpc/react-query/shared";
 
 const AddClassModal = ({
   isOpen,
@@ -66,7 +66,7 @@ const AddClassModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} size={"full"}>
+    <Modal isOpen={isOpen} onClose={handleClose} isCentered={true}>
       <ModalOverlay />
       <ModalContent backgroundColor={"white"}>
         <ModalHeader>
@@ -81,14 +81,10 @@ const AddClassModal = ({
                 placeholder="Enter your classroom"
                 size="sm"
               />
-
-              <Button type="submit" onClick={handleCreateClass}>
-                Submit
-              </Button>
             </>
           )}
           {currentPage === 2 && createdClass && classCode && (
-            <HStack>
+            <HStack justifyContent="center">
               <PinInput
                 type="alphanumeric"
                 isDisabled
@@ -103,8 +99,13 @@ const AddClassModal = ({
             </HStack>
           )}
         </ModalBody>
-        <ModalFooter>
-          <Button onClick={handleClose}>Close</Button>
+        <ModalFooter justifyContent="center">
+          <Button
+            type={currentPage === 1 ? "submit" : "button"}
+            onClick={currentPage === 1 ? handleCreateClass : handleClose}
+          >
+            {currentPage === 1 ? "Submit" : "Close"}
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
