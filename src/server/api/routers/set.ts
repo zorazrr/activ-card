@@ -48,6 +48,8 @@ export const setRouter = createTRPCRouter({
     .input(z.object({ name: z.string(), classId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const set = await ctx.db.set.create({
+        // Get interleaved sets selected and duplicate cards
+        // Also pass in pomodoro options etc
         data: {
           name: input.name,
           description: "",

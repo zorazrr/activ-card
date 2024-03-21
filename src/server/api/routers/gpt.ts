@@ -119,6 +119,7 @@ export const gptRouter = createTRPCRouter({
   generateFlashcard: publicProcedure
     .input(z.object({ content: z.string() }))
     .query(async ({ input }) => {
+      // TODO: Use prompt given and reading/comprehension level to come up with appropriate cards
       const completion = await openai.chat.completions.create({
         messages: [
           { role: "system", content: "You are a helpful teaching assistant." },
