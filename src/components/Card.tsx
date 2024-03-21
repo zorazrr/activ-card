@@ -46,7 +46,7 @@ const SetCard = (props: SetCardProps) => {
       p={3}
       borderRadius="10"
       onClick={onCardClick}
-      backgroundColor="#1A3F67"
+      backgroundColor="#4A729D"
       color="white"
       style={{ cursor: "pointer" }}
       marginRight={5}
@@ -86,7 +86,11 @@ const SetCard = (props: SetCardProps) => {
                   size={"sm"}
                   width="8vh"
                   p={2}
-                  style={{ display: "flex", justifyContent: "center" }}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    backgroundColor: "#BEDDFC",
+                  }}
                   colorScheme="telegram"
                   className="tag-no-brightness-change"
                   sx={{

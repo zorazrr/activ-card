@@ -53,7 +53,7 @@ const Sidebar = ({
     <Box
       w="20%"
       h="100%"
-      className="main-class bg-veryDarkGray"
+      className="main-class bg-darkBlue"
       position="sticky"
       top="0"
       zIndex="sticky"
