@@ -1,6 +1,8 @@
 import { Badge, Classroom } from "@prisma/client";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
+import Image from "next/image";
+import { Stack } from "@chakra-ui/react";
 
 const BadgeGallery = ({
   currentClass,
@@ -15,9 +17,7 @@ const BadgeGallery = ({
     },
     {
       onSuccess: (data) => {
-        const badges = data.map((badge) => badge.url.toString("base64"));
-        setBadges(badges);
-        console.log(badges);
+        setBadges(data);
       },
       enabled: !!currentClass,
       refetchOnWindowFocus: false,
@@ -27,7 +27,13 @@ const BadgeGallery = ({
 
   return (
     <>
-      <div>hi</div>
+      <Stack direction="row" spacing={4}>
+        {" "}
+        {/* Apply grid layout */}
+        {data?.map((url, index) => (
+          <Image key={index} src={url} alt="Badge" width={200} height={200} />
+        ))}
+      </Stack>
     </>
   );
 };

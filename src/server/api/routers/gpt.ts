@@ -184,7 +184,6 @@ export const gptRouter = createTRPCRouter({
         prompt: imgPrompt + " Make it simplistic cartoon style and for kids.",
         n: 1,
         size: "1024x1024",
-        response_format: "b64_json",
       });
 
       return img.data;

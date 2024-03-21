@@ -17,6 +17,7 @@ import NextImage from "next/image";
 import { type Image } from "openai/resources/images.mjs";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 const ImageModal = ({
   isOpen,
@@ -31,9 +32,38 @@ const ImageModal = ({
   const saveBadge = api.badge.createBadge.useMutation({
     retry: false,
     onSuccess: (data: Badge | undefined) => {
-      console.log("hi");
+      onClose();
     },
   });
+  const [fileName, setFileName] = useState<string>("test");
+
+  const uploadUrl = api.gpt.getPresignedUrl.useQuery(
+    { fileName: fileName },
+    { retry: false, enabled: false },
+  );
+
+  useEffect(() => {
+    const uploadFile = async () => {
+      const urlResponse = await uploadUrl.refetch();
+      const presignedUrl = urlResponse.data!;
+      console.log(urlResponse);
+      console.log(presignedUrl);
+
+      if (images && images[0]) {
+        saveBadge.mutate({
+          genImageURL: images[0].url!,
+          presignedURL: presignedUrl,
+          fileName: fileName,
+          userId: session?.user.id!,
+          setId: setId,
+        });
+      }
+    };
+
+    if (fileName) {
+      uploadFile();
+    }
+  }, [fileName]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -42,10 +72,10 @@ const ImageModal = ({
         <ModalHeader>Your Badge</ModalHeader>
         <ModalCloseButton />
         <VStack>
-          {images?.[0]?.b64_json ? (
+          {images?.[0]?.url ? (
             <>
               <NextImage
-                src={`data:image/png;base64, ${images[0].b64_json}`}
+                src={images[0].url}
                 width="500"
                 height="500"
                 alt="Your Badges"
@@ -53,11 +83,7 @@ const ImageModal = ({
               {session && session.user.role == Role.STUDENT && (
                 <Button
                   onClick={() => {
-                    saveBadge.mutate({
-                      data: images[0]!.b64_json!,
-                      userId: session?.user.id!,
-                      setId: setId,
-                    });
+                    setFileName(`uploads/${Date.now()}_${session.user.id}`);
                   }}
                 >
                   Save It

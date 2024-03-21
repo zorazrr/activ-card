@@ -16,7 +16,7 @@ datasource db {
 
 model Badge {
   id           String    @id @default(auto()) @map("_id") @db.ObjectId
-  url          Bytes
+  filename     String
   student_id   String    @db.ObjectId
   student      Student   @relation(fields: [student_id], references: [id])
   set_id       String    @db.ObjectId

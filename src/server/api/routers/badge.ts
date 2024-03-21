@@ -8,32 +8,44 @@ export const badgeRouter = createTRPCRouter({
   createBadge: publicProcedure
     .input(
       z.object({
-        data: z.string(),
+        genImageURL: z.string(),
+        presignedURL: z.string(),
+        fileName: z.string(),
         userId: z.string(),
         setId: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      console.log("CHAL");
+      const response = await fetch(input.genImageURL);
+
+      if (!response.ok)
+        throw new Error("Failed to fetch the file from the provided URL.");
+      const fileBlob = await response.blob();
+
+      await fetch(input.presignedURL, {
+        method: "PUT",
+        headers: {
+          "Content-Type": fileBlob.type,
+        },
+        body: fileBlob,
+      });
       const set = await ctx.db.set.findUnique({
         where: {
           id: input.setId,
         },
       });
-      console.log("VASU");
 
-      if (set) {
-        console.log("here");
-        console.log({
-          url: input.data,
-          student_id: input.userId,
-          set_id: input.setId,
-          classroom_id: set.classroom_id,
-        });
+      const student = await ctx.db.student.findUnique({
+        where: {
+          user_id: input.userId,
+        },
+      });
+
+      if (set && student) {
         const badge = await ctx.db.badge.create({
           data: {
-            url: Buffer.from(input.data, "base64"),
-            student_id: input.userId,
+            filename: input.fileName,
+            student_id: student.id,
             set_id: input.setId,
             classroom_id: set.classroom_id,
           },
@@ -44,11 +56,12 @@ export const badgeRouter = createTRPCRouter({
   getBadgesByClassroom: publicProcedure
     .input(z.object({ classId: z.string() }))
     .query(async ({ ctx, input }) => {
+      const s3BaseUrl = `https://${process.env.REACT_APP_S3_BUCKET_NAME}.s3.${process.env.REACT_APP_AWS_REGION}.amazonaws.com`;
       const badges: Badge[] = await ctx.db.badge.findMany({
         where: {
           classroom_id: input.classId,
         },
       });
-      return badges;
+      return badges.map((badge) => `${s3BaseUrl}/${badge.filename}`);
     }),
 });
