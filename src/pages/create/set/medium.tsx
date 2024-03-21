@@ -29,12 +29,29 @@ import { type TermDefPair } from "~/utils/types";
 
 export default function SetCreationMediumSelection() {
   const router = useRouter();
+  const grades = [
+    { key: 0, label: "Kindergarten" },
+    { key: 1, label: "1st Grade" },
+    { key: 2, label: "2nd Grade" },
+    { key: 3, label: "3rd Grade" },
+    { key: 4, label: "4th Grade" },
+    { key: 5, label: "5th Grade" },
+    { key: 6, label: "6th Grade" },
+    { key: 7, label: "7th Grade" },
+    { key: 8, label: "8th Grade" },
+    { key: 9, label: "9th Grade" },
+    { key: 10, label: "10th Grade" },
+    { key: 11, label: "11th Grade" },
+    { key: 12, label: "12th Grade" },
+  ];
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [isFocusEnabled, setIsFocusEnabled] = useState(true);
 
   const [flashcards, setFlashcards] = useState<TermDefPair[]>([]);
   const [subject, setSubject] = useState<string>("");
+  const [formData, setFormData] = useState<any>();
 
   const generateFlashcard =
     api.gpt.generateFlashcardsFromPromptedSubject.useQuery(
@@ -82,20 +99,20 @@ export default function SetCreationMediumSelection() {
   function handleSubmit(e) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    const setType = form.get("Type of Set");
-    const pomodoroIntervalLength = form.get(
-      "Number of Cards Between Pomodoro Breaks",
-    );
-    const isReviewEnabled = form.get("Enable Review");
-    console.log({ setType, pomodoroIntervalLength, isReviewEnabled });
     const body = {};
     for (const [key, value] of form.entries()) {
       body[key] = value;
     }
     console.log(body);
+    setFormData(body);
+
     // Do Further input validation and submit the form
     setPage(2);
   }
+
+  const handleOnFocusChange = (value) => {
+    setIsFocusEnabled(value === "Yes" ? true : false);
+  };
 
   return (
     <>
@@ -120,31 +137,79 @@ export default function SetCreationMediumSelection() {
               <VStack spacing={8} w="100%">
                 <FormControl w="100%">
                   <FormLabel>Type of Set</FormLabel>
-                  <RadioGroup defaultValue="Assignment" w="100%">
+                  <RadioGroup name="setType" defaultValue="Assignment" w="100%">
                     <HStack
                       spacing="auto"
                       w="100%"
-                      justifyContent="space-between"
+                      // justifyContent="space-between"
+                      gap="5%"
                     >
-                      <Radio value="Assignment">Assignment</Radio>
-                      <Radio value="Inverted Classroom">
+                      <Radio value="Assignment" w="20%">
+                        Assignment
+                      </Radio>
+                      <Radio value="Inverted Classroom" w="20%">
                         Inverted Classroom
                       </Radio>
-                      <Radio value="Literacy">Literacy</Radio>
-                      <Radio value="Theory">Theory</Radio>
+                      <Radio value="Literacy" w="20%">
+                        Literacy
+                      </Radio>
+                      <Radio value="Theory" w="20%">
+                        Theory
+                      </Radio>
                     </HStack>
                   </RadioGroup>
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Number of Cards Between Pomodoro Breaks</FormLabel>
-                  <NumberInput defaultValue={5} min={3}>
-                    <NumberInputField />
-                    <NumberInputStepper>
-                      <NumberIncrementStepper />
-                      <NumberDecrementStepper />
-                    </NumberInputStepper>
-                  </NumberInput>
+                  <FormLabel>Reading Comprehension Level</FormLabel>
+                  <Select
+                    name="readingComprehensionLevel"
+                    placeholder="Select Grade"
+                  >
+                    {grades.map((grade) => {
+                      return (
+                        <option value={grade.key} key={grade.key}>
+                          {grade.label}
+                        </option>
+                      );
+                    })}
+                  </Select>
                 </FormControl>
+                <FormControl>
+                  <FormLabel>Enable Focus</FormLabel>
+                  <RadioGroup
+                    defaultValue="Yes"
+                    w="100%"
+                    onChange={handleOnFocusChange}
+                    name="isFocusEnabled"
+                  >
+                    <HStack spacing="auto" w="100%" gap="5%">
+                      <Radio value="Yes" w="20%">
+                        Yes
+                      </Radio>
+                      <Radio value="No" w="20%">
+                        No
+                      </Radio>
+                    </HStack>
+                  </RadioGroup>
+                </FormControl>
+                {isFocusEnabled && (
+                  <FormControl>
+                    <FormLabel>
+                      Number of Cards Between Pomodoro Breaks
+                    </FormLabel>
+                    <NumberInput
+                      name="pomodoroIntervalLength"
+                      defaultValue={5}
+                      min={3}
+                    >
+                      <NumberInputField />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                  </FormControl>
+                )}
                 {/* <FormControl w="100%">
                   <FormLabel>Enable Review</FormLabel>
                   <RadioGroup defaultValue="Yes" w="100%">
@@ -158,7 +223,7 @@ export default function SetCreationMediumSelection() {
                     </HStack>
                   </RadioGroup>
                 </FormControl> */}
-                <Button type="submit" w="100%" py={8}>
+                <Button type="submit" w="40%" mt={4} py={4}>
                   Next
                 </Button>
               </VStack>
