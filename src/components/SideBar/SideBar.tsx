@@ -102,13 +102,13 @@ const Sidebar = ({
             );
           })}
           <IconButton
+            mt={"2vh"}
             variant="outline"
             color="white"
             aria-label="Add card"
             icon={<AddIcon />}
             onClick={onAddClass}
-            mt={"1vh"}
-            _hover={{ bg: "blue.200", borderColor: "blue.200" }}
+            _hover={{ bg: "#88ADD5", borderColor: "#BEDDFC" }}
           />
         </VStack>
       ) : (
@@ -123,7 +123,7 @@ const Sidebar = ({
             aria-label="Add card"
             fontSize="20px"
             icon={<AddIcon color="white" />} // Apply color directly to the icon
-            _hover={{ bg: "blue.200", borderColor: "blue.200" }}
+            _hover={{ bg: "#88ADD5", borderColor: "#BEDDFC" }}
             onClick={onAddClass}
           />
           <Text className={"h5"} color="white">
