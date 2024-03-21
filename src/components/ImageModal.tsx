@@ -46,8 +46,6 @@ const ImageModal = ({
     const uploadFile = async () => {
       const urlResponse = await uploadUrl.refetch();
       const presignedUrl = urlResponse.data!;
-      console.log(urlResponse);
-      console.log(presignedUrl);
 
       if (images && images[0]) {
         saveBadge.mutate({

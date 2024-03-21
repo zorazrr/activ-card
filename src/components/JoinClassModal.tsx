@@ -33,7 +33,6 @@ const JoinClassModal = ({
   const router = useRouter();
 
   const handleInputChange = (value: string) => {
-    console.log(value);
     setValue(value);
   };
 
