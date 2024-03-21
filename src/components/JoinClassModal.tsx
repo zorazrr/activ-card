@@ -65,7 +65,11 @@ const JoinClassModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={() => handleClose(undefined)} size={"full"}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => handleClose(undefined)}
+      isCentered={true}
+    >
       <ModalOverlay />
       <ModalContent backgroundColor={"white"}>
         <ModalHeader>Join Through Code Below</ModalHeader>
