@@ -77,9 +77,9 @@ const SetCard = (props: SetCardProps) => {
             >
               <div style={{ paddingBottom: "2vh" }}>
                 <p className="h4-5">{props.name}</p>
-                {props.description && (
+                {/* {props.description && (
                   <p className="reg-text pt-3">{props.description}</p>
-                )}
+                )} */}
               </div>
               <div>
                 <Tag
