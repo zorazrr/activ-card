@@ -66,7 +66,7 @@ const AddClassModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose}>
+    <Modal isOpen={isOpen} onClose={handleClose} isCentered={true}>
       <ModalOverlay />
       <ModalContent backgroundColor={"white"}>
         <ModalHeader>
