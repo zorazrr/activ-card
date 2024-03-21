@@ -319,3 +319,9 @@ export default function SetCreationMediumSelection() {
     </>
   );
 }
+
+// TODO: Connect FE with BE
+// TODO: Change page 2 of medium.tsx to use dashboard tabs and emulate YT video
+// TODO: Fill out tool tips
+// TODO: Consider passive vs active review
+// TODO: Add back arrow
