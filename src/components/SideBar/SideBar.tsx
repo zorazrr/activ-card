@@ -53,11 +53,10 @@ const Sidebar = ({
     <Box
       w="20%"
       h="100%"
-      className="main-class overflow-y-scroll bg-black"
+      className="main-class bg-veryDarkGray"
       position="sticky"
       top="0"
       zIndex="sticky"
-      overflow="scroll"
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
@@ -88,7 +87,7 @@ const Sidebar = ({
             <Spinner color={"white"} />
           </div>
         ) : classes.length ? (
-          <VStack gap={0}>
+          <VStack gap={0} overflow="scroll" height="80vh">
             <div className=" w-full">
               <Divider mb={2} />
               <div
@@ -113,6 +112,10 @@ const Sidebar = ({
               );
             })}
             <IconButton
+              pl={2}
+              pr={2}
+              pb={2.5}
+              pt={2.5}
               mt={"2vh"}
               variant="outline"
               color="white"
