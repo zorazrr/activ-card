@@ -29,6 +29,8 @@ export default function EditSet() {
   const setId = useRouter().query.id as string;
   const isEdit = !!(useRouter().query?.isEdit as string);
   const [tempId, setTempId] = useState<number>(0);
+  const [attemptedCreateWithoutSetName, setAttemptedCreateWithoutSetName] =
+    useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -85,6 +87,11 @@ export default function EditSet() {
   });
 
   const updateSet = () => {
+    if (!setName) {
+      setAttemptedCreateWithoutSetName(true);
+      return;
+    }
+
     updateSetMutation.mutate({
       setId: setId,
       setName: setName,
@@ -136,7 +143,7 @@ export default function EditSet() {
         Back
       </button>
       <Box w="80%">
-        <HStack mb={3}>
+        <HStack>
           <Input
             border="none"
             _hover={{ border: "none" }}
@@ -146,13 +153,21 @@ export default function EditSet() {
             py={8}
             value={setName}
             onChange={(e) => setSetName(e.target.value)}
+            isInvalid={!setName && attemptedCreateWithoutSetName}
+            errorBorderColor="crimson"
           />
+
           <StyledButton
             onClick={updateSet}
             colorInd={0}
             label={isEdit ? "Update Set" : "Create"}
           />
         </HStack>
+        <p
+          className={`mb-2 text-xs text-red-700 ${!setName && attemptedCreateWithoutSetName ? "visible" : "invisible"}`}
+        >
+          You must give this set a name
+        </p>
         <Textarea
           className="main-class tiny-text"
           placeholder="Description (optional)"
