@@ -12,10 +12,10 @@ import {
   PinInput,
   PinInputField,
 } from "@chakra-ui/react";
-import { ClassCode, Classroom } from "@prisma/client";
+import { ClassCode, type Classroom } from "@prisma/client";
 import { useRouter } from "next/router";
-import { AddClassRes } from "~/utils/types";
-import { UseTRPCMutationResult } from "@trpc/react-query/shared";
+import { type AddClassRes } from "~/utils/types";
+import { type UseTRPCMutationResult } from "@trpc/react-query/shared";
 
 const JoinClassModal = ({
   isOpen,
@@ -54,6 +54,10 @@ const JoinClassModal = ({
           onSuccess: async (response: AddClassRes) => {
             setJoinedClass(response.class);
             handleClose(response.class);
+            router.push(`/dashboard?class=${response.class?.id}`);
+            setJoinedClass(null);
+            setValue("");
+            onClose();
           },
         },
       );
@@ -67,7 +71,7 @@ const JoinClassModal = ({
         <ModalHeader>Join Through Code Below</ModalHeader>
         <ModalBody>
           <>
-            <HStack>
+            <HStack justifyContent="center">
               <PinInput
                 onChange={handleInputChange}
                 type="alphanumeric"
@@ -79,14 +83,12 @@ const JoinClassModal = ({
                 <PinInputField bg="gray.300" />
               </PinInput>
             </HStack>
-
-            <Button type="submit" onClick={handleJoinClass}>
-              Submit
-            </Button>
           </>
         </ModalBody>
-        <ModalFooter>
-          <Button onClick={handleClose}>Close</Button>
+        <ModalFooter justifyContent="center">
+          <Button type="submit" onClick={handleJoinClass}>
+            Submit
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

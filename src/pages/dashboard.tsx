@@ -13,12 +13,13 @@ import DashboardTabs from "~/components/DashboardTabs";
 import Sidebar from "~/components/SideBar/SideBar";
 import { api } from "~/utils/api";
 import { Role, type Classroom } from "@prisma/client";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import ProtectedPage from "~/components/ProtectedPage";
 import { AddIcon } from "@chakra-ui/icons";
 import AddClassModal from "~/components/AddClassModal";
 import JoinClassModal from "~/components/JoinClassModal";
 import { useRouter } from "next/router";
+import StyledButton from "~/components/Button";
 
 export default function TeacherDashboard() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -95,7 +96,13 @@ export default function TeacherDashboard() {
 
   return (
     <ProtectedPage>
-      <HStack height="100%" className="main-class min-h-screen">
+      <HStack height="100%" className="main-class min-h-screen" gap={0}>
+        <StyledButton
+          label="Sign Out"
+          colorInd={1}
+          style={{ position: "absolute", right: 25, top: 25 }}
+          onClick={() => signOut({ callbackUrl: "/" })}
+        />
         <Sidebar
           classes={classrooms}
           currentClass={currentClass}
