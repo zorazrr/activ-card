@@ -1,9 +1,9 @@
-import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@chakra-ui/react";
+import { Tabs, TabList, Tab, TabPanels, TabPanel, Box } from "@chakra-ui/react";
 import Sets from "./TeacherDashboardPanels/Sets";
 import StudentRoster from "./TeacherDashboardPanels/StudentRoster";
 import Metrics from "./TeacherDashboardPanels/Metrics";
-import { Role, type Classroom } from "@prisma/client";
 import BadgeGallery from "./BadgeGallery";
+import { Role, type Classroom } from "@prisma/client";
 
 const DashboardTabs = ({
   currentClass,
@@ -13,7 +13,7 @@ const DashboardTabs = ({
   accountType: Role | undefined;
 }) => {
   return (
-    <Tabs variant="enclosed" pt={5}>
+    <Tabs variant="enclosed" pt={5} height="80vh" overflow="hidden">
       <TabList>
         <Tab>Sets</Tab>
         <Tab>Badges</Tab>
@@ -24,20 +24,22 @@ const DashboardTabs = ({
           </>
         )}
       </TabList>
-      <TabPanels>
-        <TabPanel overflowY="scroll">
-          <Sets accountType={accountType} currentClass={currentClass} />
+      <TabPanels height="100%" overflowY="auto">
+        <TabPanel>
+          <Box pb={50}>
+            <Sets accountType={accountType} currentClass={currentClass} />
+          </Box>
         </TabPanel>
-        <TabPanel overflowY="scroll">
+        <TabPanel>
           <BadgeGallery currentClass={currentClass} />
         </TabPanel>
         {accountType && accountType == Role.TEACHER && (
-          <TabPanel overflowY="scroll">
+          <TabPanel>
             <StudentRoster currentClass={currentClass} />
           </TabPanel>
         )}
         {accountType && accountType == Role.TEACHER && (
-          <TabPanel overflowY="scroll">
+          <TabPanel>
             <Metrics />
           </TabPanel>
         )}
