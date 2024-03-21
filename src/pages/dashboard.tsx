@@ -13,7 +13,7 @@ import DashboardTabs from "~/components/DashboardTabs";
 import Sidebar from "~/components/SideBar/SideBar";
 import { api } from "~/utils/api";
 import { Role, type Classroom } from "@prisma/client";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import ProtectedPage from "~/components/ProtectedPage";
 import { AddIcon } from "@chakra-ui/icons";
 import AddClassModal from "~/components/AddClassModal";
@@ -130,12 +130,6 @@ export default function TeacherDashboard() {
                     {currentClass?.name}
                   </Text>
                 </div>
-                <StyledButton
-                  label="Sign Out"
-                  colorInd={1}
-                  style={{ marginRight: "1vw" }}
-                  onClick={() => signOut({ callbackUrl: "/" })}
-                />
               </HStack>
               <DashboardTabs
                 currentClass={currentClass}
