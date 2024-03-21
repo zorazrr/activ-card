@@ -3,6 +3,7 @@ import Sets from "./TeacherDashboardPanels/Sets";
 import StudentRoster from "./TeacherDashboardPanels/StudentRoster";
 import Metrics from "./TeacherDashboardPanels/Metrics";
 import { Role, type Classroom } from "@prisma/client";
+import BadgeGallery from "./BadgeGallery";
 
 const DashboardTabs = ({
   currentClass,
@@ -27,7 +28,9 @@ const DashboardTabs = ({
         <TabPanel overflowY="scroll">
           <Sets accountType={accountType} currentClass={currentClass} />
         </TabPanel>
-        <TabPanel overflowY="scroll"></TabPanel>
+        <TabPanel overflowY="scroll">
+          <BadgeGallery currentClass={currentClass} />
+        </TabPanel>
         {accountType && accountType == Role.TEACHER && (
           <TabPanel overflowY="scroll">
             <StudentRoster currentClass={currentClass} />

@@ -31,7 +31,13 @@ const colors = [
   "#607d8b",
 ];
 
-function Canvas({ setShowCanvas }: { setShowCanvas: Dispatch<any> }) {
+function Canvas({
+  setShowCanvas,
+  setId,
+}: {
+  setShowCanvas: Dispatch<any>;
+  setId: string;
+}) {
   const [color, setColor] = useState("#ffffff");
   const canvasRef =
     useRef<React.MutableRefObject<HTMLCanvasElement | undefined>>();
@@ -104,6 +110,7 @@ function Canvas({ setShowCanvas }: { setShowCanvas: Dispatch<any> }) {
         onClose={() => setShowCanvas(false)}
         isOpen={isOpen}
         images={images}
+        setId={setId}
       />
     </div>
   );
