@@ -129,10 +129,6 @@ const Set = ({
               onClick={navigateHome}
             />
             {set.name}
-            &nbsp;
-            <Tooltip label={`Mode: ${set.check_mode}, ${set.answer_mode}`}>
-              <Icon as={InfoOutlineIcon} color="lightgray" />
-            </Tooltip>
           </p>
           {curIndex >= 0 &&
           flashcards &&
