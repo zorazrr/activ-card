@@ -18,9 +18,9 @@ model Badge {
   id           String    @id @default(auto()) @map("_id") @db.ObjectId
   filename     String
   student_id   String    @db.ObjectId
-  student      Student   @relation(fields: [student_id], references: [id])
+  student      Student   @relation(fields: [student_id], references: [id], onDelete: Cascade)
   set_id       String    @db.ObjectId
-  set          Set       @relation(fields: [set_id], references: [id])
+  set          Set       @relation(fields: [set_id], references: [id], onDelete: Cascade)
   classroom_id String    @db.ObjectId
   classroom    Classroom @relation(fields: [classroom_id], references: [id], onDelete: Cascade)
 }
