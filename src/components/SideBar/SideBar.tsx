@@ -78,11 +78,16 @@ const Sidebar = ({
         </div>
       ) : classes.length ? (
         <VStack gap={0}>
-          <Divider mb={2} />
-          <div className="main-class ml-10 w-full text-h5-size font-semibold text-white">
-            Classes
+          <div className="w-full bg-mediumBlue">
+            <Divider mb={2} />
+            <div
+              className="main-class w-full text-h5-size font-semibold text-white"
+              style={{ marginLeft: "1.25rem" }}
+            >
+              Classes
+            </div>
+            <Divider mt={2} />
           </div>
-          <Divider mt={2} />
           {classes.map((c) => {
             const radio = getRadioProps({ value: c.id });
             return (
