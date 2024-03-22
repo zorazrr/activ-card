@@ -162,7 +162,7 @@ export const gptRouter = createTRPCRouter({
             content: [
               {
                 type: "text",
-                text: "Describe this image very briefly and in a way that it can be recreated by someone if explained to them. If you find yourself describing or seeing anything inappropriate, then instead describe an image you think would be kid friendly to generate.",
+                text: "Describe this image very briefly and in a way that it can be drawn and colored by someone with your explanation. Focus on technical details (colors used, object drawn, etc). If you find yourself describing or seeing anything inappropriate, then instead describe an image you think would be kid friendly to generate.",
               },
               {
                 type: "image_url",
