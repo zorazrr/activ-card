@@ -158,24 +158,38 @@ const Set = ({
               />
             </>
           ) : (
-            <div className="flex h-full w-screen flex-col items-center justify-center gap-y-5">
-              <StyledButton
-                label="Return Home"
+            <div className="align-center flex h-full w-screen flex-col items-center justify-center space-y-6">
+              <button
                 onClick={navigateHome}
-                colorInd={0}
-              />
-              <StyledButton
-                label="Restart Set"
+                className="reg-text w-32 rounded-md bg-mediumBlue  py-2 text-white hover:opacity-75"
+                style={{
+                  minWidth: "20%",
+                  paddingTop: "15px",
+                  paddingBottom: "15px",
+                  marginBottom: "1%",
+                }}
+              >
+                Return Home
+              </button>
+              <button
                 onClick={restartSet}
-                colorInd={1}
-              />
+                className="reg-text w-32 rounded-md bg-midBlue py-2 text-white hover:opacity-75"
+                style={{
+                  minWidth: "20%",
+                  paddingTop: "20px",
+                  paddingBottom: "15px",
+                  marginBottom: "3%",
+                }}
+              >
+                Restart Set
+              </button>
             </div>
           )}
           <div className="align-center w-screen flex-col items-center justify-center">
             <div className="flex flex-row justify-between">
               <button
                 onClick={() => setCurIndex(curIndex - 1)}
-                className={`flex flex-row items-center justify-center p-8 ${curIndex === 0 ? "invisible" : "visible"}`}
+                className={`flex flex-row items-center justify-center p-8 ${curIndex === 0 || curIndex === flashcards?.length ? "invisible" : "visible"}`}
               >
                 <Icon as={ChevronLeftIcon} />
                 Back
