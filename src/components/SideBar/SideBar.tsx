@@ -102,7 +102,7 @@ const Sidebar = ({
               const radio = getRadioProps({ value: c.id });
               return (
                 <ClassRadioButton
-                  key={c.name}
+                  key={c.id}
                   {...radio}
                   setCurrentClass={setCurrentClass}
                   classObject={c}
