@@ -8,6 +8,7 @@ import Canvas from "~/components/Canvas";
 import { type Card } from "@prisma/client";
 import ProgressBar from "~/components/Progress/ProgressBar";
 import Image from "next/image";
+import _ from "lodash";
 
 const Set = ({
   tempIdx,
@@ -77,7 +78,13 @@ const Set = ({
     });
 
     toast({
-      title: "That is correct!",
+      title: _.sample([
+        "Nice work!",
+        "Amazing Job!",
+        "Way to go!",
+        "Show em' how it's done!",
+        "You got brains!",
+      ]),
       status: "success",
       duration: 3000,
       isClosable: false,
@@ -87,7 +94,13 @@ const Set = ({
 
   const handleIncorrectAnswer = () => {
     toast({
-      title: "Try again!",
+      title: _.sample([
+        "Try again!",
+        "You've got this!",
+        "So close!",
+        "Keep going!",
+        "Practice makes perfect!",
+      ]),
       status: "error",
       duration: 3000,
       isClosable: false,
@@ -113,15 +126,6 @@ const Set = ({
       ) : (
         <>
           <p className="w-full pl-8 pt-8 text-center font-bold">
-            {/* <Icon
-              as={MdHome}
-              position="absolute"
-              left={5}
-              boxSize={6}
-              onClick={navigateHome}
-              _hover={{ boxShadow: "5px", opacity: "75%", cursor: "pointer" }}
-            /> */}
-
             <HStack gap={0} position="absolute" onClick={navigateHome}>
               <div className="hover:opacity-75">
                 <Link href="/dashboard" className="flex flex-col 2xl:flex-row">
