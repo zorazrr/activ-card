@@ -119,6 +119,7 @@ const Set = ({
               left={5}
               boxSize={6}
               onClick={navigateHome}
+              _hover={{ boxShadow: "5px", opacity: "75%", cursor: "pointer" }}
             />
             {set.name}
           </p>
