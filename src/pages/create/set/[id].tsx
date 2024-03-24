@@ -81,7 +81,7 @@ export default function EditSet() {
     retry: false,
     onSuccess: (data) => {
       if (data) {
-        window.location.href = `../../dashboard`;
+        window.location.href = `../../dashboard?class=${data?.classroom_id}`;
       }
     },
   });
