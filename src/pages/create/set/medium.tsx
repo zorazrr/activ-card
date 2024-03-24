@@ -41,6 +41,8 @@ export default function SetCreationMediumSelection() {
   });
 
   const createNewSet = async () => {
+    setIsLoading(true);
+    onClose();
     await generateFlashcard.refetch();
     createSet.mutate({
       classId: router.query.classId as string,
