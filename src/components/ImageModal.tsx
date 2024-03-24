@@ -9,7 +9,7 @@ import {
   Button,
   Flex, // Use Flex instead of Box for layout control
 } from "@chakra-ui/react";
-import { Badge, Role } from "@prisma/client";
+import { type Badge, Role } from "@prisma/client";
 import NextImage from "next/image";
 
 import { type Image } from "openai/resources/images.mjs";
@@ -35,6 +35,7 @@ const ImageModal = ({
     },
   });
   const [fileName, setFileName] = useState<string>("test");
+  const [isSaved, setIsSaved] = useState(false);
 
   const uploadUrl = api.gpt.getPresignedUrl.useQuery(
     { fileName: fileName },
@@ -46,7 +47,7 @@ const ImageModal = ({
       const urlResponse = await uploadUrl.refetch();
       const presignedUrl = urlResponse.data!;
 
-      if (images && images[0]) {
+      if (images?.[0]) {
         saveBadge.mutate({
           genImageURL: images[0].url!,
           presignedURL: presignedUrl,
@@ -83,7 +84,7 @@ const ImageModal = ({
           justifyContent="center" // Center children vertically
           alignItems="center" // Center children horizontally
         >
-          {images && images[0]?.url ? (
+          {images?.[0]?.url ? (
             <>
               <NextImage
                 src={images[0].url}
@@ -98,13 +99,21 @@ const ImageModal = ({
               />
               {session && session.user.role == Role.STUDENT && (
                 <div style={{ paddingBottom: "2.5vh" }}>
-                  <StyledButton
-                    label="Save It"
+                  <Button
+                    isLoading={isSaved}
+                    backgroundColor="mediumBlue.500"
+                    textColor="white"
                     onClick={() => {
+                      setIsSaved(true);
                       setFileName(`uploads/${Date.now()}_${session.user.id}`);
                     }}
-                    colorInd={1}
-                  ></StyledButton>
+                    py={2}
+                    borderRadius="md"
+                    _hover={{ opacity: "75%" }}
+                    w="8rem"
+                  >
+                    Save It
+                  </Button>
                 </div>
               )}
             </>
