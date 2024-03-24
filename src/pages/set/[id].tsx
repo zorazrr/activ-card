@@ -154,8 +154,6 @@ const Set = ({
                 onIncorrectCallback={() => {
                   handleIncorrectAnswer();
                 }}
-                checkMode={set?.check_mode}
-                answerMode={set?.answer_mode}
                 moveCurrentCardToEnd={moveCurrentCardToEnd}
                 curIndex={curIndex}
                 maxIndex={maxIndex}

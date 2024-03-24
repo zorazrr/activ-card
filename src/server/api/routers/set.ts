@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AnswerMode, CheckMode, type Set } from "@prisma/client";
+import { type Set } from "@prisma/client";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -48,15 +48,35 @@ export const setRouter = createTRPCRouter({
     .input(z.object({ name: z.string(), classId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const set = await ctx.db.set.create({
-        // Get interleaved sets selected and duplicate cards
+        // TODO: Get interleaved sets selected and duplicate cards
         // Also pass in pomodoro options etc
+
+        // TODO: Create set config
+        // model SetConfig {
+        //   id       String  @id @default(auto()) @map("_id") @db.ObjectId
+        //   set_id   String  @db.ObjectId @unique
+        //   set      Set     @relation(fields: [set_id], references: [id], onDelete: Cascade)
+        //   type SetType
+        //   pomodoro Boolean  @default(false)
+        //   pomodoroTimer Int? @default(60)
+        //   pomodoroCards Int? @default(5)
+        // }
+
         data: {
           name: input.name,
           description: "",
           classroom_id: input.classId,
-          check_mode: CheckMode.AI_CHECK,
-          answer_mode: AnswerMode.SPEAKING,
-          pomodoro: false,
+          config: {
+            create: {
+              type: "INVERTED",
+              pomodoro: true,
+              pomodoroTimer: 25,
+              pomodoroCards: 10,
+            },
+          },
+        },
+        include: {
+          config: true,
         },
       });
       return set;

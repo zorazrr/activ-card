@@ -1,4 +1,4 @@
-import { type Card, CheckMode, AnswerMode } from "@prisma/client";
+import { type Card } from "@prisma/client";
 import {
   useEffect,
   useState,
@@ -14,8 +14,6 @@ interface FlashCardProps {
   card: Card;
   onCorrectCallback?: () => void;
   onIncorrectCallback?: () => void;
-  checkMode: CheckMode;
-  answerMode: AnswerMode;
   moveCurrentCardToEnd: () => void;
   curIndex: number;
   maxIndex: number;
@@ -27,8 +25,6 @@ const FlashCard: FC<FlashCardProps> = ({
   card,
   onCorrectCallback,
   onIncorrectCallback,
-  checkMode,
-  answerMode,
   moveCurrentCardToEnd,
   curIndex,
   maxIndex,
@@ -64,41 +60,43 @@ const FlashCard: FC<FlashCardProps> = ({
   };
 
   const checkAnswer = () => {
-    if (checkMode === CheckMode.AI_CHECK) {
-      checkAnswerMutation.mutate(
-        {
-          term: card.term,
-          definition: card.definition,
-          studentInput: studentInput,
-        },
-        {
-          onSuccess: ({ isCorrect }) => {
-            if (isCorrect) {
-              onCorrectCallback?.();
-            } else {
-              explainAnswerMutation.mutate(
-                {
-                  term: card.term,
-                  definition: card.definition,
-                  studentInput: studentInput,
+    // if (checkMode === CheckMode.AI_CHECK) {
+    checkAnswerMutation.mutate(
+      {
+        term: card.term,
+        definition: card.definition,
+        studentInput: studentInput,
+      },
+      {
+        onSuccess: ({ isCorrect }) => {
+          if (isCorrect) {
+            onCorrectCallback?.();
+          } else {
+            explainAnswerMutation.mutate(
+              {
+                term: card.term,
+                definition: card.definition,
+                studentInput: studentInput,
+              },
+              {
+                onSuccess: (data) => {
+                  setAnswerExplanation(data!);
                 },
-                {
-                  onSuccess: (data) => {
-                    setAnswerExplanation(data!);
-                  },
-                },
-              );
-              onIncorrectCallback?.();
-            }
-          },
+              },
+            );
+            onIncorrectCallback?.();
+          }
         },
-      );
-    } else {
-      studentInput.toLowerCase() === card.definition.toLowerCase()
-        ? onCorrectCallback?.()
-        : onIncorrectCallback?.();
-    }
-    if (studentAudioText && answerMode === AnswerMode.SPEAKING) {
+      },
+    );
+    // }
+
+    // else {
+    //   studentInput.toLowerCase() === card.definition.toLowerCase()
+    //     ? onCorrectCallback?.()
+    //     : onIncorrectCallback?.();
+    // }
+    if (studentAudioText) {
       console.log("Checking answer with audio");
       checkAnswerMutation.mutate(
         {
@@ -130,6 +128,9 @@ const FlashCard: FC<FlashCardProps> = ({
       );
     }
   };
+
+  // TODO: Add enable auto check where you don't have to press check but just stop and start recording
+  // TODO: Allow checkAnswer to pass in a parameter
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
