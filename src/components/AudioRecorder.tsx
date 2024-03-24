@@ -3,8 +3,10 @@ import { api } from "~/utils/api";
 
 const AudioRecorder = ({
   textCallBack,
+  shouldDisplayAnswer,
 }: {
   textCallBack: (text: string) => void;
+  shouldDisplayAnswer: boolean;
 }) => {
   const mimeType = "audio/mp3";
   const [permission, setPermission] = useState(false);
@@ -137,6 +139,7 @@ const AudioRecorder = ({
         <button
           onClick={() => startRecording()}
           className="h-fit w-fit rounded-lg bg-mediumBlue px-6 py-1 text-sm text-white"
+          disabled={shouldDisplayAnswer}
         >
           Speak
         </button>

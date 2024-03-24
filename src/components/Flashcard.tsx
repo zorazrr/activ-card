@@ -168,7 +168,10 @@ const FlashCard: FC<FlashCardProps> = ({
             placeholder="Start typing or press icon to speak."
           />
           <div className="flex w-full flex-row justify-between">
-            <AudioRecorder textCallBack={setStudentAudioText} />
+            <AudioRecorder
+              textCallBack={setStudentAudioText}
+              shouldDisplayAnswer={shouldDisplayAnswer}
+            />
             <div className="flex flex-row gap-x-3">
               <button
                 onClick={() => setShouldDisplayAnswer(true)}
