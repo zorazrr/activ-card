@@ -2,24 +2,12 @@ import { useEffect, useState } from "react"; // Import useState hook
 import { useRouter } from "next/router";
 import FlashCard from "~/components/Flashcard";
 import { api } from "~/utils/api";
-import {
-  HStack,
-  Icon,
-  Spinner,
-  Tooltip,
-  VStack,
-  useToast,
-} from "@chakra-ui/react";
+import { Icon, Spinner, Stack, useToast } from "@chakra-ui/react";
 import { MdHome } from "react-icons/md";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  InfoOutlineIcon,
-} from "@chakra-ui/icons";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import Canvas from "~/components/Canvas";
 import { type Card } from "@prisma/client";
 import ProgressBar from "~/components/Progress/ProgressBar";
-import StyledButton from "~/components/Button";
 
 const Set = ({
   tempIdx,
@@ -52,7 +40,11 @@ const Set = ({
   }, [cards]);
 
   if (!cards || !set) {
-    return <Spinner />;
+    return (
+      <Stack h="100%" w="100%" justifyContent="center" alignItems="center">
+        <Spinner />
+      </Stack>
+    );
   }
 
   const moveCurrentCardToEnd = () => {
