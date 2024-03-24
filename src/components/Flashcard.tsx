@@ -129,6 +129,21 @@ const FlashCard: FC<FlashCardProps> = ({
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      checkAnswer();
+    }
+  };
+
+  function handleKeyUp(e) {
+    //key code for enter
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.target.blur();
+    }
+  }
+
   useEffect(() => {
     if (studentAudioText !== undefined) {
       checkAnswer();
@@ -148,6 +163,8 @@ const FlashCard: FC<FlashCardProps> = ({
             h="full"
             value={studentInput}
             onChange={(e) => setStudentInput(e.target.value)}
+            onKeyDown={handleKeyPress}
+            onKeyUp={handleKeyUp}
             placeholder="Start typing or press icon to speak."
           />
           <div className="flex w-full flex-row justify-between">
