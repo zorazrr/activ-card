@@ -1,10 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { api } from "~/utils/api";
 
 const AudioRecorder = ({
   textCallBack,
+  shouldDisplayAnswer,
+  setIsProcessingRecordedAnswer,
 }: {
   textCallBack: (text: string) => void;
+  shouldDisplayAnswer: boolean;
+  setIsProcessingRecordedAnswer: Dispatch<SetStateAction<boolean>>;
 }) => {
   const mimeType = "audio/mp3";
   const [permission, setPermission] = useState(false);
@@ -40,14 +50,11 @@ const AudioRecorder = ({
   const startRecording = async () => {
     if (permission) {
       if (stream) {
-        console.log("Case 1");
-        console.log("Start recording");
+        setIsProcessingRecordedAnswer(true);
         setRecordingStatus("recording");
         const media = new MediaRecorder(stream);
         mediaRecorder.current = media;
-        console.log(media.state);
         media.start();
-        console.log(media.state);
         const localAudioChunks: Blob[] = [];
         media.ondataavailable = (event) => {
           if (typeof event.data === "undefined") return;
@@ -55,17 +62,13 @@ const AudioRecorder = ({
           localAudioChunks.push(event.data);
         };
         setAudioChunks(localAudioChunks);
-        console.log("Recording started");
       } else {
         const streamData = await getMicrophonePermission();
         if (streamData) {
-          console.log("Case 2");
           setRecordingStatus("recording");
           const media = new MediaRecorder(streamData);
           mediaRecorder.current = media;
-          console.log(media.state);
           media.start();
-          console.log(media.state);
           const localAudioChunks: Blob[] = [];
           media.ondataavailable = (event) => {
             if (typeof event.data === "undefined") return;
@@ -73,19 +76,15 @@ const AudioRecorder = ({
             localAudioChunks.push(event.data);
           };
           setAudioChunks(localAudioChunks);
-          console.log("Recording started");
         }
       }
     } else {
-      console.log("Case 3");
       const streamData = await getMicrophonePermission();
       if (streamData) {
         setRecordingStatus("recording");
         const media = new MediaRecorder(streamData);
         mediaRecorder.current = media;
-        console.log(media.state);
         media.start();
-        console.log(media.state);
         const localAudioChunks: Blob[] = [];
         media.ondataavailable = (event) => {
           if (typeof event.data === "undefined") return;
@@ -93,7 +92,6 @@ const AudioRecorder = ({
           localAudioChunks.push(event.data);
         };
         setAudioChunks(localAudioChunks);
-        console.log("Recording started");
       }
     }
   };
@@ -109,7 +107,6 @@ const AudioRecorder = ({
   };
 
   const stopRecording = () => {
-    console.log("Stop recording");
     setRecordingStatus("inactive");
     mediaRecorder.current!.stop();
     mediaRecorder.current!.onstop = () => {
@@ -122,7 +119,6 @@ const AudioRecorder = ({
       setAudio(audioUrl);
       setAudioChunks([]);
     };
-    console.log("Recording stopped");
   };
 
   useEffect(() => {
@@ -137,6 +133,7 @@ const AudioRecorder = ({
         <button
           onClick={() => startRecording()}
           className="h-fit w-fit rounded-lg bg-mediumBlue px-6 py-1 text-sm text-white"
+          disabled={shouldDisplayAnswer}
         >
           Speak
         </button>

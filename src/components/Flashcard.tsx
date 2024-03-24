@@ -8,7 +8,7 @@ import {
 } from "react";
 import { api } from "~/utils/api";
 import AudioRecorder from "./AudioRecorder";
-import { Spinner, Textarea } from "@chakra-ui/react";
+import { Spinner, Stack, Textarea } from "@chakra-ui/react";
 
 interface FlashCardProps {
   card: Card;
@@ -39,6 +39,8 @@ const FlashCard: FC<FlashCardProps> = ({
   const [studentAudioText, setStudentAudioText] = useState<string>();
   const [answerExplanation, setAnswerExplanation] = useState<string>("");
   const [shouldDisplayAnswer, setShouldDisplayAnswer] = useState(false);
+  const [isProcessingRecordedAnswer, setIsProcessingRecordedAnswer] =
+    useState(false);
   const checkAnswerMutation = api.gpt.checkAnswer.useMutation({ retry: false });
   const explainAnswerMutation = api.gpt.explainAnswer.useMutation({
     retry: false,
@@ -129,9 +131,25 @@ const FlashCard: FC<FlashCardProps> = ({
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      checkAnswer();
+    }
+  };
+
+  function handleKeyUp(e) {
+    //key code for enter
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.target.blur();
+    }
+  }
+
   useEffect(() => {
     if (studentAudioText !== undefined) {
       checkAnswer();
+      setIsProcessingRecordedAnswer(false);
       setStudentInput(studentAudioText);
       setStudentAudioText(undefined);
     }
@@ -144,14 +162,32 @@ const FlashCard: FC<FlashCardProps> = ({
           <p>{card.term}</p>
         </div>
         <div className="flex h-full w-full flex-col gap-2">
-          <Textarea
-            h="full"
-            value={studentInput}
-            onChange={(e) => setStudentInput(e.target.value)}
-            placeholder="Start typing or press icon to speak."
-          />
+          {isProcessingRecordedAnswer ? (
+            <Stack
+              h="full"
+              justifyContent="center"
+              alignItems="center"
+              borderRadius="md"
+              border="1px lightgray solid"
+            >
+              <Spinner />
+            </Stack>
+          ) : (
+            <Textarea
+              h="full"
+              value={studentInput}
+              onChange={(e) => setStudentInput(e.target.value)}
+              onKeyDown={handleKeyPress}
+              onKeyUp={handleKeyUp}
+              placeholder="Start typing or press icon to speak."
+            />
+          )}
           <div className="flex w-full flex-row justify-between">
-            <AudioRecorder textCallBack={setStudentAudioText} />
+            <AudioRecorder
+              textCallBack={setStudentAudioText}
+              shouldDisplayAnswer={shouldDisplayAnswer}
+              setIsProcessingRecordedAnswer={setIsProcessingRecordedAnswer}
+            />
             <div className="flex flex-row gap-x-3">
               <button
                 onClick={() => setShouldDisplayAnswer(true)}

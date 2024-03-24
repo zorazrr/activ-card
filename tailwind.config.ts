@@ -36,6 +36,7 @@ export default {
         white: "#FFFFFF",
         lightGray: "#EBEBEB",
         darkGray: "#BDBDBD",
+        veryDarkGray: "#1E1D1E",
       },
     },
   },

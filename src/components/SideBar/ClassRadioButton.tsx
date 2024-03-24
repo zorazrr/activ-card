@@ -39,16 +39,14 @@ const ClassRadioButton = ({
         color="white"
         h="100%"
         _checked={{
-          bg: "#4A729D",
+          bg: "mediumBlue.500",
           color: "white",
-          borderBottom: "0.1vh solid #1A3F67",
-          borderRight: "0.125vh solid #1A3F67",
+          borderBottom: "0.1vh solid darkBlue.500",
         }}
         _hover={{
-          bg: "#4A729D",
+          bg: "mediumBlue.500",
           color: "white",
-          borderBottom: "0.1vh solid #1A3F67",
-          borderRight: "0.125vh solid #1A3F67",
+          borderBottom: "0.1vh solid darkBlue.500",
         }}
         px={5}
         py={3}

@@ -31,7 +31,7 @@ const StudentRoster = ({
           <Tbody>
             {currentClass?.students.map((student: Student) => (
               <>
-                <Tr key={student.name}>
+                <Tr key={student.email}>
                   <Td>{student.name}</Td>
                   <Td>{student.email}</Td>
                   <Td>

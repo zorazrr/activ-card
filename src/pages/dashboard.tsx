@@ -13,7 +13,7 @@ import DashboardTabs from "~/components/DashboardTabs";
 import Sidebar from "~/components/SideBar/SideBar";
 import { api } from "~/utils/api";
 import { Role, type Classroom } from "@prisma/client";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import ProtectedPage from "~/components/ProtectedPage";
 import { AddIcon } from "@chakra-ui/icons";
 import AddClassModal from "~/components/AddClassModal";
@@ -97,12 +97,6 @@ export default function TeacherDashboard() {
   return (
     <ProtectedPage>
       <HStack height="100%" className="main-class min-h-screen" gap={0}>
-        <StyledButton
-          label="Sign Out"
-          colorInd={1}
-          style={{ position: "absolute", right: 25, top: 25 }}
-          onClick={() => signOut({ callbackUrl: "/" })}
-        />
         <Sidebar
           classes={classrooms}
           currentClass={currentClass}
@@ -129,8 +123,14 @@ export default function TeacherDashboard() {
               pl={10}
               style={{ overflowY: "scroll" }}
             >
-              <Text className="h3 leading-9 text-darkBlue">Welcome to</Text>
-              <Text className="h3 text-mediumBlue">{currentClass?.name}</Text>
+              <HStack justifyContent={"space-between"} alignItems={"start"}>
+                <div>
+                  <Text className="h3 leading-9 text-darkBlue">Welcome to</Text>
+                  <Text className="h3 text-mediumBlue">
+                    {currentClass?.name}
+                  </Text>
+                </div>
+              </HStack>
               <DashboardTabs
                 currentClass={currentClass}
                 accountType={session?.user.role}

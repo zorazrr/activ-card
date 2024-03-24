@@ -61,6 +61,7 @@ const Sets = ({
               id={set.id}
               numCards={set.cards ? set.cards?.length : 0}
               deleteSet={deleteSet}
+              accountType={accountType}
             />
           );
         })}
