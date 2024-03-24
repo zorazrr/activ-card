@@ -6,29 +6,30 @@ import { VStack, useDisclosure } from "@chakra-ui/react";
 import { type Image } from "openai/resources/images.mjs";
 import { api } from "~/utils/api";
 import StyledButton from "./Button";
-import StyledModal from "./StyledModal";
 import ImageModal from "./ImageModal";
 import Countdown from "./Countdown";
 
 const colors = [
-  "#f44336",
-  "#e91e63",
-  "#9c27b0",
-  "#673ab7",
-  "#3f51b5",
-  "#2196f3",
-  "#03a9f4",
-  "#00bcd4",
-  "#009688",
-  "#4caf50",
-  "#8bc34a",
-  "#cddc39",
-  "#ffeb3b",
-  "#ffc107",
-  "#ff9800",
-  "#ffffff",
-  "#795548",
-  "#607d8b",
+  "#ff1100",
+  // "#f44336", // Red
+  "#e57373", // Light Red
+  "#ff9800", // Orange
+  "#ffc107", // Amber
+  "#ffeb3b", // Yellow
+  "#4caf50", // Green
+  "#8bc34a", // Light Green
+  // "#cddc39", // Lime (Yellowish Green)
+  "#00bcd4", // Cyan
+  "#2196f3", // Blue
+  "#f263ed",
+  "#e91e63", // Pink
+  "#9c27b0", // Purple
+  "#673ab7", // Deep Purple
+  "#3f51b5", // Indigo
+  "#000000", // Black
+  "#ffffff", // White
+  "#607d8b", // Blue Grey
+  "#795548", // Brown
 ];
 
 function Canvas({

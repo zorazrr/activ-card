@@ -2,24 +2,13 @@ import { useEffect, useState } from "react"; // Import useState hook
 import { useRouter } from "next/router";
 import FlashCard from "~/components/Flashcard";
 import { api } from "~/utils/api";
-import {
-  HStack,
-  Icon,
-  Spinner,
-  Tooltip,
-  VStack,
-  useToast,
-} from "@chakra-ui/react";
-import { MdHome } from "react-icons/md";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  InfoOutlineIcon,
-} from "@chakra-ui/icons";
+import { HStack, Icon, Link, Spinner, Stack, useToast } from "@chakra-ui/react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import Canvas from "~/components/Canvas";
 import { type Card } from "@prisma/client";
 import ProgressBar from "~/components/Progress/ProgressBar";
-import StyledButton from "~/components/Button";
+import Image from "next/image";
+import _ from "lodash";
 
 const Set = ({
   tempIdx,
@@ -52,7 +41,11 @@ const Set = ({
   }, [cards]);
 
   if (!cards || !set) {
-    return <Spinner />;
+    return (
+      <Stack h="100%" w="100%" justifyContent="center" alignItems="center">
+        <Spinner />
+      </Stack>
+    );
   }
 
   const moveCurrentCardToEnd = () => {
@@ -85,7 +78,13 @@ const Set = ({
     });
 
     toast({
-      title: "That is correct!",
+      title: _.sample([
+        "Nice work!",
+        "Amazing Job!",
+        "Way to go!",
+        "Show em' how it's done!",
+        "You got brains!",
+      ]),
       status: "success",
       duration: 3000,
       isClosable: false,
@@ -95,7 +94,13 @@ const Set = ({
 
   const handleIncorrectAnswer = () => {
     toast({
-      title: "Try again!",
+      title: _.sample([
+        "Try again!",
+        "You've got this!",
+        "So close!",
+        "Keep going!",
+        "Practice makes perfect!",
+      ]),
       status: "error",
       duration: 3000,
       isClosable: false,
@@ -120,14 +125,19 @@ const Set = ({
         <Canvas setShowCanvas={setShowCanvas} setId={setId as string} />
       ) : (
         <>
-          <p className="w-full pb-16 pt-8 text-center font-bold">
-            <Icon
-              as={MdHome}
-              position="absolute"
-              left={5}
-              boxSize={6}
-              onClick={navigateHome}
-            />
+          <p className="w-full pl-8 pt-8 text-center font-bold">
+            <HStack gap={0} position="absolute" onClick={navigateHome}>
+              <div className="hover:opacity-75">
+                <Link href="/dashboard" className="flex flex-col 2xl:flex-row">
+                  <Image
+                    src="/assets/logo.png"
+                    alt="header"
+                    width={60}
+                    height={60}
+                  />
+                </Link>
+              </div>
+            </HStack>
             {set.name}
           </p>
           {curIndex >= 0 &&
@@ -135,10 +145,6 @@ const Set = ({
           curIndex < flashcards.length &&
           flashcards[curIndex] ? (
             <>
-              <ProgressBar
-                percentage={(100 * maxIndex) / cards.length}
-                shouldApplyMargin={true}
-              />
               <FlashCard
                 key={flashcards[curIndex]!.id}
                 card={flashcards[curIndex]!}
@@ -204,6 +210,14 @@ const Set = ({
               </button>
             </div>
           </div>
+          {curIndex !== flashcards?.length && (
+            <ProgressBar
+              percentage={(100 * maxIndex) / cards.length}
+              shouldApplyMargin={true}
+              width={100}
+              shouldApplyBorderRadius={false}
+            />
+          )}
         </>
       )}
     </div>

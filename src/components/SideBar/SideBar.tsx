@@ -121,7 +121,7 @@ const Sidebar = ({
               color="white"
               aria-label="Add card"
               icon={<AddIcon color="white" />}
-              _hover={{ bg: "#88ADD5", borderColor: "#88ADD5" }}
+              _hover={{ bg: "midBlue.500", borderColor: "midBlue.500" }}
               onClick={onAddClass}
             />
           </VStack>
@@ -137,7 +137,7 @@ const Sidebar = ({
               aria-label="Add card"
               fontSize="20px"
               icon={<AddIcon color="white" />} // Apply color directly to the icon
-              _hover={{ bg: "#88ADD5", borderColor: "#88ADD5" }}
+              _hover={{ bg: "midBlue.500", borderColor: "midBlue.500" }}
               onClick={onAddClass}
             />
             <Text className={"h5"} color="white">
@@ -149,7 +149,7 @@ const Sidebar = ({
       </Box>
 
       <HStack alignItems={"center"} mb={3} ml={"1.25rem"}>
-        {session && session.user.image && (
+        {session?.user.image && (
           <ChakImage
             borderRadius="full"
             src={session?.user.image}
