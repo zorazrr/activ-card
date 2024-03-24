@@ -167,7 +167,8 @@ export default function EditSet() {
           <StyledButton
             onClick={updateSet}
             colorInd={0}
-            label={isEdit ? "Update Set" : "Create"}
+            label={isEdit ? "Update Set" : "Publish"}
+            // TODO: Add draft vs publish state
           />
         </HStack>
         <p
