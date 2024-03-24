@@ -106,7 +106,7 @@ export default function SetCreationMediumSelection() {
                 />
               </div>
             </HStack>
-            {isLoading && (
+            {(isLoading || createSet.isLoading) && (
               <>
                 <Spinner size={"xl"} />
                 <div className="h4 text-darkBlue">Building your deck...</div>
