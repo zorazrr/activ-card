@@ -1,12 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { api } from "~/utils/api";
 
 const AudioRecorder = ({
   textCallBack,
   shouldDisplayAnswer,
+  setIsProcessingRecordedAnswer,
 }: {
   textCallBack: (text: string) => void;
   shouldDisplayAnswer: boolean;
+  setIsProcessingRecordedAnswer: Dispatch<SetStateAction<boolean>>;
 }) => {
   const mimeType = "audio/mp3";
   const [permission, setPermission] = useState(false);
@@ -42,6 +50,7 @@ const AudioRecorder = ({
   const startRecording = async () => {
     if (permission) {
       if (stream) {
+        setIsProcessingRecordedAnswer(true);
         setRecordingStatus("recording");
         const media = new MediaRecorder(stream);
         mediaRecorder.current = media;
