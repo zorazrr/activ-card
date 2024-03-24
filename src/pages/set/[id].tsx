@@ -2,12 +2,12 @@ import { useEffect, useState } from "react"; // Import useState hook
 import { useRouter } from "next/router";
 import FlashCard from "~/components/Flashcard";
 import { api } from "~/utils/api";
-import { Icon, Spinner, Stack, useToast } from "@chakra-ui/react";
-import { MdHome } from "react-icons/md";
+import { HStack, Icon, Link, Spinner, Stack, useToast } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import Canvas from "~/components/Canvas";
 import { type Card } from "@prisma/client";
 import ProgressBar from "~/components/Progress/ProgressBar";
+import Image from "next/image";
 
 const Set = ({
   tempIdx,
@@ -112,15 +112,28 @@ const Set = ({
         <Canvas setShowCanvas={setShowCanvas} setId={setId as string} />
       ) : (
         <>
-          <p className="w-full pb-16 pt-8 text-center font-bold">
-            <Icon
+          <p className="w-full pl-8 pt-8 text-center font-bold">
+            {/* <Icon
               as={MdHome}
               position="absolute"
               left={5}
               boxSize={6}
               onClick={navigateHome}
               _hover={{ boxShadow: "5px", opacity: "75%", cursor: "pointer" }}
-            />
+            /> */}
+
+            <HStack gap={0} position="absolute" onClick={navigateHome}>
+              <div className="hover:opacity-75">
+                <Link href="/dashboard" className="flex flex-col 2xl:flex-row">
+                  <Image
+                    src="/assets/logo.png"
+                    alt="header"
+                    width={60}
+                    height={60}
+                  />
+                </Link>
+              </div>
+            </HStack>
             {set.name}
           </p>
           {curIndex >= 0 &&
