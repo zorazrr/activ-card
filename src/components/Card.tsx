@@ -47,7 +47,7 @@ const SetCard = (props: SetCardProps) => {
       p={3}
       borderRadius="10"
       onClick={onCardClick}
-      backgroundColor="#4A729D"
+      backgroundColor="mediumBlue.500"
       color="white"
       style={{ cursor: "pointer" }}
       marginRight={5}
