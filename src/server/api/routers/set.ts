@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { type Set } from "@prisma/client";
+import { SetType, type Set } from "@prisma/client";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -27,6 +27,7 @@ export const setRouter = createTRPCRouter({
         },
         include: {
           cards: true,
+          config: true,
         },
       });
       return set;
@@ -40,38 +41,43 @@ export const setRouter = createTRPCRouter({
         },
         include: {
           cards: true,
+          config: true,
         },
       });
       return sets;
     }),
   createSet: publicProcedure
-    .input(z.object({ name: z.string(), classId: z.string() }))
+    .input(
+      z.object({
+        name: z.string(),
+        classId: z.string(),
+        config: z.object({
+          setType: z.enum(["ASSIGNMENT", "INVERTED", "LITERACY", "THEORY"]),
+          pomodoro: z.string(),
+          pomodoroTimer: z.string(),
+          pomodoroCards: z.string(),
+          readingComprehensionLevel: z.string() || z.undefined(),
+        }),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       const set = await ctx.db.set.create({
         // TODO: Get interleaved sets selected and duplicate cards
-        // Also pass in pomodoro options etc
-
-        // TODO: Create set config
-        // model SetConfig {
-        //   id       String  @id @default(auto()) @map("_id") @db.ObjectId
-        //   set_id   String  @db.ObjectId @unique
-        //   set      Set     @relation(fields: [set_id], references: [id], onDelete: Cascade)
-        //   type SetType
-        //   pomodoro Boolean  @default(false)
-        //   pomodoroTimer Int? @default(60)
-        //   pomodoroCards Int? @default(5)
-        // }
-
+        // TODO: Do anything w reading comprehension here?
         data: {
           name: input.name,
           description: "",
           classroom_id: input.classId,
           config: {
             create: {
-              type: "INVERTED",
-              pomodoro: true,
-              pomodoroTimer: 25,
-              pomodoroCards: 10,
+              type: input.config.setType,
+              pomodoro: input.config.pomodoro === "true",
+              pomodoroTimer: input.config.pomodoro
+                ? Number(input.config.pomodoroTimer)
+                : undefined,
+              pomodoroCards: input.config.pomodoro
+                ? Number(input.config.pomodoroCards)
+                : undefined,
             },
           },
         },

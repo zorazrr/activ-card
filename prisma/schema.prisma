@@ -103,8 +103,8 @@ model SetConfig {
   set      Set     @relation(fields: [set_id], references: [id], onDelete: Cascade)
   type SetType
   pomodoro Boolean  @default(false) 
-  pomodoroTimer Int? @default(60)
-  pomodoroCards Int? @default(5)
+  pomodoroTimer Int? 
+  pomodoroCards Int? 
 }
 
 // NOTE: Interleaving and spaced repetitiion do not have to be saved here for now

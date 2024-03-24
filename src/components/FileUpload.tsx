@@ -6,9 +6,11 @@ import type { TermDefPair } from "~/utils/types";
 const StyledFileUpload = ({
   classId,
   setIsLoading,
+  formData,
 }: {
   classId: string;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
+  formData: any;
 }) => {
   const [file, setFile] = useState<File>();
   const [extractedText, setExtractedText] = useState<string>("");
@@ -78,7 +80,11 @@ const StyledFileUpload = ({
 
   useEffect(() => {
     if (flashcards.length !== 0) {
-      void createSet.mutate({ name: file!.name, classId: classId });
+      void createSet.mutate({
+        name: file!.name,
+        classId: classId,
+        config: formData,
+      });
     }
   }, [flashcards]);
 

@@ -54,6 +54,7 @@ const Sets = ({
       <HStack wrap="wrap">
         {sets?.map((set) => {
           return (
+            // TODO: Tag "Type" on the Set for teacher
             <Card
               key={set.id}
               name={set.name}

@@ -29,6 +29,7 @@ import { api } from "~/utils/api";
 import { useState } from "react";
 import { type TermDefPair } from "~/utils/types";
 import { InfoOutlineIcon } from "@chakra-ui/icons";
+import { SetType } from "@prisma/client";
 
 export default function SetCreationMediumSelection() {
   const router = useRouter();
@@ -66,7 +67,7 @@ export default function SetCreationMediumSelection() {
       },
     );
 
-  const createCard = api.card.createCardsforSet.useMutation({
+  const createCards = api.card.createCardsforSet.useMutation({
     retry: false,
     onSuccess: (data) => {
       window.location.href = `../set/${data.id}`;
@@ -76,7 +77,7 @@ export default function SetCreationMediumSelection() {
   const createSet = api.set.createSet.useMutation({
     retry: false,
     onSuccess: (data) =>
-      createCard.mutate({ setId: data.id, cards: flashcards }),
+      createCards.mutate({ setId: data.id, cards: flashcards }),
   });
 
   const createNewSet = async () => {
@@ -86,6 +87,7 @@ export default function SetCreationMediumSelection() {
     createSet.mutate({
       classId: router.query.classId as string,
       name: subject,
+      config: formData,
     });
   };
 
@@ -98,6 +100,7 @@ export default function SetCreationMediumSelection() {
     createSetFromScratch.mutate({
       classId: router.query.classId as string,
       name: subject,
+      config: formData,
     });
   };
 
@@ -116,7 +119,7 @@ export default function SetCreationMediumSelection() {
   }
 
   const handleOnFocusChange = (value) => {
-    setIsFocusEnabled(value === "Yes" ? true : false);
+    setIsFocusEnabled(value === "true" ? true : false);
   };
 
   return (
@@ -146,25 +149,30 @@ export default function SetCreationMediumSelection() {
                     <Tooltip label={`Mode:}`}>
                       <Icon as={InfoOutlineIcon} color="gray" />
                     </Tooltip>
+                    {/* TODO: FIll OUT TOOLTIPS */}
                   </FormLabel>
-                  <RadioGroup name="setType" defaultValue="Assignment" w="100%">
+                  <RadioGroup
+                    name="setType"
+                    defaultValue={SetType.ASSIGNMENT}
+                    w="100%"
+                  >
                     <HStack
                       spacing="auto"
                       w="100%"
                       // justifyContent="space-between"
                       gap="5%"
                     >
-                      <Radio value="Assignment" w="20%">
+                      <Radio value={SetType.ASSIGNMENT} w="20%">
                         Assignment &nbsp;
                       </Radio>
 
-                      <Radio value="Inverted Classroom" w="20%">
+                      <Radio value={SetType.INVERTED} w="20%">
                         Inverted Classroom
                       </Radio>
-                      <Radio value="Literacy" w="20%">
+                      <Radio value={SetType.LITERACY} w="20%">
                         Literacy
                       </Radio>
-                      <Radio value="Theory" w="20%">
+                      <Radio value={SetType.THEORY} w="20%">
                         Theory
                       </Radio>
                     </HStack>
@@ -193,16 +201,16 @@ export default function SetCreationMediumSelection() {
                     </Tooltip>
                   </FormLabel>
                   <RadioGroup
-                    defaultValue="Yes"
+                    defaultValue="true"
                     w="100%"
                     onChange={handleOnFocusChange}
-                    name="isFocusEnabled"
+                    name="pomodoro"
                   >
                     <HStack spacing="auto" w="100%" gap="5%">
-                      <Radio value="Yes" w="20%">
+                      <Radio value="true" w="20%">
                         Yes
                       </Radio>
-                      <Radio value="No" w="20%">
+                      <Radio value="false" w="20%">
                         No
                       </Radio>
                     </HStack>
@@ -218,7 +226,7 @@ export default function SetCreationMediumSelection() {
                         </Tooltip>
                       </FormLabel>
                       <NumberInput
-                        name="pomodoroIntervalLength"
+                        name="pomodoroCards"
                         defaultValue={5}
                         min={3}
                       >
@@ -234,7 +242,7 @@ export default function SetCreationMediumSelection() {
                         Length (in Seconds) of Pomodoro Break
                       </FormLabel>
                       <NumberInput
-                        name="pomodoroTimeLimit"
+                        name="pomodoroTimer"
                         defaultValue={60}
                         min={180}
                       >
@@ -276,6 +284,7 @@ export default function SetCreationMediumSelection() {
                 <StyledFileUpload
                   classId={router.query.classId as string}
                   setIsLoading={setIsLoading}
+                  formData={formData}
                 />
                 <StyledButton
                   label="Generate Using AI"
