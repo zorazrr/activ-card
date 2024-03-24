@@ -38,6 +38,19 @@ export default {
         darkGray: "#BDBDBD",
         veryDarkGray: "#1E1D1E",
       },
+      keyframes: {
+        flip: {
+          "0%": {
+            transform: "rotateX(0deg)",
+          },
+          "100%": {
+            transform: "rotateX(180deg)",
+          },
+        },
+      },
+      animation: {
+        flip: "flip 3s linear infinite",
+      },
     },
   },
   plugins: [],

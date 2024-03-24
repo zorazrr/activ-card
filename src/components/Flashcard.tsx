@@ -8,7 +8,7 @@ import {
 } from "react";
 import { api } from "~/utils/api";
 import AudioRecorder from "./AudioRecorder";
-import { Spinner, Stack, Textarea } from "@chakra-ui/react";
+import { Spinner, Stack, Textarea, keyframes } from "@chakra-ui/react";
 
 interface FlashCardProps {
   card: Card;
@@ -41,6 +41,7 @@ const FlashCard: FC<FlashCardProps> = ({
   const [shouldDisplayAnswer, setShouldDisplayAnswer] = useState(false);
   const [isProcessingRecordedAnswer, setIsProcessingRecordedAnswer] =
     useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
   const checkAnswerMutation = api.gpt.checkAnswer.useMutation({ retry: false });
   const explainAnswerMutation = api.gpt.explainAnswer.useMutation({
     retry: false,
@@ -158,7 +159,9 @@ const FlashCard: FC<FlashCardProps> = ({
   return (
     <div className="flex h-full flex-col items-center justify-evenly">
       <div className="flex h-[60%] w-screen flex-row items-center justify-between gap-12 px-40 text-lg">
-        <div className="flex h-full w-full flex-row items-center justify-center rounded-lg border bg-gray-100 p-10">
+        <div
+          className={`animate-flip flex h-full w-full flex-row items-center justify-center rounded-lg border bg-gray-100 p-10`}
+        >
           <p>{card.term}</p>
         </div>
         <div className="flex h-full w-full flex-col gap-2">
