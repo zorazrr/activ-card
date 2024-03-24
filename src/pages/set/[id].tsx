@@ -135,10 +135,6 @@ const Set = ({
           curIndex < flashcards.length &&
           flashcards[curIndex] ? (
             <>
-              <ProgressBar
-                percentage={(100 * maxIndex) / cards.length}
-                shouldApplyMargin={true}
-              />
               <FlashCard
                 key={flashcards[curIndex]!.id}
                 card={flashcards[curIndex]!}
@@ -204,6 +200,14 @@ const Set = ({
               </button>
             </div>
           </div>
+          {curIndex !== flashcards?.length && (
+            <ProgressBar
+              percentage={(100 * maxIndex) / cards.length}
+              shouldApplyMargin={true}
+              width={100}
+              shouldApplyBorderRadius={false}
+            />
+          )}
         </>
       )}
     </div>
