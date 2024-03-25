@@ -27,9 +27,10 @@ import {
 import StyledModal from "~/components/Modal";
 import { api } from "~/utils/api";
 import { useState } from "react";
-import { type TermDefPair } from "~/utils/types";
+import { SetConfig, type TermDefPair } from "~/utils/types";
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 import { SetType } from "@prisma/client";
+import { Config } from "tailwindcss";
 
 export default function SetCreationMediumSelection() {
   const router = useRouter();
@@ -55,11 +56,15 @@ export default function SetCreationMediumSelection() {
 
   const [flashcards, setFlashcards] = useState<TermDefPair[]>([]);
   const [subject, setSubject] = useState<string>("");
-  const [formData, setFormData] = useState<any>();
+  const [formData, setFormData] = useState<SetConfig>();
 
   const generateFlashcard =
     api.gpt.generateFlashcardsFromPromptedSubject.useQuery(
-      { subject: subject },
+      {
+        subject: subject,
+        setType: formData?.setType,
+        readingComprehensionLevel: formData?.readingComprehensionLevel,
+      },
       {
         retry: false,
         onSuccess: (data) => setFlashcards(data),
@@ -87,7 +92,7 @@ export default function SetCreationMediumSelection() {
     createSet.mutate({
       classId: router.query.classId as string,
       name: subject,
-      config: formData,
+      config: formData!,
     });
   };
 
@@ -100,7 +105,7 @@ export default function SetCreationMediumSelection() {
     createSetFromScratch.mutate({
       classId: router.query.classId as string,
       name: subject,
-      config: formData,
+      config: formData!,
     });
   };
 
@@ -183,6 +188,7 @@ export default function SetCreationMediumSelection() {
                   <Select
                     name="readingComprehensionLevel"
                     placeholder="Select Grade"
+                    isRequired
                   >
                     {grades.map((grade) => {
                       return (
@@ -331,8 +337,10 @@ export default function SetCreationMediumSelection() {
   );
 }
 
-// TODO: Connect FE with BE
-// TODO: Change page 2 of medium.tsx to use dashboard tabs and emulate YT video
-// TODO: Fill out tool tips
-// TODO: Consider passive vs active review
+// TODO 3: Finish out checkAnswer and think about interleaving flow
+// TODO 4: Fill out sample prompts in genearte using AI text box
+// TODO 5: Fill out tool tips
+// TODO 6: Change page 2 of medium.tsx to use dashboard tabs and emulate YT video
 // TODO: Add back arrow
+// TODO: Consider passive vs active review
+// For now, maybe only show cards of same type but in future we can extend it to combine different types of sets or different types of cards

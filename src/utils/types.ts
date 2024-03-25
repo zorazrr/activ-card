@@ -1,4 +1,4 @@
-import { Classroom, ClassCode } from "@prisma/client";
+import { Classroom, ClassCode, SetType } from "@prisma/client";
 
 interface TermDefPair {
   term: string;
@@ -28,4 +28,18 @@ interface AddClassRes {
   classCode: ClassCode;
 }
 
-export type { CardUpdateParams, CardRemoveParams, CardInfo, AddClassRes };
+interface SetConfig {
+  readingComprehensionLevel: string;
+  setType: SetType;
+  pomodoro: string;
+  pomodoroTimer: string;
+  pomodoroCards: string;
+}
+
+export type {
+  CardUpdateParams,
+  CardRemoveParams,
+  CardInfo,
+  AddClassRes,
+  SetConfig,
+};

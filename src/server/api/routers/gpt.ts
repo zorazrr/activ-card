@@ -11,6 +11,8 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import type { TermDefPair } from "~/utils/types";
+import { SetType } from "@prisma/client";
+import { getSetTypeEnum } from "~/utils/helpers";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const s3 = new S3Client({
@@ -83,32 +85,110 @@ export const gptRouter = createTRPCRouter({
   /**
    * Generate flashcard based on given subject and return the term-definition pairs
    * @param subject The subject to generate flashcards about
+   * @param setType The type of set to engineer term and definition off of
+   * @param readingComprehensionLevel The grade level to set these cards at
    * @returns The term-definition pairs
    */
   generateFlashcardsFromPromptedSubject: publicProcedure
-    .input(z.object({ subject: z.string() }))
+    .input(
+      z.object({
+        subject: z.string(),
+        setType: z
+          .enum(["ASSIGNMENT", "INVERTED", "LITERACY", "THEORY"])
+          .optional(),
+        readingComprehensionLevel: z.string().optional(),
+      }),
+    )
     .query(async ({ input }) => {
+      if (!input.setType) {
+        return [];
+      }
+      let prompt;
+      const numCards = 3;
+
+      const readingComprehensionLevel = Number(input.readingComprehensionLevel);
+
+      switch (getSetTypeEnum(input.setType)) {
+        case SetType.ASSIGNMENT:
+          prompt = `with the reading comprehension level of a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, generate ${String(numCards)} relevant (term:definition) pairs, keep it concise and simple, focusing on keeping the parts most important to the definition.`;
+          break;
+        case SetType.INVERTED:
+          prompt = `with the reading comprehension level of a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, i'm doing an inverted classroom meaning i want students to start get thinking about the topics even before we start the unit. generate ${String(numCards)} questions they can type responses to that help me accomplish this with them. only give me the sentences, nothing else`;
+          break;
+        case SetType.LITERACY:
+          prompt = `with the reading comprehension level of a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, generate ${String(numCards)} sentences for them to practice reading and literacy. only give me the sentences, nothing else`;
+          break;
+        case SetType.THEORY:
+          prompt = `with the level of a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom,  using Bloom's taxonomy level of "Evaluating, Creating, Synthesis", generate ${String(numCards)} mix of open-ended or high level concept questions to strengthen their understanding, keep it concise and simple. Only give me the response in the format of questions and only give questions that can be responded through speech (no visual material or drawing needed`;
+          break;
+      }
+
       const completion = await openai.chat.completions.create({
         messages: [
-          { role: "system", content: "You are a helpful teaching assistant." },
+          {
+            role: "system",
+            content: `You are a helpful teaching assistant in a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom`,
+          },
           {
             role: "user",
-            content:
-              "For the given subject, generate 3 relevant (term:definition) pairs, keep it short.",
+            content: `For the given prompt or subject, ${[prompt]}`,
           },
-          { role: "assistant", content: input.subject },
+          { role: "assistant", content: input.subject }, // TODO: Figure out why this is here
         ],
         model: "gpt-3.5-turbo",
       });
+
+      console.log(completion.choices[0].message.content);
+
       const lines = completion.choices[0].message.content.split("\n");
-      const termDefPairs: TermDefPair[] = lines.map((line) => {
-        // Split each line by the first colon to separate the term and the definition
-        const [term, definition] = line.split(/:\s*/);
-        return {
-          term: term.replace(/^\d+\.\s*/, ""), // Remove the numbering
-          def: definition.trim(), // Trim any leading or trailing whitespace
-        };
-      });
+
+      let termDefPairs: TermDefPair[];
+      console.log("HERE ARE MY LINES");
+      console.log(lines);
+
+      switch (input.setType) {
+        case SetType.ASSIGNMENT:
+          termDefPairs = lines.map((line) => {
+            console.log(line);
+            // Split each line by the first colon to separate the term and the definition
+            const [term, definition] = line.split(/:\s*/);
+            return {
+              term: term.replace(/^\d+\.\s*/, ""), // Remove the numbering
+              def: definition.trim(), // Trim any leading or trailing whitespace
+            };
+          });
+          break;
+
+        case SetType.INVERTED:
+          const placeholderForDefinitionInvertedClass =
+            "will accept any effort-based responses...";
+          termDefPairs = lines.map((line) => {
+            return {
+              term: line.replace(/^\d+\.\s*/, ""), // Remove the numbering for the questions
+              def: placeholderForDefinitionInvertedClass, // Trim any leading or trailing whitespace
+            };
+          });
+          break;
+        case SetType.LITERACY:
+          termDefPairs = lines.map((line) => {
+            return {
+              term: line.replace(/^\d+\.\s*/, ""), // Remove the numbering for the questions
+              def: line.replace(/^\d+\.\s*/, ""), // Reading will have same term and definition
+            };
+          });
+          break;
+        case SetType.THEORY:
+          const placeholderForTheoryDefinition =
+            "will accept responses fact checked by AI and, if question is hypothetical, then will check based on approach and effort basis...";
+          termDefPairs = lines.map((line) => {
+            return {
+              term: line.replace(/^\d+\.\s*/, ""), // Remove the numbering for the questions
+              def: placeholderForTheoryDefinition, // Trim any leading or trailing whitespace
+            };
+          });
+          break;
+      }
+
       return termDefPairs;
     }),
   /**
@@ -119,7 +199,7 @@ export const gptRouter = createTRPCRouter({
   generateFlashcard: publicProcedure
     .input(z.object({ content: z.string() }))
     .query(async ({ input }) => {
-      // TODO: Use prompt given and reading/comprehension level to come up with appropriate cards
+      // TODO 1: Use prompt given and reading/comprehension level to come up with appropriate cards
       const completion = await openai.chat.completions.create({
         messages: [
           { role: "system", content: "You are a helpful teaching assistant." },
@@ -196,6 +276,7 @@ export const gptRouter = createTRPCRouter({
    * @param studentInput The student's input to check
    * @returns Whether the student's input matches the definition, binary
    */
+  // TODO 2: Implement this
   checkAnswer: publicProcedure
     .input(
       z.object({

@@ -168,7 +168,7 @@ export default function EditSet() {
             onClick={updateSet}
             colorInd={0}
             label={isEdit ? "Update Set" : "Publish"}
-            // TODO: Add draft vs publish state
+            // TODO 8: Add draft vs publish state
           />
         </HStack>
         <p

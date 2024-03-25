@@ -56,13 +56,13 @@ export const setRouter = createTRPCRouter({
           pomodoro: z.string(),
           pomodoroTimer: z.string(),
           pomodoroCards: z.string(),
-          readingComprehensionLevel: z.string() || z.undefined(),
+          readingComprehensionLevel: z.string().optional(),
         }),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       const set = await ctx.db.set.create({
-        // TODO: Get interleaved sets selected and duplicate cards
+        // TODO 7: Get interleaved sets selected and duplicate cards
         // TODO: Do anything w reading comprehension here?
         data: {
           name: input.name,

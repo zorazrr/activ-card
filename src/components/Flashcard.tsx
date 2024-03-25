@@ -129,7 +129,7 @@ const FlashCard: FC<FlashCardProps> = ({
     }
   };
 
-  // TODO: Add enable auto check where you don't have to press check but just stop and start recording
+  // TODO 10: Add enable auto check where you don't have to press check but just stop and start recording
   // TODO: Allow checkAnswer to pass in a parameter
 
   const handleKeyPress = (e) => {
