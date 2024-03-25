@@ -119,6 +119,10 @@ const Set = ({
     window.location.href = `../dashboard`;
   };
 
+  {
+    /* TODO 10: Pass in for Pomodoro conditional and numCards  */
+  }
+
   return (
     <div className="flex h-screen w-screen flex-col items-start justify-start">
       {showCanvas ? (

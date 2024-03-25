@@ -138,18 +138,13 @@ export const gptRouter = createTRPCRouter({
         model: "gpt-3.5-turbo",
       });
 
-      console.log(completion.choices[0].message.content);
-
       const lines = completion.choices[0].message.content.split("\n");
 
       let termDefPairs: TermDefPair[];
-      console.log("HERE ARE MY LINES");
-      console.log(lines);
 
       switch (input.setType) {
         case SetType.ASSIGNMENT:
           termDefPairs = lines.map((line) => {
-            console.log(line);
             // Split each line by the first colon to separate the term and the definition
             const [term, definition] = line.split(/:\s*/);
             return {

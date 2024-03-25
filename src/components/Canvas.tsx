@@ -69,6 +69,7 @@ function Canvas({
             A break to re-center &#10024;
           </div>
           <Countdown setShowCanvas={setShowCanvas} didSubmit={didSubmit} />
+          {/* TODO 11: Pass in timer */}
           <div>
             <CanvasDraw
               ref={canvasRef}
