@@ -334,7 +334,7 @@ export const gptRouter = createTRPCRouter({
    * @param studentInput The student's input to check
    * @returns Whether the student's input matches the definition, binary
    */
-  // TODO 2: Implement this
+  // TODO 2: Implement this for ASSIGNMENT, INVERTED, THEORY, LITERACY
   checkAnswer: publicProcedure
     .input(
       z.object({
@@ -381,6 +381,7 @@ export const gptRouter = createTRPCRouter({
       console.log(transcript);
       return transcript;
     }),
+  // TODO 12: Consider combining this with previous
   explainAnswer: publicProcedure
     .input(
       z.object({

@@ -82,7 +82,11 @@ export default function SetCreationMediumSelection() {
   const createSet = api.set.createSet.useMutation({
     retry: false,
     onSuccess: (data) =>
-      createCards.mutate({ setId: data.id, cards: flashcards }),
+      createCards.mutate({
+        setId: data.id,
+        cards: flashcards,
+        setType: formData?.setType,
+      }),
   });
 
   const createNewSet = async () => {

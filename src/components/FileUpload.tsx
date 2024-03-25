@@ -44,7 +44,11 @@ const StyledFileUpload = ({
   const createSet = api.set.createSet.useMutation({
     retry: false,
     onSuccess: (data) =>
-      createCard.mutate({ setId: data.id, cards: flashcards }),
+      createCard.mutate({
+        setId: data.id,
+        cards: flashcards,
+        setType: formData?.setType,
+      }),
   });
 
   const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
