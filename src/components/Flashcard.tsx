@@ -9,6 +9,7 @@ import {
 import { api } from "~/utils/api";
 import AudioRecorder from "./AudioRecorder";
 import { Spinner, Stack, Textarea } from "@chakra-ui/react";
+import { set } from "zod";
 
 interface FlashCardProps {
   card: Card;
@@ -19,6 +20,7 @@ interface FlashCardProps {
   maxIndex: number;
   setLength: number;
   setMaxIndex: Dispatch<SetStateAction<number>>;
+  compLevel: number | undefined;
 }
 
 const FlashCard: FC<FlashCardProps> = ({
@@ -30,6 +32,7 @@ const FlashCard: FC<FlashCardProps> = ({
   maxIndex,
   setLength,
   setMaxIndex,
+  compLevel,
 }) => {
   const [studentInput, setStudentInput] = useState<string>("");
   const [studentAudioText, setStudentAudioText] = useState<string>();
@@ -80,6 +83,7 @@ const FlashCard: FC<FlashCardProps> = ({
                   definition: card.definition,
                   studentInput: studentAudioText,
                   type: card.type,
+                  compLevel: compLevel,
                 },
                 {
                   onSuccess: (data) => {
@@ -111,6 +115,7 @@ const FlashCard: FC<FlashCardProps> = ({
                   definition: card.definition,
                   studentInput: studentInput,
                   type: card.type,
+                  compLevel: compLevel,
                 },
                 {
                   onSuccess: (data) => {

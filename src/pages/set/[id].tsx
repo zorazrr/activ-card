@@ -163,6 +163,7 @@ const Set = ({
                 maxIndex={maxIndex}
                 setLength={flashcards.length}
                 setMaxIndex={setMaxIndex}
+                compLevel={set.config.comprehensionLevel}
               />
             </>
           ) : (
