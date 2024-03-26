@@ -341,10 +341,14 @@ export default function SetCreationMediumSelection() {
   );
 }
 
-// TODO 3: Finish out checkAnswer and think about interleaving flow
 // TODO 4: Fill out sample prompts in genearte using AI text box
 // TODO 5: Fill out tool tips
 // TODO 6: Change page 2 of medium.tsx to use dashboard tabs and emulate YT video
+// TODO: TEST ALL CHANGES!
+// ASSIGNMENT
+// INVERTED
+// LITERACY
+// THEORY
 // TODO: Add back arrow
 // TODO: Consider passive vs active review
 // For now, maybe only show cards of same type but in future we can extend it to combine different types of sets or different types of cards

@@ -69,7 +69,12 @@ export default function EditSet() {
           setSetName(data.name);
           setSetDescription(data.description!);
           const mappedCards: CardInfo[] = data.cards.map((card: Card) => {
-            return { term: card.term, def: card.definition, id: card.id };
+            return {
+              term: card.term,
+              def: card.definition,
+              id: card.id,
+              type: card.type,
+            };
           });
           setFlashcards([...mappedCards]);
         }
@@ -101,7 +106,10 @@ export default function EditSet() {
   };
 
   const addCard = () => {
-    setFlashcards([...flashcards, { term: "", def: "", id: String(tempId) }]);
+    setFlashcards([
+      ...flashcards,
+      { term: "", def: "", id: String(tempId), type: set?.config.type },
+    ]);
     setTempId((prevId) => prevId + 1);
   };
 
@@ -124,7 +132,9 @@ export default function EditSet() {
 
   useEffect(() => {
     if (!flashcards || flashcards.length === 0) {
-      setFlashcards([{ term: "", def: "", id: String(tempId) }]);
+      setFlashcards([
+        { term: "", def: "", id: String(tempId), type: set?.config.type },
+      ]);
       setTempId((prevId) => prevId + 1);
     }
   }, [flashcards]);
@@ -199,6 +209,7 @@ export default function EditSet() {
             term={flashcard.term}
             def={flashcard.def}
             idx={id}
+            type={flashcard.type}
             updateCard={updateCard}
             removeCard={removeCard}
           />

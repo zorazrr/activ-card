@@ -9,6 +9,7 @@ interface CardInfo {
   term: string;
   def: string;
   id: string;
+  type: SetType;
 }
 
 export type { TermDefPair };

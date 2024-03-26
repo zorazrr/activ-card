@@ -1,4 +1,4 @@
-import { type Card } from "@prisma/client";
+import { SetType, type Card } from "@prisma/client";
 import {
   useEffect,
   useState,
@@ -60,42 +60,6 @@ const FlashCard: FC<FlashCardProps> = ({
   };
 
   const checkAnswer = () => {
-    // if (checkMode === CheckMode.AI_CHECK) {
-    checkAnswerMutation.mutate(
-      {
-        term: card.term,
-        definition: card.definition,
-        studentInput: studentInput,
-      },
-      {
-        onSuccess: ({ isCorrect }) => {
-          if (isCorrect) {
-            onCorrectCallback?.();
-          } else {
-            explainAnswerMutation.mutate(
-              {
-                term: card.term,
-                definition: card.definition,
-                studentInput: studentInput,
-              },
-              {
-                onSuccess: (data) => {
-                  setAnswerExplanation(data!);
-                },
-              },
-            );
-            onIncorrectCallback?.();
-          }
-        },
-      },
-    );
-    // }
-
-    // else {
-    //   studentInput.toLowerCase() === card.definition.toLowerCase()
-    //     ? onCorrectCallback?.()
-    //     : onIncorrectCallback?.();
-    // }
     if (studentAudioText) {
       console.log("Checking answer with audio");
       checkAnswerMutation.mutate(
@@ -103,6 +67,7 @@ const FlashCard: FC<FlashCardProps> = ({
           term: card.term,
           definition: card.definition,
           studentInput: studentAudioText,
+          type: card.type,
         },
         {
           onSuccess: ({ isCorrect }) => {
@@ -114,6 +79,38 @@ const FlashCard: FC<FlashCardProps> = ({
                   term: card.term,
                   definition: card.definition,
                   studentInput: studentAudioText,
+                  type: card.type,
+                },
+                {
+                  onSuccess: (data) => {
+                    setAnswerExplanation(data!);
+                  },
+                },
+              );
+              onIncorrectCallback?.();
+            }
+          },
+        },
+      );
+    } else {
+      checkAnswerMutation.mutate(
+        {
+          term: card.term,
+          definition: card.definition,
+          studentInput: studentInput,
+          type: card.type,
+        },
+        {
+          onSuccess: ({ isCorrect }) => {
+            if (isCorrect) {
+              onCorrectCallback?.();
+            } else {
+              explainAnswerMutation.mutate(
+                {
+                  term: card.term,
+                  definition: card.definition,
+                  studentInput: studentInput,
+                  type: card.type,
                 },
                 {
                   onSuccess: (data) => {
@@ -175,12 +172,17 @@ const FlashCard: FC<FlashCardProps> = ({
             </Stack>
           ) : (
             <Textarea
+              isDisabled={card.type == SetType.LITERACY}
               h="full"
               value={studentInput}
               onChange={(e) => setStudentInput(e.target.value)}
               onKeyDown={handleKeyPress}
               onKeyUp={handleKeyUp}
-              placeholder="Start typing or press icon to speak."
+              placeholder={
+                card.type == SetType.LITERACY
+                  ? "Press the icon to get started reading!"
+                  : "Start typing or press icon to speak."
+              }
             />
           )}
           <div className="flex w-full flex-row justify-between">
@@ -213,7 +215,7 @@ const FlashCard: FC<FlashCardProps> = ({
         <div></div>
       ) : (
         <div className="w-3/4 rounded-lg border border-red-300 px-12 py-5">
-          <p>{answerExplanation}</p>
+          <p dangerouslySetInnerHTML={{ __html: answerExplanation }} />
         </div>
       )}
       {shouldDisplayAnswer && (

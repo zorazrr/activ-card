@@ -110,7 +110,7 @@ export const gptRouter = createTRPCRouter({
 
       switch (getSetTypeEnum(input.setType)) {
         case SetType.ASSIGNMENT:
-          prompt = `with the reading comprehension level of a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, generate ${String(numCards)} relevant (term:definition) pairs, keep it concise and simple, focusing on keeping the parts most important to the definition.`;
+          prompt = `with the reading comprehension level of a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, generate ${String(numCards)} relevant (term:definition) pairs, keep it concise and simple, focusing on keeping the parts most important to the definition. Provide in the following format of Term:Definition`;
           break;
         case SetType.INVERTED:
           prompt = `with the reading comprehension level of a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, i'm doing an inverted classroom meaning i want students to start get thinking about the topics even before we start the unit. generate ${String(numCards)} questions they can type responses to that help me accomplish this with them. only give me the sentences, nothing else`;
@@ -138,20 +138,30 @@ export const gptRouter = createTRPCRouter({
         model: "gpt-3.5-turbo",
       });
 
+      console.log(completion.choices[0].message.content);
       const lines = completion.choices[0].message.content.split("\n");
+      console.log("HERE ARE THE LINES");
+      console.log(lines);
 
       let termDefPairs: TermDefPair[];
 
       switch (input.setType) {
         case SetType.ASSIGNMENT:
-          termDefPairs = lines.map((line) => {
-            // Split each line by the first colon to separate the term and the definition
-            const [term, definition] = line.split(/:\s*/);
-            return {
-              term: term.replace(/^\d+\.\s*/, ""), // Remove the numbering
-              def: definition.trim(), // Trim any leading or trailing whitespace
-            };
-          });
+          termDefPairs = lines
+            .map((line) => {
+              if (line) {
+                const [term, definition] = line.split(/:\s*/);
+                return {
+                  term: term.replace(/^\d+\.\s*/, ""), // Remove the numbering
+                  def: definition.trim(), // Trim any leading or trailing whitespace
+                };
+              } else {
+                return undefined;
+              }
+              // Split each line by the first colon to separate the term and the definition
+            })
+            .filter((value) => value !== undefined);
+          console.log(termDefPairs);
           break;
 
         case SetType.INVERTED:
@@ -240,12 +250,14 @@ export const gptRouter = createTRPCRouter({
       switch (input.setType) {
         case SetType.ASSIGNMENT:
           termDefPairs = lines.map((line) => {
-            // Split each line by the first colon to separate the term and the definition
-            const [term, definition] = line.split(/:\s*/);
-            return {
-              term: term.replace(/^\d+\.\s*/, ""), // Remove the numbering
-              def: definition.trim(), // Trim any leading or trailing whitespace
-            };
+            if (line) {
+              // Split each line by the first colon to separate the term and the definition
+              const [term, definition] = line.split(/:\s*/);
+              return {
+                term: term.replace(/^\d+\.\s*/, ""), // Remove the numbering
+                def: definition.trim(), // Trim any leading or trailing whitespace
+              };
+            }
           });
           break;
 
@@ -334,30 +346,58 @@ export const gptRouter = createTRPCRouter({
    * @param studentInput The student's input to check
    * @returns Whether the student's input matches the definition, binary
    */
-  // TODO 2: Implement this for ASSIGNMENT, INVERTED, THEORY, LITERACY
   checkAnswer: publicProcedure
     .input(
       z.object({
         term: z.string(),
         definition: z.string(),
         studentInput: z.string(),
+        type: z.enum(["ASSIGNMENT", "INVERTED", "LITERACY", "THEORY"]),
       }),
     )
     .mutation(async ({ input }) => {
-      const formattedInput = `Term: ${input.term}\nDefinition: ${input.definition}\nStudent Answer: ${input.studentInput}`;
+      let formattedInput: string;
+      let prompt: string;
+
+      switch (getSetTypeEnum(input.type)) {
+        case SetType.ASSIGNMENT:
+          formattedInput = `Term: ${input.term}\nDefinition: ${input.definition}\nStudent Answer: ${input.studentInput}`;
+          prompt = `Given the following term, student answer, and definition, check if the student's answer conveys the important stuff from the definition. Don't be too picky on technicalities/verbage.`;
+          break;
+        case SetType.INVERTED:
+          formattedInput = `Term: ${input.term}\nStudent Answer: ${input.studentInput}`;
+          prompt = `Given the following question and student's answer, this is an inverted classroom style \
+          so I just want to make sure student responses show they put thinking effort (decent quantity and quality of response) \
+          in trying to formulate an answer that is relevant to the question (it is ok if their answer \ 
+          is a little incorrect as long as it is reasonable and relevant). `;
+          break;
+        case SetType.LITERACY:
+          formattedInput = `Term: ${input.term}\nStudent Answer: ${input.studentInput}`;
+          prompt = `The student answer should match the term exactly word by word. \
+          Even if word is not said properly (not direct match with term string) then mark it wrong`;
+          break;
+        case SetType.THEORY:
+          formattedInput = `Term: ${input.term}\nStudent Answer: ${input.studentInput}`;
+          prompt = `Given the following question and student's answer, accept responses that are reasonable and correct for the most part. \ 
+          Don't get too picky about small technicalities but don't accept any responses with significant errors \
+          in their understanding or not a lot of effort or thinking.`;
+          break;
+      }
+
       const completion = await openai.chat.completions.create({
         messages: [
           { role: "system", content: "You are a helpful teaching assistant." },
           {
             role: "user",
-            content:
-              "Given the following term, student answer, and definition, check if the student's answer match the definition.",
+            content: prompt,
           },
           { role: "assistant", content: formattedInput },
           { role: "assistant", content: "Summarize with Yes or No." },
         ],
         model: "gpt-3.5-turbo",
       });
+      console.log("HI");
+      console.log(completion);
       return {
         isCorrect: completion.choices[0].message.content
           .toLowerCase()
@@ -381,6 +421,7 @@ export const gptRouter = createTRPCRouter({
       console.log(transcript);
       return transcript;
     }),
+  // TODO: 3, Send reading comprehension level with this too so feedback is made for age group
   // TODO 12: Consider combining this with previous
   explainAnswer: publicProcedure
     .input(
@@ -388,20 +429,48 @@ export const gptRouter = createTRPCRouter({
         term: z.string(),
         definition: z.string(),
         studentInput: z.string(),
+        type: z.enum(["ASSIGNMENT", "INVERTED", "LITERACY", "THEORY"]),
       }),
     )
     .mutation(async ({ input }) => {
-      const formattedInput = `Term: ${input.term}\nDefinition: ${input.definition}\nStudent Answer: ${input.studentInput}`;
+      let formattedInput: string;
+      let prompt: string;
+
+      switch (getSetTypeEnum(input.type)) {
+        case SetType.ASSIGNMENT:
+          formattedInput = `Term: ${input.term}\nDefinition: ${input.definition}\nStudent Answer: ${input.studentInput}`;
+          prompt =
+            "Given the following term, student answer,\
+          and definition, explain why the student answer is inaccurate\
+          and what the student should remember from the definition to get it right next time.\
+          Keep your answer quick and easy to read, encouraging and pretend you are talking to the student.  Bold the words/phrases to help reader understand their mistake and actions/suggestions for next attempt? Bold with <b></b> tags";
+          break;
+        case SetType.INVERTED:
+          formattedInput = `Question: ${input.term}\nStudent Answer: ${input.studentInput}`;
+          prompt = `Given the following question and student's answer, this is an inverted classroom style so I just want to make sure student responses show they put a strong effort even if some of what they wrote may be incorrect.
+           I just want to make sure that they are thinking and trying. The answer provided was marked inaccurate based on criteria above so explain why it was marked this way and suggest what the student could improve for next time 
+           Keep your answer quick and easy to read, encouraging and pretend you are talking to the student. Bold the words/phrases to help reader understand their mistake and actions/suggestions for next attempt? Bold with <b></b> tags`;
+          break;
+        case SetType.LITERACY:
+          formattedInput = `Term: ${input.term}\nStudent Answer: ${input.studentInput}`;
+          prompt = `The student answer should match the term word by word because I am doing a literacy exercise with them where I read the term and they read it back to me. Explain to the student why their answer was marked incorrect (if certain words were not read out loud/skipped in their answer)
+          Keep your answer quick and easy to read, encouraging and pretend you are talking to the student.  Bold the words/phrases to help reader understand their mistake and actions/suggestions for next attempt? Bold with <b></b> tags`;
+          break;
+        case SetType.THEORY:
+          formattedInput = `Question: ${input.term}\nStudent Answer: ${input.studentInput}`;
+          prompt = `Given the following question and student's answer, accept responses that are reasonable and correct for the most part. Don't get too picky about small technicalities but don't accept any responses with significant errors in their understanding or not a lot of effort or thinking. \
+          The answer provided was marked inaccurate based on criteria above so explain why it was marked this way and suggest what the student could improve for next time
+          Keep your answer quick and easy to read, encouraging and pretend you are talking to the student. Bold the words/phrases to help reader understand their mistake and actions/suggestions for next attempt? Bold with <b></b> tags
+          `;
+          break;
+      }
+
       const completion = await openai.chat.completions.create({
         messages: [
           { role: "system", content: "You are a helpful teaching assistant." },
           {
             role: "user",
-            content:
-              "Given the following term, student answer,\
-               and definition, explain why the student answer is inaccurate\
-               and what the student should pay attention to next time.\
-               Keep your answer concise and pretend you are talking to the student.",
+            content: prompt,
           },
           { role: "assistant", content: formattedInput },
         ],

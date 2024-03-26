@@ -12,7 +12,7 @@ import _ from "lodash";
 
 const Set = ({
   tempIdx,
-  pomodoroConst = 5,
+  pomodoroConst = 3,
 }: {
   tempIdx: number | undefined;
   pomodoroConst?: number;

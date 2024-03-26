@@ -105,6 +105,7 @@ model SetConfig {
   pomodoro      Boolean @default(false)
   pomodoroTimer Int?
   pomodoroCards Int?
+  comprehensionLevel  Int?
 }
 
 // NOTE: Interleaving and spaced repetitiion do not have to be saved here for now

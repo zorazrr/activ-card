@@ -78,6 +78,9 @@ export const setRouter = createTRPCRouter({
               pomodoroCards: input.config.pomodoro
                 ? Number(input.config.pomodoroCards)
                 : undefined,
+              comprehensionLevel: input.config.readingComprehensionLevel
+                ? Number(input.config.readingComprehensionLevel)
+                : undefined,
             },
           },
         },
@@ -93,7 +96,15 @@ export const setRouter = createTRPCRouter({
         setId: z.string(),
         setName: z.string(),
         setDescription: z.string(),
-        cards: z.array(z.object({ term: z.string(), def: z.string() })),
+        cards: z.array(
+          z.object({
+            term: z.string(),
+            def: z.string(),
+            type: z
+              .enum(["ASSIGNMENT", "INVERTED", "LITERACY", "THEORY"])
+              .optional(),
+          }),
+        ),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -119,6 +130,7 @@ export const setRouter = createTRPCRouter({
               data: input.cards.map((card) => ({
                 term: card.term,
                 definition: card.def,
+                type: card.type,
               })),
             },
           },
