@@ -49,7 +49,7 @@ export default {
         },
       },
       animation: {
-        flip: "flip 3s linear infinite",
+        flip: "flip 1.5s linear",
       },
     },
   },

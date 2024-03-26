@@ -8,7 +8,16 @@ import {
 } from "react";
 import { api } from "~/utils/api";
 import AudioRecorder from "./AudioRecorder";
-import { Spinner, Stack, Textarea, keyframes } from "@chakra-ui/react";
+import {
+  Divider,
+  HStack,
+  Spinner,
+  Stack,
+  Textarea,
+  VStack,
+  keyframes,
+} from "@chakra-ui/react";
+import StyledButton from "./Button";
 
 interface FlashCardProps {
   card: Card;
@@ -41,7 +50,7 @@ const FlashCard: FC<FlashCardProps> = ({
   const [shouldDisplayAnswer, setShouldDisplayAnswer] = useState(false);
   const [isProcessingRecordedAnswer, setIsProcessingRecordedAnswer] =
     useState(false);
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [isAnimationCompleted, setIsAnimationCompleted] = useState(false);
   const checkAnswerMutation = api.gpt.checkAnswer.useMutation({ retry: false });
   const explainAnswerMutation = api.gpt.explainAnswer.useMutation({
     retry: false,
@@ -62,6 +71,8 @@ const FlashCard: FC<FlashCardProps> = ({
       }
       moveCurrentCardToEnd();
     }
+
+    setIsAnimationCompleted(false);
   };
 
   const checkAnswer = () => {
@@ -91,6 +102,7 @@ const FlashCard: FC<FlashCardProps> = ({
               );
               onIncorrectCallback?.();
             }
+            setShouldDisplayAnswer(true);
           },
         },
       );
@@ -126,6 +138,7 @@ const FlashCard: FC<FlashCardProps> = ({
               );
               onIncorrectCallback?.();
             }
+            setShouldDisplayAnswer(true);
           },
         },
       );
@@ -147,6 +160,21 @@ const FlashCard: FC<FlashCardProps> = ({
     }
   }
 
+  const onAnimationEnd = () => {
+    setIsAnimationCompleted(true);
+  };
+
+  // Function to display the answer after animation completion
+  useEffect(() => {
+    if (isAnimationCompleted) {
+      setShouldDisplayAnswer(true);
+    }
+
+    if (answerExplanation) {
+      setAnswerExplanation(answerExplanation);
+    }
+  }, [isAnimationCompleted, answerExplanation]);
+
   useEffect(() => {
     if (studentAudioText !== undefined) {
       checkAnswer();
@@ -160,9 +188,34 @@ const FlashCard: FC<FlashCardProps> = ({
     <div className="flex h-full flex-col items-center justify-evenly">
       <div className="flex h-[60%] w-screen flex-row items-center justify-between gap-12 px-40 text-lg">
         <div
-          className={`animate-flip flex h-full w-full flex-row items-center justify-center rounded-lg border bg-gray-100 p-10`}
+          className={`${shouldDisplayAnswer && "animate-flip"} flex h-full w-full flex-row items-center justify-center rounded-lg border bg-gray-100 p-10`}
+          onAnimationEnd={onAnimationEnd}
         >
-          <p>{card.term}</p>
+          {!shouldDisplayAnswer && <p className="font-bold">{card.term}</p>}
+          {shouldDisplayAnswer && isAnimationCompleted && (
+            <VStack w="100%" h="100%" gap="20px" alignItems="start">
+              <p className="self-center font-bold">{card.term}</p>
+              <Divider borderWidth="0.5px" borderColor="darkgray" />
+              <p>
+                <span style={{ fontWeight: 600 }}>Correct Answer </span>
+                {card.definition}
+              </p>
+
+              {checkAnswerMutation.isLoading ||
+              explainAnswerMutation.isLoading ? (
+                <HStack w="100%" justifyContent="center" alignItems="center">
+                  <Spinner />
+                </HStack>
+              ) : answerExplanation === "" ? (
+                <div></div>
+              ) : (
+                <p>
+                  <span style={{ fontWeight: 600 }}>Explanation </span>
+                  {answerExplanation}
+                </p>
+              )}
+            </VStack>
+          )}
         </div>
         <div className="flex h-full w-full flex-col gap-2">
           {isProcessingRecordedAnswer ? (
@@ -209,25 +262,20 @@ const FlashCard: FC<FlashCardProps> = ({
           </div>
         </div>
       </div>
-      {checkAnswerMutation.isLoading || explainAnswerMutation.isLoading ? (
-        <Spinner />
-      ) : answerExplanation === "" || shouldDisplayAnswer ? (
-        <div></div>
-      ) : (
-        <div className="w-3/4 rounded-lg border border-red-300 px-12 py-5">
-          <p>{answerExplanation}</p>
-        </div>
-      )}
+
       {shouldDisplayAnswer && (
-        <div className="flex w-3/4 flex-col rounded-lg border border-blue-300 px-12 py-5">
-          <div className="pb-5 font-bold">Correct Answer</div>
-          <div>{card.definition}</div>
-          <button
+        <div className="flex w-screen justify-center px-12 py-5">
+          <StyledButton
+            label="Got It!"
+            colorInd={0}
             onClick={handleShowCorrectAnswerAffirmation}
-            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
-          >
-            Got It!
-          </button>
+            style={{
+              width: "300%",
+              paddingTop: "15px",
+              paddingBottom: "15px",
+              marginBottom: "3%",
+            }}
+          />
         </div>
       )}
     </div>
