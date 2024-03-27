@@ -155,7 +155,17 @@ export default function SetCreationMediumSelection() {
                 <FormControl w="100%">
                   <FormLabel>
                     Type of Set &nbsp;{" "}
-                    <Tooltip label={`Mode:}`}>
+                    <Tooltip
+                      label={
+                        <Text>
+                          <b>First line</b>
+                          <br />
+                          Second line
+                          <br />
+                          Third line
+                        </Text>
+                      }
+                    >
                       <Icon as={InfoOutlineIcon} color="gray" />
                     </Tooltip>
                     {/* TODO: FIll OUT TOOLTIPS */}
@@ -206,7 +216,19 @@ export default function SetCreationMediumSelection() {
                 <FormControl>
                   <FormLabel>
                     Enable Pomodoro Focus &nbsp;
-                    <Tooltip label={`Mode:}`}>
+                    <Tooltip
+                      backgroundColor="gray.100"
+                      color="gray"
+                      label={
+                        <Text>
+                          <b>First line</b>
+                          <br />
+                          Second line
+                          <br />
+                          Third line
+                        </Text>
+                      }
+                    >
                       <Icon as={InfoOutlineIcon} color="gray" />
                     </Tooltip>
                   </FormLabel>

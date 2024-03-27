@@ -49,6 +49,7 @@ const FlashCard: FC<FlashCardProps> = ({
     // copy; therefore, we will just stop displaying the answer, and allow the student to submit the answer if this is the case
     if (curIndex === setLength - 1) {
       setShouldDisplayAnswer(false);
+      setAnswerExplanation("");
     } else {
       // If a student says they do not know for a flashcard they have previously answered, they should not be able to skip a card they have not answered
       if (curIndex < maxIndex) {
@@ -152,7 +153,11 @@ const FlashCard: FC<FlashCardProps> = ({
             </Stack>
           ) : (
             <Textarea
-              isDisabled={card.type == SetType.LITERACY}
+              isDisabled={
+                card.type == SetType.LITERACY ||
+                shouldDisplayAnswer ||
+                answerExplanation !== ""
+              }
               h="full"
               value={studentInput}
               onChange={(e) => setStudentInput(e.target.value)}
@@ -168,21 +173,23 @@ const FlashCard: FC<FlashCardProps> = ({
           <div className="flex w-full flex-row justify-between">
             <AudioRecorder
               textCallBack={setStudentAudioText}
-              shouldDisplayAnswer={shouldDisplayAnswer || !isCorrect}
+              shouldDisplayAnswer={
+                shouldDisplayAnswer || answerExplanation !== ""
+              }
               setIsProcessingRecordedAnswer={setIsProcessingRecordedAnswer}
             />
             <div className="flex flex-row gap-x-3">
               <button
                 onClick={() => setShouldDisplayAnswer(true)}
                 className="h-fit w-fit rounded-lg bg-midBlue px-6 py-1 text-sm text-white"
-                disabled={shouldDisplayAnswer || !isCorrect}
+                disabled={shouldDisplayAnswer || answerExplanation !== ""}
               >
                 {`I Don't Know`}
               </button>
               <button
                 onClick={() => checkAnswer()}
                 className="h-fit w-fit rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
-                disabled={shouldDisplayAnswer || !isCorrect}
+                disabled={shouldDisplayAnswer || answerExplanation !== ""}
               >
                 Check
               </button>
@@ -195,7 +202,7 @@ const FlashCard: FC<FlashCardProps> = ({
       ) : answerExplanation === "" || shouldDisplayAnswer ? (
         <div></div>
       ) : isCorrect ? (
-        <div className="flex w-3/4 flex-col rounded-lg border border-green-300 px-12 py-5">
+        <div className="flex w-3/4 flex-col rounded-lg border border-green-400 px-12 py-5">
           <div className="pb-5 font-bold">Feedback</div>
           <div dangerouslySetInnerHTML={{ __html: answerExplanation }} />
           <button

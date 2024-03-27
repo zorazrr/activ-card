@@ -54,8 +54,8 @@ export const setRouter = createTRPCRouter({
         config: z.object({
           setType: z.enum(["ASSIGNMENT", "INVERTED", "LITERACY", "THEORY"]),
           pomodoro: z.string(),
-          pomodoroTimer: z.string(),
-          pomodoroCards: z.string(),
+          pomodoroTimer: z.string().optional(),
+          pomodoroCards: z.string().optional(),
           readingComprehensionLevel: z.string().optional(),
         }),
       }),

@@ -402,14 +402,14 @@ export const gptRouter = createTRPCRouter({
           {
             role: "assistant",
             content: `Make sure your feedback is at a ${input.compLevel && (input.compLevel == 0 ? "kindergarten" : `grade ${input.compLevel}`)} classroom comprehension level. \ 
-          You're talking to the student and explain why you marked the student's answer as "yes" or "no" given criteria above.\
+          You're talking to the student (second person POV) and explain why you marked the student's answer as "yes" or "no" given criteria above.\
            If the answer is correct, give affirmation on what they did well and, if any tiny mistakes, short suggestions on what to do next time. \
            If they're incorrect, suggest what the student could improve for next time and, if anything, what they did correctly
           Keep your answer quick and easy to read, encouraging. \
-          Bold the words/phrases that will help student quickly grasp what things they did well, poorly and action items and suggestions for next time. Bold with <b></b> tag
+          Bold the key words/phrases (use <b></b>) that will help student quickly grasp the action items you provide for next time and what they said correct/wrong.
           Provide your response in the following format (two lines): 
           \ Summary: Summarize with "Yes" or "No" \
-           Feedback:*add your feedback here.`,
+           Feedback: add your feedback here.`,
           },
         ],
         model: "gpt-3.5-turbo",
@@ -447,6 +447,8 @@ export const gptRouter = createTRPCRouter({
       console.log(transcript);
       return transcript;
     }),
+
+  // TODO [ARCHNA + VASU]: Two queries or one? do not show again if i get correct toggle? Press Enter? Two quries less accuracy, one query too slow
   // explainAnswer: publicProcedure
   //   .input(
   //     z.object({
