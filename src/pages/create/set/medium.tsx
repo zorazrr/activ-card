@@ -134,7 +134,7 @@ export default function SetCreationMediumSelection() {
   return (
     <>
       <div className="p-5 hover:opacity-75">
-        <Link href="/">
+        <Link href="/dashboard">
           <Image src="/assets/logo.png" alt="header" width={65} height={65} />
         </Link>
       </div>
@@ -341,7 +341,6 @@ export default function SetCreationMediumSelection() {
   );
 }
 
-// TODO 4: Fill out sample prompts in genearte using AI text box
 // TODO 5: Fill out tool tips
 // TODO 6: Change page 2 of medium.tsx to use dashboard tabs and emulate YT video
 // TODO: TEST ALL CHANGES!
@@ -349,6 +348,6 @@ export default function SetCreationMediumSelection() {
 // INVERTED
 // LITERACY
 // THEORY
-// TODO: Add back arrow
+// TODO: Add back arrow between two modal pages
 // TODO: Consider passive vs active review
 // For now, maybe only show cards of same type but in future we can extend it to combine different types of sets or different types of cards

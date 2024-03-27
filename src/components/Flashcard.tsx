@@ -107,8 +107,7 @@ const FlashCard: FC<FlashCardProps> = ({
     }
   };
 
-  // TODO 10: Add enable auto check where you don't have to press check but just stop and start recording
-  // TODO: Allow checkAnswer to pass in a parameter
+  // TODO [ARCHNA + VASU DISCUSS]: Add enable auto check where you don't have to press check but just stop and start recording
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {

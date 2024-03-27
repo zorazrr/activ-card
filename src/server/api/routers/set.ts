@@ -62,8 +62,7 @@ export const setRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const set = await ctx.db.set.create({
-        // TODO 7: Get interleaved sets selected and duplicate cards
-        // TODO: Do anything w reading comprehension here?
+        // TODO: Get interleaved sets selected and duplicate cards
         data: {
           name: input.name,
           description: "",
