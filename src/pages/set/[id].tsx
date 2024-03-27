@@ -129,7 +129,7 @@ const Set = ({
         <Canvas setShowCanvas={setShowCanvas} setId={setId as string} />
       ) : (
         <>
-          <p className="w-full pl-8 pt-8 text-center font-bold">
+          <div className="w-full pl-8 pt-8 text-center font-bold">
             <HStack gap={0} position="absolute" onClick={navigateHome}>
               <div className="hover:opacity-75">
                 <Link href="/dashboard" className="flex flex-col 2xl:flex-row">
@@ -143,7 +143,7 @@ const Set = ({
               </div>
             </HStack>
             {set.name}
-          </p>
+          </div>
           {curIndex >= 0 &&
           flashcards &&
           curIndex < flashcards.length &&
