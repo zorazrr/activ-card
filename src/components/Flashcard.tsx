@@ -37,13 +37,11 @@ const FlashCard: FC<FlashCardProps> = ({
   const [studentInput, setStudentInput] = useState<string>("");
   const [studentAudioText, setStudentAudioText] = useState<string>();
   const [answerExplanation, setAnswerExplanation] = useState<string>("");
+  const [isCorrect, setIsCorrect] = useState<boolean>(true);
   const [shouldDisplayAnswer, setShouldDisplayAnswer] = useState(false);
   const [isProcessingRecordedAnswer, setIsProcessingRecordedAnswer] =
     useState(false);
   const checkAnswerMutation = api.gpt.checkAnswer.useMutation({ retry: false });
-  const explainAnswerMutation = api.gpt.explainAnswer.useMutation({
-    retry: false,
-  });
 
   const handleShowCorrectAnswerAffirmation = () => {
     // Workaround
@@ -71,28 +69,17 @@ const FlashCard: FC<FlashCardProps> = ({
           definition: card.definition,
           studentInput: studentAudioText,
           type: card.type,
+          compLevel: compLevel,
         },
         {
-          onSuccess: ({ isCorrect }) => {
-            if (isCorrect) {
-              onCorrectCallback?.();
-            } else {
-              explainAnswerMutation.mutate(
-                {
-                  term: card.term,
-                  definition: card.definition,
-                  studentInput: studentAudioText,
-                  type: card.type,
-                  compLevel: compLevel,
-                },
-                {
-                  onSuccess: (data) => {
-                    setAnswerExplanation(data!);
-                  },
-                },
-              );
-              onIncorrectCallback?.();
-            }
+          onSuccess: ({ isCorrect, feedback }) => {
+            setIsCorrect(isCorrect);
+            setAnswerExplanation(feedback as string);
+            // if (isCorrect) {
+            //   onCorrectCallback?.();
+            // } else {
+            //   onIncorrectCallback?.();
+            // }
           },
         },
       );
@@ -103,28 +90,17 @@ const FlashCard: FC<FlashCardProps> = ({
           definition: card.definition,
           studentInput: studentInput,
           type: card.type,
+          compLevel: compLevel,
         },
         {
-          onSuccess: ({ isCorrect }) => {
-            if (isCorrect) {
-              onCorrectCallback?.();
-            } else {
-              explainAnswerMutation.mutate(
-                {
-                  term: card.term,
-                  definition: card.definition,
-                  studentInput: studentInput,
-                  type: card.type,
-                  compLevel: compLevel,
-                },
-                {
-                  onSuccess: (data) => {
-                    setAnswerExplanation(data!);
-                  },
-                },
-              );
-              onIncorrectCallback?.();
-            }
+          onSuccess: ({ isCorrect, feedback }) => {
+            setIsCorrect(isCorrect);
+            setAnswerExplanation(feedback as string);
+            // if (isCorrect) {
+            //   onCorrectCallback?.();
+            // } else {
+            //   onIncorrectCallback?.();
+            // }
           },
         },
       );
@@ -193,20 +169,21 @@ const FlashCard: FC<FlashCardProps> = ({
           <div className="flex w-full flex-row justify-between">
             <AudioRecorder
               textCallBack={setStudentAudioText}
-              shouldDisplayAnswer={shouldDisplayAnswer}
+              shouldDisplayAnswer={shouldDisplayAnswer || !isCorrect}
               setIsProcessingRecordedAnswer={setIsProcessingRecordedAnswer}
             />
             <div className="flex flex-row gap-x-3">
               <button
                 onClick={() => setShouldDisplayAnswer(true)}
                 className="h-fit w-fit rounded-lg bg-midBlue px-6 py-1 text-sm text-white"
+                disabled={shouldDisplayAnswer || !isCorrect}
               >
                 {`I Don't Know`}
               </button>
               <button
                 onClick={() => checkAnswer()}
                 className="h-fit w-fit rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
-                disabled={shouldDisplayAnswer}
+                disabled={shouldDisplayAnswer || !isCorrect}
               >
                 Check
               </button>
@@ -214,13 +191,31 @@ const FlashCard: FC<FlashCardProps> = ({
           </div>
         </div>
       </div>
-      {checkAnswerMutation.isLoading || explainAnswerMutation.isLoading ? (
+      {checkAnswerMutation.isLoading ? (
         <Spinner />
       ) : answerExplanation === "" || shouldDisplayAnswer ? (
         <div></div>
+      ) : isCorrect ? (
+        <div className="flex w-3/4 flex-col rounded-lg border border-green-300 px-12 py-5">
+          <div className="pb-5 font-bold">Feedback</div>
+          <div dangerouslySetInnerHTML={{ __html: answerExplanation }} />
+          <button
+            onClick={() => onCorrectCallback?.()}
+            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
+          >
+            Got It!
+          </button>
+        </div>
       ) : (
-        <div className="w-3/4 rounded-lg border border-red-300 px-12 py-5">
-          <p dangerouslySetInnerHTML={{ __html: answerExplanation }} />
+        <div className="flex w-3/4 flex-col rounded-lg border border-red-300 px-12 py-5">
+          <div className="pb-5 font-bold">Feedback</div>
+          <div dangerouslySetInnerHTML={{ __html: answerExplanation }} />
+          <button
+            onClick={handleShowCorrectAnswerAffirmation}
+            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
+          >
+            Got It!
+          </button>
         </div>
       )}
       {shouldDisplayAnswer && (

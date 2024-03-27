@@ -235,7 +235,10 @@ export const gptRouter = createTRPCRouter({
 
       const completion = await openai.chat.completions.create({
         messages: [
-          { role: "system", content: "You are a helpful teaching assistant." },
+          {
+            role: "system",
+            content: `You are a helpful teaching assistant in a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom`,
+          },
           {
             role: "user",
             content: `From the given content only,  ${[prompt]}.`,
@@ -353,6 +356,7 @@ export const gptRouter = createTRPCRouter({
         definition: z.string(),
         studentInput: z.string(),
         type: z.enum(["ASSIGNMENT", "INVERTED", "LITERACY", "THEORY"]),
+        compLevel: z.number().optional(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -386,24 +390,46 @@ export const gptRouter = createTRPCRouter({
 
       const completion = await openai.chat.completions.create({
         messages: [
-          { role: "system", content: "You are a helpful teaching assistant." },
+          {
+            role: "system",
+            content: `You are a helpful teaching assistant in a ${input.compLevel && (input.compLevel == 0 ? "kindergarten" : `grade ${input.compLevel}`)} classroom`,
+          },
           {
             role: "user",
             content: prompt,
           },
           { role: "assistant", content: formattedInput },
-          { role: "assistant", content: "Summarize with Yes or No." },
+          {
+            role: "assistant",
+            content: `Make sure your feedback is at a ${input.compLevel && (input.compLevel == 0 ? "kindergarten" : `grade ${input.compLevel}`)} classroom comprehension level. \ 
+          You're talking to the student and explain why you marked the student's answer as "yes" or "no" given criteria above.\
+           If the answer is correct, give affirmation on what they did well and, if any tiny mistakes, short suggestions on what to do next time. \
+           If they're incorrect, suggest what the student could improve for next time and, if anything, what they did correctly
+          Keep your answer quick and easy to read, encouraging. \
+          Bold the words/phrases that will help student quickly grasp what things they did well, poorly and action items and suggestions for next time. Bold with <b></b> tag
+          Provide your response in the following format (two lines): 
+          \ Summary: Summarize with "Yes" or "No" \
+           Feedback:*add your feedback here.`,
+          },
         ],
         model: "gpt-3.5-turbo",
       });
-      console.log("HI");
-      console.log(completion.choices[0].message.content);
+
+      const lines = completion.choices[0].message.content.split("\n");
+      const firstFeedbackLine = lines.find(
+        (line) => line && line.toLowerCase().includes("feedback"),
+      );
+
       return {
         isCorrect: completion.choices[0].message.content
           .toLowerCase()
           .includes("yes"),
+        feedback: firstFeedbackLine
+          ? firstFeedbackLine.split(/:\s*/, 2)[1]
+          : "",
       };
     }),
+
   /**
    * Transcribe speech to text
    * @returns The transcribed text
@@ -421,61 +447,59 @@ export const gptRouter = createTRPCRouter({
       console.log(transcript);
       return transcript;
     }),
-  // TODO: 3, Send reading comprehension level with this too so feedback is made for age group
-  // TODO 12: Consider combining this with previous
-  explainAnswer: publicProcedure
-    .input(
-      z.object({
-        term: z.string(),
-        definition: z.string(),
-        studentInput: z.string(),
-        type: z.enum(["ASSIGNMENT", "INVERTED", "LITERACY", "THEORY"]),
-        compLevel: z.number().optional(),
-      }),
-    )
-    .mutation(async ({ input }) => {
-      let formattedInput: string;
-      let prompt: string;
+  // explainAnswer: publicProcedure
+  //   .input(
+  //     z.object({
+  //       term: z.string(),
+  //       definition: z.string(),
+  //       studentInput: z.string(),
+  //       type: z.enum(["ASSIGNMENT", "INVERTED", "LITERACY", "THEORY"]),
+  //       compLevel: z.number().optional(),
+  //     }),
+  //   )
+  //   .mutation(async ({ input }) => {
+  //     let formattedInput: string;
+  //     let prompt: string;
 
-      switch (getSetTypeEnum(input.type)) {
-        case SetType.ASSIGNMENT:
-          formattedInput = `Term: ${input.term}\nDefinition: ${input.definition}\nStudent Answer: ${input.studentInput}`;
-          prompt = `Given the following term, student answer,\
-          and definition, explain why the student answer is inaccurate\
-          and what the student should remember from the definition to get it right next time.\
-          Keep your answer quick and easy to read, encouraging and pretend you are talking to the student ${compLevel && `at a ${compLevel == 0 ? "kindergarten" : `grade ${compLevel}`} level`}.  Bold the words/phrases to help reader understand their mistake and actions/suggestions for next attempt? Bold with <b></b> tags`;
-          break;
-        case SetType.INVERTED:
-          formattedInput = `Question: ${input.term}\nStudent Answer: ${input.studentInput}`;
-          prompt = `Given the following question and student's answer, this is an inverted classroom style so I just want to make sure student responses show they put a strong effort even if some of what they wrote may be incorrect.
-           I just want to make sure that they are thinking and trying. The answer provided was marked inaccurate based on criteria above so explain why it was marked this way and suggest what the student could improve for next time 
-           Keep your answer quick and easy to read, encouraging and pretend you are talking to the student ${compLevel && `at a ${compLevel == 0 ? "kindergarten" : `grade ${compLevel}`} level`}.. Bold the words/phrases to help reader understand their mistake and actions/suggestions for next attempt? Bold with <b></b> tags`;
-          break;
-        case SetType.LITERACY:
-          formattedInput = `Term: ${input.term}\nStudent Answer: ${input.studentInput}`;
-          prompt = `The student answer should match the term word by word because I am doing a literacy exercise with them where I read the term and they read it back to me. Explain to the student why their answer was marked incorrect (if certain words were not read out loud/skipped in their answer)
-          Keep your answer quick and easy to read, encouraging and pretend you are talking to the student ${compLevel && `at a ${compLevel == 0 ? "kindergarten" : `grade ${compLevel}`} level`}..  Bold the words/phrases to help reader understand their mistake and actions/suggestions for next attempt? Bold with <b></b> tags`;
-          break;
-        case SetType.THEORY:
-          formattedInput = `Question: ${input.term}\nStudent Answer: ${input.studentInput}`;
-          prompt = `Given the following question and student's answer, accept responses that are reasonable and correct for the most part. Don't get too picky about small technicalities but don't accept any responses with significant errors in their understanding or not a lot of effort or thinking. \
-          The answer provided was marked inaccurate based on criteria above so explain why it was marked this way and suggest what the student could improve for next time
-          Keep your answer quick and easy to read, encouraging and pretend you are talking to the student ${compLevel && `at a ${compLevel == 0 ? "kindergarten" : `grade ${compLevel}`} level`}.. Bold the words/phrases to help reader understand their mistake and actions/suggestions for next attempt? Bold with <b></b> tags
-          `;
-          break;
-      }
+  //     switch (getSetTypeEnum(input.type)) {
+  //       case SetType.ASSIGNMENT:
+  //         formattedInput = `Term: ${input.term}\nDefinition: ${input.definition}\nStudent Answer: ${input.studentInput}`;
+  //         prompt = `Given the following term, student answer,\
+  //         and definition, explain why the student answer is inaccurate\
+  //         and what the student should remember from the definition to get it right next time.\
+  //         Keep your answer quick and easy to read, encouraging and pretend you are talking to the student ${compLevel && `at a ${compLevel == 0 ? "kindergarten" : `grade ${compLevel}`} level`}.  Bold the words/phrases to help reader understand their mistake and actions/suggestions for next attempt? Bold with <b></b> tags`;
+  //         break;
+  //       case SetType.INVERTED:
+  //         formattedInput = `Question: ${input.term}\nStudent Answer: ${input.studentInput}`;
+  //         prompt = `Given the following question and student's answer, this is an inverted classroom style so I just want to make sure student responses show they put a strong effort even if some of what they wrote may be incorrect.
+  //          I just want to make sure that they are thinking and trying. The answer provided was marked inaccurate based on criteria above so explain why it was marked this way and suggest what the student could improve for next time
+  //          Keep your answer quick and easy to read, encouraging and pretend you are talking to the student ${compLevel && `at a ${compLevel == 0 ? "kindergarten" : `grade ${compLevel}`} level`}.. Bold the words/phrases to help reader understand their mistake and actions/suggestions for next attempt? Bold with <b></b> tags`;
+  //         break;
+  //       case SetType.LITERACY:
+  //         formattedInput = `Term: ${input.term}\nStudent Answer: ${input.studentInput}`;
+  //         prompt = `The student answer should match the term word by word because I am doing a literacy exercise with them where I read the term and they read it back to me. Explain to the student why their answer was marked incorrect (if certain words were not read out loud/skipped in their answer)
+  //         Keep your answer quick and easy to read, encouraging and pretend you are talking to the student ${compLevel && `at a ${compLevel == 0 ? "kindergarten" : `grade ${compLevel}`} level`}..  Bold the words/phrases to help reader understand their mistake and actions/suggestions for next attempt? Bold with <b></b> tags`;
+  //         break;
+  //       case SetType.THEORY:
+  //         formattedInput = `Question: ${input.term}\nStudent Answer: ${input.studentInput}`;
+  //         prompt = `Given the following question and student's answer, accept responses that are reasonable and correct for the most part. Don't get too picky about small technicalities but don't accept any responses with significant errors in their understanding or not a lot of effort or thinking. \
+  //         The answer provided was marked inaccurate based on criteria above so explain why it was marked this way and suggest what the student could improve for next time
+  //         Keep your answer quick and easy to read, encouraging and pretend you are talking to the student ${compLevel && `at a ${compLevel == 0 ? "kindergarten" : `grade ${compLevel}`} level`}.. Bold the words/phrases to help reader understand their mistake and actions/suggestions for next attempt? Bold with <b></b> tags
+  //         `;
+  //         break;
+  //     }
 
-      const completion = await openai.chat.completions.create({
-        messages: [
-          { role: "system", content: "You are a helpful teaching assistant." },
-          {
-            role: "user",
-            content: prompt,
-          },
-          { role: "assistant", content: formattedInput },
-        ],
-        model: "gpt-3.5-turbo",
-      });
-      return completion.choices[0].message.content;
-    }),
+  //     const completion = await openai.chat.completions.create({
+  //       messages: [
+  //         { role: "system", content: "You are a helpful teaching assistant." },
+  //         {
+  //           role: "user",
+  //           content: prompt,
+  //         },
+  //         { role: "assistant", content: formattedInput },
+  //       ],
+  //       model: "gpt-3.5-turbo",
+  //     });
+  //     return completion.choices[0].message.content;
+  //   }),
 });
