@@ -1,4 +1,4 @@
-import { type Card, CheckMode, AnswerMode } from "@prisma/client";
+import { SetType, type Card } from "@prisma/client";
 import {
   useEffect,
   useState,
@@ -9,42 +9,39 @@ import {
 import { api } from "~/utils/api";
 import AudioRecorder from "./AudioRecorder";
 import { Spinner, Stack, Textarea } from "@chakra-ui/react";
+import { set } from "zod";
 
 interface FlashCardProps {
   card: Card;
   onCorrectCallback?: () => void;
   onIncorrectCallback?: () => void;
-  checkMode: CheckMode;
-  answerMode: AnswerMode;
   moveCurrentCardToEnd: () => void;
   curIndex: number;
   maxIndex: number;
   setLength: number;
   setMaxIndex: Dispatch<SetStateAction<number>>;
+  compLevel: number | undefined;
 }
 
 const FlashCard: FC<FlashCardProps> = ({
   card,
   onCorrectCallback,
   onIncorrectCallback,
-  checkMode,
-  answerMode,
   moveCurrentCardToEnd,
   curIndex,
   maxIndex,
   setLength,
   setMaxIndex,
+  compLevel,
 }) => {
   const [studentInput, setStudentInput] = useState<string>("");
   const [studentAudioText, setStudentAudioText] = useState<string>();
   const [answerExplanation, setAnswerExplanation] = useState<string>("");
+  const [isCorrect, setIsCorrect] = useState<boolean>(true);
   const [shouldDisplayAnswer, setShouldDisplayAnswer] = useState(false);
   const [isProcessingRecordedAnswer, setIsProcessingRecordedAnswer] =
     useState(false);
   const checkAnswerMutation = api.gpt.checkAnswer.useMutation({ retry: false });
-  const explainAnswerMutation = api.gpt.explainAnswer.useMutation({
-    retry: false,
-  });
 
   const handleShowCorrectAnswerAffirmation = () => {
     // Workaround
@@ -52,6 +49,7 @@ const FlashCard: FC<FlashCardProps> = ({
     // copy; therefore, we will just stop displaying the answer, and allow the student to submit the answer if this is the case
     if (curIndex === setLength - 1) {
       setShouldDisplayAnswer(false);
+      setAnswerExplanation("");
     } else {
       // If a student says they do not know for a flashcard they have previously answered, they should not be able to skip a card they have not answered
       if (curIndex < maxIndex) {
@@ -64,72 +62,53 @@ const FlashCard: FC<FlashCardProps> = ({
   };
 
   const checkAnswer = () => {
-    if (checkMode === CheckMode.AI_CHECK) {
-      checkAnswerMutation.mutate(
-        {
-          term: card.term,
-          definition: card.definition,
-          studentInput: studentInput,
-        },
-        {
-          onSuccess: ({ isCorrect }) => {
-            if (isCorrect) {
-              onCorrectCallback?.();
-            } else {
-              explainAnswerMutation.mutate(
-                {
-                  term: card.term,
-                  definition: card.definition,
-                  studentInput: studentInput,
-                },
-                {
-                  onSuccess: (data) => {
-                    setAnswerExplanation(data!);
-                  },
-                },
-              );
-              onIncorrectCallback?.();
-            }
-          },
-        },
-      );
-    } else {
-      studentInput.toLowerCase() === card.definition.toLowerCase()
-        ? onCorrectCallback?.()
-        : onIncorrectCallback?.();
-    }
-    if (studentAudioText && answerMode === AnswerMode.SPEAKING) {
+    if (studentAudioText) {
       console.log("Checking answer with audio");
       checkAnswerMutation.mutate(
         {
           term: card.term,
           definition: card.definition,
           studentInput: studentAudioText,
+          type: card.type,
+          compLevel: compLevel,
         },
         {
-          onSuccess: ({ isCorrect }) => {
-            if (isCorrect) {
-              onCorrectCallback?.();
-            } else {
-              explainAnswerMutation.mutate(
-                {
-                  term: card.term,
-                  definition: card.definition,
-                  studentInput: studentAudioText,
-                },
-                {
-                  onSuccess: (data) => {
-                    setAnswerExplanation(data!);
-                  },
-                },
-              );
-              onIncorrectCallback?.();
-            }
+          onSuccess: ({ isCorrect, feedback }) => {
+            setIsCorrect(isCorrect);
+            setAnswerExplanation(feedback as string);
+            // if (isCorrect) {
+            //   onCorrectCallback?.();
+            // } else {
+            //   onIncorrectCallback?.();
+            // }
+          },
+        },
+      );
+    } else {
+      checkAnswerMutation.mutate(
+        {
+          term: card.term,
+          definition: card.definition,
+          studentInput: studentInput,
+          type: card.type,
+          compLevel: compLevel,
+        },
+        {
+          onSuccess: ({ isCorrect, feedback }) => {
+            setIsCorrect(isCorrect);
+            setAnswerExplanation(feedback as string);
+            // if (isCorrect) {
+            //   onCorrectCallback?.();
+            // } else {
+            //   onIncorrectCallback?.();
+            // }
           },
         },
       );
     }
   };
+
+  // TODO [ARCHNA + VASU DISCUSS]: Add enable auto check where you don't have to press check but just stop and start recording
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -174,31 +153,43 @@ const FlashCard: FC<FlashCardProps> = ({
             </Stack>
           ) : (
             <Textarea
+              isDisabled={
+                card.type == SetType.LITERACY ||
+                shouldDisplayAnswer ||
+                answerExplanation !== ""
+              }
               h="full"
               value={studentInput}
               onChange={(e) => setStudentInput(e.target.value)}
               onKeyDown={handleKeyPress}
               onKeyUp={handleKeyUp}
-              placeholder="Start typing or press icon to speak."
+              placeholder={
+                card.type == SetType.LITERACY
+                  ? "Press the icon to get started reading!"
+                  : "Start typing or press icon to speak."
+              }
             />
           )}
           <div className="flex w-full flex-row justify-between">
             <AudioRecorder
               textCallBack={setStudentAudioText}
-              shouldDisplayAnswer={shouldDisplayAnswer}
+              shouldDisplayAnswer={
+                shouldDisplayAnswer || answerExplanation !== ""
+              }
               setIsProcessingRecordedAnswer={setIsProcessingRecordedAnswer}
             />
             <div className="flex flex-row gap-x-3">
               <button
                 onClick={() => setShouldDisplayAnswer(true)}
                 className="h-fit w-fit rounded-lg bg-midBlue px-6 py-1 text-sm text-white"
+                disabled={shouldDisplayAnswer || answerExplanation !== ""}
               >
                 {`I Don't Know`}
               </button>
               <button
                 onClick={() => checkAnswer()}
                 className="h-fit w-fit rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
-                disabled={shouldDisplayAnswer}
+                disabled={shouldDisplayAnswer || answerExplanation !== ""}
               >
                 Check
               </button>
@@ -206,13 +197,31 @@ const FlashCard: FC<FlashCardProps> = ({
           </div>
         </div>
       </div>
-      {checkAnswerMutation.isLoading || explainAnswerMutation.isLoading ? (
+      {checkAnswerMutation.isLoading ? (
         <Spinner />
       ) : answerExplanation === "" || shouldDisplayAnswer ? (
         <div></div>
+      ) : isCorrect ? (
+        <div className="flex w-3/4 flex-col rounded-lg border border-green-400 px-12 py-5">
+          <div className="pb-5 font-bold">Feedback</div>
+          <div dangerouslySetInnerHTML={{ __html: answerExplanation }} />
+          <button
+            onClick={() => onCorrectCallback?.()}
+            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
+          >
+            Got It!
+          </button>
+        </div>
       ) : (
-        <div className="w-3/4 rounded-lg border border-red-300 px-12 py-5">
-          <p>{answerExplanation}</p>
+        <div className="flex w-3/4 flex-col rounded-lg border border-red-300 px-12 py-5">
+          <div className="pb-5 font-bold">Feedback</div>
+          <div dangerouslySetInnerHTML={{ __html: answerExplanation }} />
+          <button
+            onClick={handleShowCorrectAnswerAffirmation}
+            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
+          >
+            Got It!
+          </button>
         </div>
       )}
       {shouldDisplayAnswer && (

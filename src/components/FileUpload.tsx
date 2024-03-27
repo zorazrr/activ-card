@@ -1,14 +1,16 @@
 import { Spinner } from "@chakra-ui/react";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { api } from "~/utils/api";
-import type { TermDefPair } from "~/utils/types";
+import type { SetConfig, TermDefPair } from "~/utils/types";
 
 const StyledFileUpload = ({
   classId,
   setIsLoading,
+  formData,
 }: {
   classId: string;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
+  formData: SetConfig | undefined;
 }) => {
   const [file, setFile] = useState<File>();
   const [extractedText, setExtractedText] = useState<string>("");
@@ -26,7 +28,11 @@ const StyledFileUpload = ({
     },
   );
   const generateFlashcard = api.gpt.generateFlashcard.useQuery(
-    { content: extractedText },
+    {
+      content: extractedText,
+      setType: formData?.setType,
+      readingComprehensionLevel: formData?.readingComprehensionLevel,
+    },
     { retry: false, onSuccess: (data) => setFlashcards(data), enabled: false },
   );
   const createCard = api.card.createCardsforSet.useMutation({
@@ -38,7 +44,11 @@ const StyledFileUpload = ({
   const createSet = api.set.createSet.useMutation({
     retry: false,
     onSuccess: (data) =>
-      createCard.mutate({ setId: data.id, cards: flashcards }),
+      createCard.mutate({
+        setId: data.id,
+        cards: flashcards,
+        setType: formData?.setType,
+      }),
   });
 
   const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,8 +87,12 @@ const StyledFileUpload = ({
   }, [extractedText]);
 
   useEffect(() => {
-    if (flashcards.length !== 0) {
-      void createSet.mutate({ name: file!.name, classId: classId });
+    if (flashcards.length !== 0 && formData) {
+      void createSet.mutate({
+        name: file!.name,
+        classId: classId,
+        config: formData,
+      });
     }
   }, [flashcards]);
 

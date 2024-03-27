@@ -21,16 +21,16 @@ const StyledModal = ({
   setSubject?: any;
 }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
       <ModalOverlay />
 
       <ModalContent backgroundColor="white" padding={3}>
-        <ModalHeader>Generate Flashcards</ModalHeader>
+        <ModalHeader>Search or prompt for any topic, be specific!</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Textarea
             minH="150px"
-            placeholder="Type in a subject or a sentence to generate relevant flashcards"
+            placeholder="(e.g. 'Water Cycle', 'Generate sentences using these names: [Tommy, Ayesha]', 'Give me a halloween themed practice on liquids, gases, solids)'"
             onChange={(e) => setSubject(e.target.value)}
           />
         </ModalBody>

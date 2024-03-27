@@ -19,6 +19,9 @@ export const cardRouter = createTRPCRouter({
       z.object({
         setId: z.string(),
         cards: z.array(z.object({ term: z.string(), def: z.string() })),
+        setType: z
+          .enum(["ASSIGNMENT", "INVERTED", "LITERACY", "THEORY"])
+          .optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -29,6 +32,7 @@ export const cardRouter = createTRPCRouter({
               term: card.term,
               definition: card.def,
               set_id: input.setId,
+              type: input.setType,
             },
           });
         }),

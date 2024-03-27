@@ -2,7 +2,15 @@ import { useEffect, useState } from "react"; // Import useState hook
 import { useRouter } from "next/router";
 import FlashCard from "~/components/Flashcard";
 import { api } from "~/utils/api";
-import { HStack, Icon, Link, Spinner, Stack, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  Icon,
+  Link,
+  Spinner,
+  Stack,
+  useToast,
+} from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import Canvas from "~/components/Canvas";
 import { type Card } from "@prisma/client";
@@ -12,7 +20,7 @@ import _ from "lodash";
 
 const Set = ({
   tempIdx,
-  pomodoroConst = 5,
+  pomodoroConst = 3,
 }: {
   tempIdx: number | undefined;
   pomodoroConst?: number;
@@ -77,35 +85,35 @@ const Set = ({
       return newCurIndex;
     });
 
-    toast({
-      title: _.sample([
-        "Nice work!",
-        "Amazing Job!",
-        "Way to go!",
-        "Show em' how it's done!",
-        "You got brains!",
-      ]),
-      status: "success",
-      duration: 3000,
-      isClosable: false,
-      position: "top",
-    });
+    // toast({
+    //   title: _.sample([
+    //     "Nice work!",
+    //     "Amazing Job!",
+    //     "Way to go!",
+    //     "Show em' how it's done!",
+    //     "You got brains!",
+    //   ]),
+    //   status: "success",
+    //   duration: 3000,
+    //   isClosable: false,
+    //   position: "top",
+    // });
   };
 
   const handleIncorrectAnswer = () => {
-    toast({
-      title: _.sample([
-        "Try again!",
-        "You've got this!",
-        "So close!",
-        "Keep going!",
-        "Practice makes perfect!",
-      ]),
-      status: "error",
-      duration: 3000,
-      isClosable: false,
-      position: "top",
-    });
+    // toast({
+    //   title: _.sample([
+    //     "Try again!",
+    //     "You've got this!",
+    //     "So close!",
+    //     "Keep going!",
+    //     "Practice makes perfect!",
+    //   ]),
+    //   status: "error",
+    //   duration: 3000,
+    //   isClosable: false,
+    //   position: "top",
+    // });
   };
 
   const restartSet = () => {
@@ -119,13 +127,17 @@ const Set = ({
     window.location.href = `../dashboard`;
   };
 
+  {
+    /* TODO 10: Pass in for Pomodoro conditional and numCards  */
+  }
+
   return (
     <div className="flex h-screen w-screen flex-col items-start justify-start">
       {showCanvas ? (
         <Canvas setShowCanvas={setShowCanvas} setId={setId as string} />
       ) : (
         <>
-          <p className="w-full pl-8 pt-8 text-center font-bold">
+          <div className="w-full pl-8 pt-8 text-center font-bold">
             <HStack gap={0} position="absolute" onClick={navigateHome}>
               <div className="hover:opacity-75">
                 <Link href="/dashboard" className="flex flex-col 2xl:flex-row">
@@ -139,7 +151,7 @@ const Set = ({
               </div>
             </HStack>
             {set.name}
-          </p>
+          </div>
           {curIndex >= 0 &&
           flashcards &&
           curIndex < flashcards.length &&
@@ -154,13 +166,12 @@ const Set = ({
                 onIncorrectCallback={() => {
                   handleIncorrectAnswer();
                 }}
-                checkMode={set?.check_mode}
-                answerMode={set?.answer_mode}
                 moveCurrentCardToEnd={moveCurrentCardToEnd}
                 curIndex={curIndex}
                 maxIndex={maxIndex}
                 setLength={flashcards.length}
                 setMaxIndex={setMaxIndex}
+                compLevel={set.config.comprehensionLevel}
               />
             </>
           ) : (
@@ -197,16 +208,18 @@ const Set = ({
                 onClick={() => setCurIndex(curIndex - 1)}
                 className={`flex flex-row items-center justify-center p-8 ${curIndex === 0 || curIndex === flashcards?.length ? "invisible" : "visible"}`}
               >
-                <Icon as={ChevronLeftIcon} />
-                Back
+                <Box p={2} _hover={{ backgroundColor: "gray.100" }}>
+                  <Icon as={ChevronLeftIcon} />
+                </Box>
               </button>
               <button
                 onClick={() => setCurIndex(curIndex + 1)}
                 // If the user is at the end or if the user has not attempted to answer the question, hide the next button
                 className={`flex flex-row items-center justify-center p-8 ${maxIndex === curIndex ? "invisible" : "visible"}`}
               >
-                Next
-                <Icon as={ChevronRightIcon} />
+                <Box p={2} _hover={{ backgroundColor: "gray.100" }}>
+                  <Icon as={ChevronRightIcon} />
+                </Box>
               </button>
             </div>
           </div>

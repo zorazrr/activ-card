@@ -96,7 +96,12 @@ export default function TeacherDashboard() {
 
   return (
     <ProtectedPage>
-      <HStack height="100%" className="main-class min-h-screen" gap={0}>
+      <HStack
+        height="100vh"
+        className="main-class min-h-screen"
+        gap={0}
+        overflow={"hidden"}
+      >
         <Sidebar
           classes={classrooms}
           currentClass={currentClass}

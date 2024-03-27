@@ -21,6 +21,7 @@ import {
 } from "~/utils/types";
 import { api } from "~/utils/api";
 import { DeleteIcon } from "@chakra-ui/icons";
+import { SetType } from "@prisma/client";
 
 const CardPair = ({
   term,
