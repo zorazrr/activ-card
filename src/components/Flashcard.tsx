@@ -298,6 +298,7 @@ const FlashCard: FC<FlashCardProps> = ({
           >
             Got It!
           </button>
+          {/* TODO: Change GOT IT to icon? */}
         </div>
       )}
     </div>
