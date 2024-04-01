@@ -1,6 +1,25 @@
-import { Progress } from "@chakra-ui/react";
 import { type Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
+
+const plugin = require("tailwindcss/plugin");
+
+const CardFlipStyles = plugin(function ({ addUtilities }) {
+  addUtilities({
+    ".my-rotate-x-180": {
+      transform: "rotateX(180deg)",
+    },
+    ".preserve-3d": {
+      transformStyle: "preserve-3d",
+    },
+    ".perspective": {
+      perspective: "1000px",
+    },
+    ".backface-hidden": {
+      "-moz-backface-visibility": "hidden",
+      "backface-visibility": "hidden",
+    },
+  });
+});
 
 export default {
   content: ["./src/**/*.tsx"],
@@ -38,7 +57,20 @@ export default {
         darkGray: "#BDBDBD",
         veryDarkGray: "#1E1D1E",
       },
+      keyframes: {
+        flip: {
+          "0%": {
+            transform: "rotateX(0deg)",
+          },
+          "100%": {
+            transform: "rotateX(180deg)",
+          },
+        },
+      },
+      animation: {
+        flip: "flip 1.5s linear",
+      },
     },
   },
-  plugins: [],
+  plugins: [CardFlipStyles],
 } satisfies Config;
