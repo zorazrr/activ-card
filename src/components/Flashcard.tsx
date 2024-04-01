@@ -162,6 +162,14 @@ const FlashCard: FC<FlashCardProps> = ({
 
   const onAnimationEnd = () => {
     setIsAnimationCompleted(true);
+    setShouldDisplayAnswer(true);
+
+    const front = document.getElementById("front");
+    const back = document.getElementById("back");
+
+    front.style.visibility = "hidden";
+    back.style.backfaceVisibility = "visible";
+    back.style.transform = "rotateX(0deg)";
   };
 
   // Function to display the answer after animation completion
@@ -186,36 +194,46 @@ const FlashCard: FC<FlashCardProps> = ({
 
   return (
     <div className="relative flex h-full flex-col items-center justify-evenly">
-      <div className="flex h-[60%] w-screen flex-row items-center justify-between gap-12 px-40 text-lg">
+      <div className="perspective flex h-[60%] w-screen flex-row items-center justify-between gap-12 px-40 text-lg">
         <div
-          className={`${shouldDisplayAnswer && "animate-flip"} flex h-full w-full flex-row items-center justify-center rounded-lg border bg-gray-100 p-10`}
+          className={`${shouldDisplayAnswer && "animate-flip"} preserve-3d flex h-full w-full flex-row items-center justify-center rounded-lg border bg-gray-100 p-10`}
           onAnimationEnd={onAnimationEnd}
         >
-          {!shouldDisplayAnswer && <p className="font-bold">{card.term}</p>}
-          {shouldDisplayAnswer && isAnimationCompleted && (
-            <VStack w="100%" h="100%" gap="20px" alignItems="start">
-              <p className="self-center font-bold">{card.term}</p>
-              <Divider borderWidth="0.5px" borderColor="darkgray" />
-              <p>
-                <span style={{ fontWeight: 600 }}>Correct Answer </span>
-                {card.definition}
-              </p>
+          <div
+            id="front"
+            className={`backface-hidden absolute m-auto font-bold`}
+          >
+            {card.term}
+          </div>
+          <VStack
+            w="100%"
+            h="100%"
+            gap="20px"
+            alignItems="start"
+            className="backface-hidden my-rotate-x-180"
+            id="back"
+          >
+            <p className="self-center font-bold">{card.term}</p>
+            <Divider borderWidth="0.5px" borderColor="darkgray" />
+            <p>
+              <span style={{ fontWeight: 600 }}>Correct Answer </span>
+              {card.definition}
+            </p>
 
-              {checkAnswerMutation.isLoading ||
-              explainAnswerMutation.isLoading ? (
-                <HStack w="100%" justifyContent="center" alignItems="center">
-                  <Spinner />
-                </HStack>
-              ) : answerExplanation === "" ? (
-                <div></div>
-              ) : (
-                <p>
-                  <span style={{ fontWeight: 600 }}>Explanation </span>
-                  {answerExplanation}
-                </p>
-              )}
-            </VStack>
-          )}
+            {checkAnswerMutation.isLoading ||
+            explainAnswerMutation.isLoading ? (
+              <HStack w="100%" justifyContent="center" alignItems="center">
+                <Spinner />
+              </HStack>
+            ) : answerExplanation === "" ? (
+              <div></div>
+            ) : (
+              <p>
+                <span style={{ fontWeight: 600 }}>Explanation </span>
+                {answerExplanation}
+              </p>
+            )}
+          </VStack>
         </div>
         <div className="flex h-full w-full flex-col gap-2">
           {isProcessingRecordedAnswer ? (
