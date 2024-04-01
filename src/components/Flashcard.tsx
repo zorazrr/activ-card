@@ -211,6 +211,7 @@ const FlashCard: FC<FlashCardProps> = ({
           >
             Got It!
           </button>
+          {/* TODO: Change GOT IT to icon? */}
         </div>
       ) : (
         <div className="flex w-3/4 flex-col rounded-lg border border-red-300 px-12 py-5">
@@ -222,6 +223,7 @@ const FlashCard: FC<FlashCardProps> = ({
           >
             Got It!
           </button>
+          {/* TODO: Change GOT IT to icon? */}
         </div>
       )}
       {shouldDisplayAnswer && (
@@ -234,6 +236,7 @@ const FlashCard: FC<FlashCardProps> = ({
           >
             Got It!
           </button>
+          {/* TODO: Change GOT IT to icon? */}
         </div>
       )}
     </div>
