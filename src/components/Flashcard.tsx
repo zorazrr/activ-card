@@ -198,19 +198,6 @@ const FlashCard: FC<FlashCardProps> = ({
               <span style={{ fontWeight: 600 }}>Correct Answer </span>
               {card.definition}
             </p>
-
-            {checkAnswerMutation.isLoading ? (
-              <HStack w="100%" justifyContent="center" alignItems="center">
-                <Spinner />
-              </HStack>
-            ) : answerExplanation === "" ? (
-              <div></div>
-            ) : (
-              <p>
-                <span style={{ fontWeight: 600 }}>Feedback </span>
-                <div dangerouslySetInnerHTML={{ __html: answerExplanation }} />
-              </p>
-            )}
           </VStack>
         </div>
         <div className="flex h-full w-full flex-col gap-2">
@@ -270,19 +257,47 @@ const FlashCard: FC<FlashCardProps> = ({
           </div>
         </div>
       </div>
-
-      {shouldDisplayAnswer && isAnimationCompleted && (
-        <div className="absolute bottom-0 flex w-screen justify-center px-12">
-          <StyledButton
-            label="Got It!"
-            colorInd={0}
+      {checkAnswerMutation.isLoading ||
+      (shouldDisplayAnswer && !isAnimationCompleted) ? (
+        <Spinner />
+      ) : answerExplanation === "" ? (
+        shouldDisplayAnswer ? (
+          <div className="flex w-screen justify-center px-12">
+            <StyledButton
+              label="Got It!"
+              colorInd={0}
+              onClick={handleShowCorrectAnswerAffirmation}
+              style={{
+                width: "300%",
+                paddingTop: "15px",
+                paddingBottom: "15px",
+              }}
+            />
+          </div>
+        ) : (
+          <div></div>
+        )
+      ) : isCorrect ? (
+        <div className="flex w-3/4 flex-col rounded-lg border border-green-400 px-12 py-5">
+          <div className="pb-5 font-bold">Feedback</div>
+          <div dangerouslySetInnerHTML={{ __html: answerExplanation }} />
+          <button
+            onClick={() => onCorrectCallback?.()}
+            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
+          >
+            Got It!
+          </button>
+        </div>
+      ) : (
+        <div className="flex w-3/4 flex-col rounded-lg border border-red-300 px-12 py-5">
+          <div className="pb-5 font-bold">Feedback</div>
+          <div dangerouslySetInnerHTML={{ __html: answerExplanation }} />
+          <button
             onClick={handleShowCorrectAnswerAffirmation}
-            style={{
-              width: "300%",
-              paddingTop: "15px",
-              paddingBottom: "15px",
-            }}
-          />
+            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
+          >
+            Got It!
+          </button>
         </div>
       )}
     </div>
