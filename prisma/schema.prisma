@@ -33,6 +33,7 @@ model Card {
   set             Set          @relation(fields: [set_id], references: [id], onDelete: Cascade)
   set_progress_id String?      @db.ObjectId
   set_progress    SetProgress? @relation(fields: [set_progress_id], references: [id])
+  type            SetType      @default(ASSIGNMENT)
 }
 
 model SetProgress {
@@ -92,26 +93,34 @@ model Set {
   classroom    Classroom     @relation(fields: [classroom_id], references: [id], onDelete: Cascade)
   set_progress SetProgress[]
   cards        Card[]
-  check_mode   CheckMode
-  answer_mode  AnswerMode
-  pomodoro     Boolean
   badge        Badge[]
+  config       SetConfig?
 }
 
-enum CheckMode {
-  AI_CHECK
-  WORD_BY_WORD
+model SetConfig {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  set_id        String  @unique @db.ObjectId
+  set           Set     @relation(fields: [set_id], references: [id], onDelete: Cascade)
+  type          SetType
+  pomodoro      Boolean @default(false)
+  pomodoroTimer Int?
+  pomodoroCards Int?
+  comprehensionLevel  Int?
 }
 
-enum AnswerMode {
-  TYPING
-  SPEAKING
-}
+// NOTE: Interleaving and spaced repetitiion do not have to be saved here for now
 
 enum Role {
   TEACHER
   STUDENT
   UNKNOWN
+}
+
+enum SetType {
+  INVERTED // Checking criteria differs
+  THEORY // Checking criteria differs
+  LITERACY // Only speaking and play the text out loud, feedback needs to be refactored
+  ASSIGNMENT // Basic checking criteria
 }
 
 model Session {
