@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AnswerMode, CheckMode, type Set } from "@prisma/client";
+import { SetType, type Set } from "@prisma/client";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -27,6 +27,7 @@ export const setRouter = createTRPCRouter({
         },
         include: {
           cards: true,
+          config: true,
         },
       });
       return set;
@@ -40,21 +41,50 @@ export const setRouter = createTRPCRouter({
         },
         include: {
           cards: true,
+          config: true,
         },
       });
       return sets;
     }),
   createSet: publicProcedure
-    .input(z.object({ name: z.string(), classId: z.string() }))
+    .input(
+      z.object({
+        name: z.string(),
+        classId: z.string(),
+        config: z.object({
+          setType: z.enum(["ASSIGNMENT", "INVERTED", "LITERACY", "THEORY"]),
+          pomodoro: z.string(),
+          pomodoroTimer: z.string().optional(),
+          pomodoroCards: z.string().optional(),
+          readingComprehensionLevel: z.string().optional(),
+        }),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       const set = await ctx.db.set.create({
+        // TODO: Get interleaved sets selected and duplicate cards
         data: {
           name: input.name,
           description: "",
           classroom_id: input.classId,
-          check_mode: CheckMode.AI_CHECK,
-          answer_mode: AnswerMode.SPEAKING,
-          pomodoro: false,
+          config: {
+            create: {
+              type: input.config.setType,
+              pomodoro: input.config.pomodoro === "true",
+              pomodoroTimer: input.config.pomodoro
+                ? Number(input.config.pomodoroTimer)
+                : undefined,
+              pomodoroCards: input.config.pomodoro
+                ? Number(input.config.pomodoroCards)
+                : undefined,
+              comprehensionLevel: input.config.readingComprehensionLevel
+                ? Number(input.config.readingComprehensionLevel)
+                : undefined,
+            },
+          },
+        },
+        include: {
+          config: true,
         },
       });
       return set;
@@ -65,7 +95,15 @@ export const setRouter = createTRPCRouter({
         setId: z.string(),
         setName: z.string(),
         setDescription: z.string(),
-        cards: z.array(z.object({ term: z.string(), def: z.string() })),
+        cards: z.array(
+          z.object({
+            term: z.string(),
+            def: z.string(),
+            type: z
+              .enum(["ASSIGNMENT", "INVERTED", "LITERACY", "THEORY"])
+              .optional(),
+          }),
+        ),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -91,6 +129,7 @@ export const setRouter = createTRPCRouter({
               data: input.cards.map((card) => ({
                 term: card.term,
                 definition: card.def,
+                type: card.type,
               })),
             },
           },

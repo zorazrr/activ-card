@@ -62,6 +62,7 @@ const Sets = ({
               numCards={set.cards ? set.cards?.length : 0}
               deleteSet={deleteSet}
               accountType={accountType}
+              setType={set.config.type}
             />
           );
         })}

@@ -9,7 +9,7 @@ import {
   Tag,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Role, type Set } from "@prisma/client";
+import { Role, SetType, type Set } from "@prisma/client";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import { type UseTRPCMutationResult } from "@trpc/react-query/shared";
@@ -27,6 +27,7 @@ interface SetCardProps extends Partial<Set> {
   deleteSet: UseTRPCMutationResult<any, any, any, any>;
   numCards: number;
   accountType: Role | undefined;
+  setType: SetType | undefined;
 }
 
 const SetCard = (props: SetCardProps) => {
@@ -40,6 +41,19 @@ const SetCard = (props: SetCardProps) => {
   const onEdit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
     window.location.href = `/create/set/${props.id}?isEdit=true`;
+  };
+
+  const getTypeTagColor = (type: SetType) => {
+    switch (type) {
+      case SetType.ASSIGNMENT:
+        return "#ffb990";
+      case SetType.INVERTED:
+        return "pink";
+      case SetType.LITERACY:
+        return "#FFF192";
+      case SetType.THEORY:
+        return "#90EE90";
+    }
   };
 
   return (
@@ -63,7 +77,7 @@ const SetCard = (props: SetCardProps) => {
       }}
     >
       <CardBody h="100%" paddingY={0} paddingRight={0}>
-        <HStack h="25vh" w="41vh">
+        <Box h="25vh" w="41vh">
           <Box
             minH="100%"
             display={"flex"}
@@ -76,8 +90,32 @@ const SetCard = (props: SetCardProps) => {
               flexDirection={"column"}
               justifyContent={"space-between"}
             >
-              <div style={{ paddingBottom: "2vh" }}>
-                <p className="h4-5">{props.name}</p>
+              <div style={{ paddingBottom: "2vh", width: "100%" }}>
+                <HStack justifyContent={"space-between"}>
+                  <p className="h4-5">{props.name}</p>
+                  {props.setType && (
+                    <Tag
+                      size={"sm"}
+                      width="10vh"
+                      p={2}
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        backgroundColor: getTypeTagColor(props.setType),
+                      }}
+                      colorScheme="telegram"
+                      className="tag-no-brightness-change"
+                      sx={{
+                        transition: "filter 0.1s",
+                        "&:hover": {
+                          filter: "brightness(100%)",
+                        },
+                      }}
+                    >
+                      {`${props.setType}`}
+                    </Tag>
+                  )}
+                </HStack>
                 {/* {props.description && (
                   <p className="reg-text pt-3">{props.description}</p>
                 )} */}
@@ -175,7 +213,7 @@ const SetCard = (props: SetCardProps) => {
               </AlertDialogContent>
             </AlertDialogOverlay>
           </AlertDialog>
-        </HStack>
+        </Box>
       </CardBody>
     </Card>
   );

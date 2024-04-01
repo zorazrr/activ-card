@@ -27,8 +27,10 @@ import {
 import StyledModal from "~/components/Modal";
 import { api } from "~/utils/api";
 import { useState } from "react";
-import { type TermDefPair } from "~/utils/types";
+import { SetConfig, type TermDefPair } from "~/utils/types";
 import { InfoOutlineIcon } from "@chakra-ui/icons";
+import { SetType } from "@prisma/client";
+import { Config } from "tailwindcss";
 
 export default function SetCreationMediumSelection() {
   const router = useRouter();
@@ -54,11 +56,15 @@ export default function SetCreationMediumSelection() {
 
   const [flashcards, setFlashcards] = useState<TermDefPair[]>([]);
   const [subject, setSubject] = useState<string>("");
-  const [formData, setFormData] = useState<any>();
+  const [formData, setFormData] = useState<SetConfig>();
 
   const generateFlashcard =
     api.gpt.generateFlashcardsFromPromptedSubject.useQuery(
-      { subject: subject },
+      {
+        subject: subject,
+        setType: formData?.setType,
+        readingComprehensionLevel: formData?.readingComprehensionLevel,
+      },
       {
         retry: false,
         onSuccess: (data) => setFlashcards(data),
@@ -66,7 +72,7 @@ export default function SetCreationMediumSelection() {
       },
     );
 
-  const createCard = api.card.createCardsforSet.useMutation({
+  const createCards = api.card.createCardsforSet.useMutation({
     retry: false,
     onSuccess: (data) => {
       window.location.href = `../set/${data.id}`;
@@ -76,14 +82,21 @@ export default function SetCreationMediumSelection() {
   const createSet = api.set.createSet.useMutation({
     retry: false,
     onSuccess: (data) =>
-      createCard.mutate({ setId: data.id, cards: flashcards }),
+      createCards.mutate({
+        setId: data.id,
+        cards: flashcards,
+        setType: formData?.setType,
+      }),
   });
 
   const createNewSet = async () => {
+    setIsLoading(true);
+    onClose();
     await generateFlashcard.refetch();
     createSet.mutate({
       classId: router.query.classId as string,
       name: subject,
+      config: formData!,
     });
   };
 
@@ -96,6 +109,7 @@ export default function SetCreationMediumSelection() {
     createSetFromScratch.mutate({
       classId: router.query.classId as string,
       name: subject,
+      config: formData!,
     });
   };
 
@@ -114,13 +128,13 @@ export default function SetCreationMediumSelection() {
   }
 
   const handleOnFocusChange = (value) => {
-    setIsFocusEnabled(value === "Yes" ? true : false);
+    setIsFocusEnabled(value === "true" ? true : false);
   };
 
   return (
     <>
       <div className="p-5 hover:opacity-75">
-        <Link href="/">
+        <Link href="/dashboard">
           <Image src="/assets/logo.png" alt="header" width={65} height={65} />
         </Link>
       </div>
@@ -141,28 +155,60 @@ export default function SetCreationMediumSelection() {
                 <FormControl w="100%">
                   <FormLabel>
                     Type of Set &nbsp;{" "}
-                    <Tooltip label={`Mode:}`}>
+                    <Tooltip
+                      label={
+                        <Text>
+                          <b>Assignment: </b>
+                          Use this mode to help students practice
+                          conceptualizing terms and definitions, using their own
+                          words to capture the meanings of terms.
+                          <br />
+                          <b>Inverted: </b>
+                          Use this to help introduce and familiarize your
+                          students with concepts they will be learning and
+                          understand their current baseline knowledge of the
+                          unit. Think of it as a pre-work assignment that
+                          requires active engagement from their part.
+                          <br />
+                          <b>Literacy: </b>
+                          Use this to help your students practice read-alongs.
+                          You can generate custom sentences based on what
+                          reading topics and skills you want to focus on with AI
+                          checking their reading progress and providing you
+                          feedback.
+                          <br />
+                          <b>Theory: </b>
+                          Test your students on more open-ended and theoretical
+                          questions on the subject matter!
+                          <br />
+                        </Text>
+                      }
+                    >
                       <Icon as={InfoOutlineIcon} color="gray" />
                     </Tooltip>
                   </FormLabel>
-                  <RadioGroup name="setType" defaultValue="Assignment" w="100%">
+                  <RadioGroup
+                    name="setType"
+                    defaultValue={SetType.ASSIGNMENT}
+                    w="100%"
+                  >
                     <HStack
                       spacing="auto"
                       w="100%"
                       // justifyContent="space-between"
                       gap="5%"
                     >
-                      <Radio value="Assignment" w="20%">
+                      <Radio value={SetType.ASSIGNMENT} w="20%">
                         Assignment &nbsp;
                       </Radio>
 
-                      <Radio value="Inverted Classroom" w="20%">
+                      <Radio value={SetType.INVERTED} w="20%">
                         Inverted Classroom
                       </Radio>
-                      <Radio value="Literacy" w="20%">
+                      <Radio value={SetType.LITERACY} w="20%">
                         Literacy
                       </Radio>
-                      <Radio value="Theory" w="20%">
+                      <Radio value={SetType.THEORY} w="20%">
                         Theory
                       </Radio>
                     </HStack>
@@ -173,6 +219,7 @@ export default function SetCreationMediumSelection() {
                   <Select
                     name="readingComprehensionLevel"
                     placeholder="Select Grade"
+                    isRequired
                   >
                     {grades.map((grade) => {
                       return (
@@ -186,21 +233,31 @@ export default function SetCreationMediumSelection() {
                 <FormControl>
                   <FormLabel>
                     Enable Pomodoro Focus &nbsp;
-                    <Tooltip label={`Mode:}`}>
+                    <Tooltip
+                      backgroundColor="gray.100"
+                      color="gray"
+                      label={
+                        <Text>
+                          Pomodoro Focus will use the pomodoro technique to help
+                          students pace their learning and take "brain" breaks
+                          upon successful completion of subsets of cards.
+                        </Text>
+                      }
+                    >
                       <Icon as={InfoOutlineIcon} color="gray" />
                     </Tooltip>
                   </FormLabel>
                   <RadioGroup
-                    defaultValue="Yes"
+                    defaultValue="true"
                     w="100%"
                     onChange={handleOnFocusChange}
-                    name="isFocusEnabled"
+                    name="pomodoro"
                   >
                     <HStack spacing="auto" w="100%" gap="5%">
-                      <Radio value="Yes" w="20%">
+                      <Radio value="true" w="20%">
                         Yes
                       </Radio>
-                      <Radio value="No" w="20%">
+                      <Radio value="false" w="20%">
                         No
                       </Radio>
                     </HStack>
@@ -211,12 +268,19 @@ export default function SetCreationMediumSelection() {
                     <FormControl>
                       <FormLabel>
                         Number of Cards Between Pomodoro Breaks &nbsp;
-                        <Tooltip label={`Mode:}`}>
+                        <Tooltip
+                          label={
+                            <Text>
+                              This is the number of cards a student must
+                              successfully answer before they unlock a break.
+                            </Text>
+                          }
+                        >
                           <Icon as={InfoOutlineIcon} color="gray" />
                         </Tooltip>
                       </FormLabel>
                       <NumberInput
-                        name="pomodoroIntervalLength"
+                        name="pomodoroCards"
                         defaultValue={5}
                         min={3}
                       >
@@ -232,7 +296,7 @@ export default function SetCreationMediumSelection() {
                         Length (in Seconds) of Pomodoro Break
                       </FormLabel>
                       <NumberInput
-                        name="pomodoroTimeLimit"
+                        name="pomodoroTimer"
                         defaultValue={60}
                         min={180}
                       >
@@ -274,6 +338,7 @@ export default function SetCreationMediumSelection() {
                 <StyledFileUpload
                   classId={router.query.classId as string}
                   setIsLoading={setIsLoading}
+                  formData={formData}
                 />
                 <StyledButton
                   label="Generate Using AI"
@@ -300,7 +365,7 @@ export default function SetCreationMediumSelection() {
                   />
                 </div>
               </HStack>
-              {isLoading && (
+              {(isLoading || createSet.isLoading) && (
                 <>
                   <Spinner size={"xl"} />
                   <div className="h4 text-darkBlue">Building your deck...</div>
@@ -320,8 +385,12 @@ export default function SetCreationMediumSelection() {
   );
 }
 
-// TODO: Connect FE with BE
 // TODO: Change page 2 of medium.tsx to use dashboard tabs and emulate YT video
-// TODO: Fill out tool tips
+// TODO: TEST ALL CHANGES!
+// ASSIGNMENT
+// INVERTED
+// LITERACY
+// THEORY
+// TODO: Add back arrow between two modal pages
 // TODO: Consider passive vs active review
-// TODO: Add back arrow
+// For now, maybe only show cards of same type but in future we can extend it to combine different types of sets or different types of cards

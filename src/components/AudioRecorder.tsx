@@ -65,6 +65,7 @@ const AudioRecorder = ({
       } else {
         const streamData = await getMicrophonePermission();
         if (streamData) {
+          setIsProcessingRecordedAnswer(true);
           setRecordingStatus("recording");
           const media = new MediaRecorder(streamData);
           mediaRecorder.current = media;
@@ -81,6 +82,7 @@ const AudioRecorder = ({
     } else {
       const streamData = await getMicrophonePermission();
       if (streamData) {
+        setIsProcessingRecordedAnswer(true);
         setRecordingStatus("recording");
         const media = new MediaRecorder(streamData);
         mediaRecorder.current = media;
