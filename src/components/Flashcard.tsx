@@ -60,6 +60,13 @@ const FlashCard: FC<FlashCardProps> = ({
     // Workaround
     // So, moving the current card to the end didn't work when moving the card already in the last position to the end, even after making a deep
     // copy; therefore, we will just stop displaying the answer, and allow the student to submit the answer if this is the case
+    const front = document.getElementById("front");
+    const back = document.getElementById("back");
+
+    front.style.visibility = "visible";
+    back.style.backfaceVisibility = "hidden";
+    back.style.transform = "rotateX(180deg)";
+
     if (curIndex === setLength - 1) {
       setShouldDisplayAnswer(false);
     } else {
