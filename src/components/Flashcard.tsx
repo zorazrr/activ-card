@@ -185,7 +185,7 @@ const FlashCard: FC<FlashCardProps> = ({
   }, [studentAudioText]);
 
   return (
-    <div className="flex h-full flex-col items-center justify-evenly">
+    <div className="relative flex h-full flex-col items-center justify-evenly">
       <div className="flex h-[60%] w-screen flex-row items-center justify-between gap-12 px-40 text-lg">
         <div
           className={`${shouldDisplayAnswer && "animate-flip"} flex h-full w-full flex-row items-center justify-center rounded-lg border bg-gray-100 p-10`}
@@ -263,8 +263,8 @@ const FlashCard: FC<FlashCardProps> = ({
         </div>
       </div>
 
-      {shouldDisplayAnswer && (
-        <div className="flex w-screen justify-center px-12 py-5">
+      {shouldDisplayAnswer && isAnimationCompleted && (
+        <div className="absolute bottom-0 flex w-screen justify-center px-12">
           <StyledButton
             label="Got It!"
             colorInd={0}
@@ -273,7 +273,6 @@ const FlashCard: FC<FlashCardProps> = ({
               width: "300%",
               paddingTop: "15px",
               paddingBottom: "15px",
-              marginBottom: "3%",
             }}
           />
         </div>
