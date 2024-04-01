@@ -54,7 +54,6 @@ const Sets = ({
       <HStack wrap="wrap">
         {sets?.map((set) => {
           return (
-            // TODO 7: Tag "Type" on the Set for teacher, if interleaved, then add all types
             <Card
               key={set.id}
               name={set.name}
@@ -63,6 +62,7 @@ const Sets = ({
               numCards={set.cards ? set.cards?.length : 0}
               deleteSet={deleteSet}
               accountType={accountType}
+              setType={set.config.type}
             />
           );
         })}
