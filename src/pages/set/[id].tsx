@@ -18,13 +18,7 @@ import ProgressBar from "~/components/Progress/ProgressBar";
 import Image from "next/image";
 import _ from "lodash";
 
-const Set = ({
-  tempIdx,
-  pomodoroConst = 3,
-}: {
-  tempIdx: number | undefined;
-  pomodoroConst?: number;
-}) => {
+const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
   const setId = useRouter().query.id;
   const { data: cards } = api.card.getCardsBySet.useQuery(
     { setId: setId as string },
@@ -76,7 +70,11 @@ const Set = ({
         const newMaxIndex = Math.max(newCurIndex, prevMaxIndex);
 
         // Make sure the user cannot go back and replay the Pomodoro if they just played and haven't answered the next question
-        if (prevMaxIndex !== newMaxIndex && newMaxIndex % pomodoroConst == 0) {
+        if (
+          prevMaxIndex !== newMaxIndex &&
+          set.config.pomodoro &&
+          newMaxIndex % set.config.pomodoroCards == 0
+        ) {
           setShowCanvas(true);
         }
         return newMaxIndex;
@@ -127,14 +125,14 @@ const Set = ({
     window.location.href = `../dashboard`;
   };
 
-  {
-    /* TODO 10: Pass in for Pomodoro conditional and numCards  */
-  }
-
   return (
     <div className="flex h-screen w-screen flex-col items-start justify-start">
       {showCanvas ? (
-        <Canvas setShowCanvas={setShowCanvas} setId={setId as string} />
+        <Canvas
+          setShowCanvas={setShowCanvas}
+          setId={setId as string}
+          pomodoroTime={set.config.pomodoroTimer}
+        />
       ) : (
         <>
           <div className="w-full pl-8 pt-8 text-center font-bold">

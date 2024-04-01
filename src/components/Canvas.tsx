@@ -35,9 +35,11 @@ const colors = [
 function Canvas({
   setShowCanvas,
   setId,
+  pomodoroTime,
 }: {
   setShowCanvas: Dispatch<any>;
   setId: string;
+  pomodoroTime: number;
 }) {
   const [color, setColor] = useState("#ffffff");
   const canvasRef =
@@ -68,8 +70,11 @@ function Canvas({
           <div className="h4" style={{ color: "white", fontWeight: 500 }}>
             A break to re-center &#10024;
           </div>
-          <Countdown setShowCanvas={setShowCanvas} didSubmit={didSubmit} />
-          {/* TODO 8: Pass in timer */}
+          <Countdown
+            setShowCanvas={setShowCanvas}
+            didSubmit={didSubmit}
+            time={pomodoroTime}
+          />
           <div>
             <CanvasDraw
               ref={canvasRef}

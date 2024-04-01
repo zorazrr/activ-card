@@ -3,11 +3,13 @@ import { type Dispatch, useEffect, useState } from "react";
 const Countdown = ({
   setShowCanvas,
   didSubmit,
+  pomodoroTime,
 }: {
   setShowCanvas: Dispatch<any>;
   didSubmit: boolean;
+  pomodoroTime: number;
 }) => {
-  const [seconds, setSeconds] = useState(60);
+  const [seconds, setSeconds] = useState(pomodoroTime);
 
   useEffect(() => {
     const interval = setInterval(() => {
