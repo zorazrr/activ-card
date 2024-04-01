@@ -158,17 +158,34 @@ export default function SetCreationMediumSelection() {
                     <Tooltip
                       label={
                         <Text>
-                          <b>First line</b>
+                          <b>Assignment: </b>
+                          Use this mode to help students practice
+                          conceptualizing terms and definitions, using their own
+                          words to capture the meanings of terms.
                           <br />
-                          Second line
+                          <b>Inverted: </b>
+                          Use this to help introduce and familiarize your
+                          students with concepts they will be learning and
+                          understand their current baseline knowledge of the
+                          unit. Think of it as a pre-work assignment that
+                          requires active engagement from their part.
                           <br />
-                          Third line
+                          <b>Literacy: </b>
+                          Use this to help your students practice read-alongs.
+                          You can generate custom sentences based on what
+                          reading topics and skills you want to focus on with AI
+                          checking their reading progress and providing you
+                          feedback.
+                          <br />
+                          <b>Theory: </b>
+                          Test your students on more open-ended and theoretical
+                          questions on the subject matter!
+                          <br />
                         </Text>
                       }
                     >
                       <Icon as={InfoOutlineIcon} color="gray" />
                     </Tooltip>
-                    {/* TODO: FIll OUT TOOLTIPS */}
                   </FormLabel>
                   <RadioGroup
                     name="setType"
@@ -221,11 +238,9 @@ export default function SetCreationMediumSelection() {
                       color="gray"
                       label={
                         <Text>
-                          <b>First line</b>
-                          <br />
-                          Second line
-                          <br />
-                          Third line
+                          Pomodoro Focus will use the pomodoro technique to help
+                          students pace their learning and take "brain" breaks
+                          upon successful completion of subsets of cards.
                         </Text>
                       }
                     >
@@ -253,7 +268,14 @@ export default function SetCreationMediumSelection() {
                     <FormControl>
                       <FormLabel>
                         Number of Cards Between Pomodoro Breaks &nbsp;
-                        <Tooltip label={`Mode:}`}>
+                        <Tooltip
+                          label={
+                            <Text>
+                              This is the number of cards a student must
+                              successfully answer before they unlock a break.
+                            </Text>
+                          }
+                        >
                           <Icon as={InfoOutlineIcon} color="gray" />
                         </Tooltip>
                       </FormLabel>
@@ -363,8 +385,7 @@ export default function SetCreationMediumSelection() {
   );
 }
 
-// TODO 5: Fill out tool tips
-// TODO 6: Change page 2 of medium.tsx to use dashboard tabs and emulate YT video
+// TODO: Change page 2 of medium.tsx to use dashboard tabs and emulate YT video
 // TODO: TEST ALL CHANGES!
 // ASSIGNMENT
 // INVERTED
