@@ -17,7 +17,7 @@ const ProgressBar = ({
     colorScheme="darkBlue"
     height="28px"
     value={percentage}
-    borderRadius={shouldApplyBorderRadius ? 10 : 0}
+    borderRadius={shouldApplyBorderRadius ? "md" : 0}
   />
 );
 

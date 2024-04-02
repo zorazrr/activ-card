@@ -14,7 +14,6 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import Canvas from "~/components/Canvas";
 import { type Card } from "@prisma/client";
-import ProgressBar from "~/components/Progress/ProgressBar";
 import Image from "next/image";
 import _ from "lodash";
 
@@ -221,14 +220,6 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
               </button>
             </div>
           </div>
-          {curIndex !== flashcards?.length && (
-            <ProgressBar
-              percentage={(100 * maxIndex) / cards.length}
-              shouldApplyMargin={true}
-              width={100}
-              shouldApplyBorderRadius={false}
-            />
-          )}
         </>
       )}
     </div>
