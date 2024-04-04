@@ -2,7 +2,7 @@ import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
-import theme from "~/styles/chakra-theme";
+import { theme } from "~/styles/chakra-theme";
 
 import { api } from "~/utils/api";
 

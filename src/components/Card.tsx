@@ -61,17 +61,17 @@ const SetCard = (props: SetCardProps) => {
       p={3}
       borderRadius="10"
       onClick={onCardClick}
-      backgroundColor="mediumBlue.500"
-      color="white"
+      backgroundColor="white"
+      color="darkBlue.500"
       style={{ cursor: "pointer" }}
       marginRight={5}
       marginTop={5}
       sx={{
         transition: "filter 0.1s",
         "&:hover": {
-          filter: "brightness(110%)",
+          filter: "brightness(150%)",
           "& .tag-no-brightness-change": {
-            filter: "brightness(90%)",
+            filter: "brightness(70%)",
           },
         },
       }}
@@ -96,14 +96,17 @@ const SetCard = (props: SetCardProps) => {
                   {props.setType && (
                     <Tag
                       size={"sm"}
+                      backgroundColor={"lightBlue.500"}
+                      color={"darkBlue.500"}
                       width="10vh"
                       p={2}
                       style={{
                         display: "flex",
                         justifyContent: "center",
-                        backgroundColor: getTypeTagColor(props.setType),
+                        // backgroundColor: getTypeTagColor(props.setType),
+                        // backgroundColor: "lightBlue.500",
+                        // color: "darkBlue.500",
                       }}
-                      colorScheme="telegram"
                       className="tag-no-brightness-change"
                       sx={{
                         transition: "filter 0.1s",
@@ -128,9 +131,8 @@ const SetCard = (props: SetCardProps) => {
                   style={{
                     display: "flex",
                     justifyContent: "center",
-                    backgroundColor: "#BEDDFC",
+                    // backgroundColor: "#BEDDFC",
                   }}
-                  colorScheme="telegram"
                   className="tag-no-brightness-change"
                   sx={{
                     transition: "filter 0.1s",
@@ -139,7 +141,7 @@ const SetCard = (props: SetCardProps) => {
                     },
                   }}
                 >
-                  {`${props.numCards} Cards`}
+                  {`${props.numCards} CARDS`}
                 </Tag>
               </div>
             </Box>
@@ -148,26 +150,26 @@ const SetCard = (props: SetCardProps) => {
                 <IconButton
                   variant="outline"
                   aria-label="Edit card"
-                  backgroundColor={"white"}
-                  icon={<EditIcon color="blue.900" />}
+                  backgroundColor={"mediumBlue.500"}
+                  icon={<EditIcon color="white" />}
                   sx={{
-                    transition: "filter 0.1s",
                     "&:hover": {
-                      filter: "brightness(200%)",
+                      backgroundColor: "mediumBlue.700",
                     },
                   }}
+                  className="tag-no-brightness-change"
                   onClick={onEdit}
                 />
 
                 <IconButton
+                  className="tag-no-brightness-change"
                   variant="outline"
                   aria-label="Delete card"
-                  backgroundColor={"white"}
-                  icon={<DeleteIcon color="blue.900" />}
+                  backgroundColor={"mediumBlue.500"}
+                  icon={<DeleteIcon color="white" />}
                   sx={{
-                    transition: "filter 0.1s",
                     "&:hover": {
-                      filter: "brightness(200%)",
+                      backgroundColor: "mediumBlue.700",
                     },
                   }}
                   onClick={(e) => {

@@ -14,7 +14,7 @@ const DashboardTabs = ({
 }) => {
   return (
     <Tabs variant="enclosed" pt={5} height="80vh" overflow="hidden">
-      <TabList>
+      <TabList pb={5}>
         <Tab>Sets</Tab>
         <Tab>Badges</Tab>
         {accountType && accountType == Role.TEACHER && (
@@ -24,7 +24,11 @@ const DashboardTabs = ({
           </>
         )}
       </TabList>
-      <TabPanels height="100%" overflowY="auto">
+      <TabPanels
+        height="100%"
+        overflowY="auto"
+        backgroundColor={"lightGray.500"}
+      >
         <TabPanel>
           <Box pb={50}>
             <Sets accountType={accountType} currentClass={currentClass} />

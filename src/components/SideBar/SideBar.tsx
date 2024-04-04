@@ -51,7 +51,7 @@ const Sidebar = ({
 
   return (
     <Box
-      w="20%"
+      w="18vw"
       h="100%"
       className="main-class bg-darkBlue"
       position="sticky"
@@ -68,10 +68,16 @@ const Sidebar = ({
               <Image
                 src="/assets/logo.png"
                 alt="header"
-                width={65}
-                height={65}
+                width={50}
+                height={50}
               />
-              <Heading className="main-class text-white">ActiveCard</Heading>
+              <Heading
+                className="main-class text-white"
+                size={"lg"}
+                marginLeft={"0.5vw"}
+              >
+                ActiveCard
+              </Heading>
             </Link>
           </div>
         </HStack>
@@ -92,7 +98,7 @@ const Sidebar = ({
               <Divider mb={2} />
               <div
                 className="main-class w-full text-h5-size font-semibold text-white"
-                style={{ marginLeft: "1.25rem" }}
+                style={{ marginLeft: "1vw" }}
               >
                 Classes
               </div>
