@@ -135,10 +135,14 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
         />
       ) : (
         <>
-          <div className="w-full pl-8 pt-8 text-center text-lg font-bold">
-            <HStack gap={0} position="absolute" onClick={navigateHome}>
-              <div className="hover:opacity-75">
-                <Link href="/dashboard" className="flex flex-col 2xl:flex-row">
+          <div className="flex w-full items-center pl-8 pt-8">
+            <HStack>
+              <div className="inline-block flex items-center gap-2  hover:opacity-75">
+                <Link
+                  href="/dashboard"
+                  className="flex flex-col 2xl:flex-row"
+                  onClick={navigateHome}
+                >
                   <Image
                     src="/assets/logo.png"
                     alt="header"
@@ -147,8 +151,10 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
                   />
                 </Link>
               </div>
+              <div className="absolute pl-32 text-4xl font-semibold">
+                {set.name}
+              </div>
             </HStack>
-            {set.name}
           </div>
           {curIndex >= 0 &&
           flashcards &&
