@@ -253,14 +253,14 @@ const FlashCard: FC<FlashCardProps> = ({
             <div className="flex flex-row gap-x-3">
               <button
                 onClick={() => setShouldDisplayAnswer(true)}
-                className="h-fit w-fit rounded-lg bg-midBlue px-6 py-1 text-sm text-white"
+                className={`h-fit self-end rounded-lg bg-midBlue px-4 py-3 text-sm text-white ${!(shouldDisplayAnswer || answerExplanation !== "") && "hover:opacity-75"}`}
                 disabled={shouldDisplayAnswer || answerExplanation !== ""}
               >
                 {`I Don't Know`}
               </button>
               <button
                 onClick={() => checkAnswer()}
-                className="h-fit w-fit rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
+                className={`h-fit self-end rounded-lg bg-darkBlue px-4 py-3 text-sm text-white ${!(shouldDisplayAnswer || answerExplanation !== "") && "hover:opacity-75"}`}
                 disabled={shouldDisplayAnswer || answerExplanation !== ""}
               >
                 Check

@@ -1,3 +1,5 @@
+import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   type Dispatch,
   type SetStateAction,
@@ -134,17 +136,17 @@ const AudioRecorder = ({
       {recordingStatus === "inactive" ? (
         <button
           onClick={() => startRecording()}
-          className="h-fit w-fit rounded-lg bg-mediumBlue px-6 py-1 text-sm text-white"
+          className={`h-fit self-end rounded-lg bg-mediumBlue px-4 py-3 text-sm text-white ${!shouldDisplayAnswer && "hover:opacity-75"}`}
           disabled={shouldDisplayAnswer}
         >
-          Speak
+          <FontAwesomeIcon icon={faMicrophone} />
         </button>
       ) : (
         <button
           onClick={() => stopRecording()}
-          className="h-fit w-fit rounded-lg bg-mediumBlue px-6 py-1 text-sm text-white"
+          className={`h-fit self-end rounded-lg bg-red-600 px-4 py-3 text-sm text-white ${!shouldDisplayAnswer && "hover:opacity-75"}`}
         >
-          Stop
+          <FontAwesomeIcon icon={faMicrophone} className="animate-pulse" />
         </button>
       )}
     </div>
