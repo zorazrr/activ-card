@@ -32,6 +32,15 @@ const colors = {
   darkGray: {
     500: "#BDBDBD",
   },
+  lightOrange: {
+    500: "#FFA754",
+  },
+  lightYellow: {
+    500: "#FFE561",
+  },
+  indigo: {
+    500: "#621D8C",
+  },
 };
 
 const baseStyle = definePartsStyle({
