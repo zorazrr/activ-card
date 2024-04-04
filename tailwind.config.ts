@@ -68,7 +68,7 @@ export default {
         },
       },
       animation: {
-        flip: "flip 1.5s linear",
+        flip: "flip 1.1s linear",
       },
     },
   },

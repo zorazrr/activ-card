@@ -11,12 +11,16 @@ import AudioRecorder from "./AudioRecorder";
 import {
   Divider,
   HStack,
+  Icon,
   Spinner,
   Stack,
   Textarea,
   VStack,
 } from "@chakra-ui/react";
 import StyledButton from "./Button";
+import ProgressBar from "./Progress/ProgressBar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 
 interface FlashCardProps {
   card: Card;
@@ -92,6 +96,7 @@ const FlashCard: FC<FlashCardProps> = ({
         {
           onSuccess: ({ isCorrect, feedback }) => {
             setIsCorrect(isCorrect);
+            // eslint-disable-next-line
             setAnswerExplanation(feedback as string);
             // if (isCorrect) {
             //   onCorrectCallback?.();
@@ -113,6 +118,7 @@ const FlashCard: FC<FlashCardProps> = ({
         {
           onSuccess: ({ isCorrect, feedback }) => {
             setIsCorrect(isCorrect);
+            // eslint-disable-next-line
             setAnswerExplanation(feedback as string);
             // if (isCorrect) {
             //   onCorrectCallback?.();
@@ -173,14 +179,20 @@ const FlashCard: FC<FlashCardProps> = ({
 
   return (
     <div className="relative flex h-full flex-col items-center justify-evenly">
-      <div className="perspective flex h-[60%] w-screen flex-row items-center justify-between gap-12 px-40 text-lg">
+      <ProgressBar
+        percentage={(100 * maxIndex) / setLength}
+        shouldApplyMargin={false}
+        width={82}
+        shouldApplyBorderRadius={true}
+      />
+      <div className="flex h-[60%] w-screen flex-row items-center justify-between gap-12 px-40 text-lg perspective">
         <div
-          className={`${shouldDisplayAnswer && "animate-flip"} preserve-3d flex h-full w-full flex-row items-center justify-center rounded-lg border bg-gray-100 p-10`}
+          className={`${shouldDisplayAnswer && "animate-flip"} flex h-full w-full flex-row items-center justify-center rounded-lg border bg-gray-100 p-10 preserve-3d`}
           onAnimationEnd={onAnimationEnd}
         >
           <div
             id="front"
-            className={`backface-hidden absolute m-auto font-bold`}
+            className={`absolute m-auto font-bold backface-hidden`}
           >
             {card.term}
           </div>
@@ -189,7 +201,7 @@ const FlashCard: FC<FlashCardProps> = ({
             h="100%"
             gap="20px"
             alignItems="start"
-            className="backface-hidden my-rotate-x-180"
+            className="my-rotate-x-180 backface-hidden"
             id="back"
           >
             <p className="self-center font-bold">{card.term}</p>
@@ -241,14 +253,14 @@ const FlashCard: FC<FlashCardProps> = ({
             <div className="flex flex-row gap-x-3">
               <button
                 onClick={() => setShouldDisplayAnswer(true)}
-                className="h-fit w-fit rounded-lg bg-midBlue px-6 py-1 text-sm text-white"
+                className={`h-fit self-end rounded-lg bg-midBlue px-4 py-3 text-sm text-white ${!(shouldDisplayAnswer || answerExplanation !== "") && "hover:opacity-75"}`}
                 disabled={shouldDisplayAnswer || answerExplanation !== ""}
               >
                 {`I Don't Know`}
               </button>
               <button
                 onClick={() => checkAnswer()}
-                className="h-fit w-fit rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
+                className={`h-fit self-end rounded-lg bg-darkBlue px-4 py-3 text-sm text-white ${!(shouldDisplayAnswer || answerExplanation !== "") && "hover:opacity-75"}`}
                 disabled={shouldDisplayAnswer || answerExplanation !== ""}
               >
                 Check
@@ -283,9 +295,9 @@ const FlashCard: FC<FlashCardProps> = ({
           <div dangerouslySetInnerHTML={{ __html: answerExplanation }} />
           <button
             onClick={() => onCorrectCallback?.()}
-            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
+            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-4 py-3 text-sm text-white hover:opacity-75"
           >
-            Got It!
+            <FontAwesomeIcon icon={faThumbsUp} />
           </button>
         </div>
       ) : (
@@ -294,11 +306,10 @@ const FlashCard: FC<FlashCardProps> = ({
           <div dangerouslySetInnerHTML={{ __html: answerExplanation }} />
           <button
             onClick={handleShowCorrectAnswerAffirmation}
-            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
+            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-4 py-3 text-sm text-white hover:opacity-75"
           >
-            Got It!
+            <FontAwesomeIcon icon={faThumbsUp} />
           </button>
-          {/* TODO: Change GOT IT to icon? */}
         </div>
       )}
     </div>

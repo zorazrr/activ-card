@@ -14,7 +14,6 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import Canvas from "~/components/Canvas";
 import { type Card } from "@prisma/client";
-import ProgressBar from "~/components/Progress/ProgressBar";
 import Image from "next/image";
 import _ from "lodash";
 
@@ -34,6 +33,7 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
   // Tracks the farthest card they have attempted to answer
   const [maxIndex, setMaxIndex] = useState<number>(curIndex);
   const [showCanvas, setShowCanvas] = useState<boolean>(false);
+  const [isReview, setIsReview] = useState<boolean>(false);
   const toast = useToast();
 
   useEffect(() => {
@@ -135,10 +135,14 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
         />
       ) : (
         <>
-          <div className="w-full pl-8 pt-8 text-center font-bold">
-            <HStack gap={0} position="absolute" onClick={navigateHome}>
-              <div className="hover:opacity-75">
-                <Link href="/dashboard" className="flex flex-col 2xl:flex-row">
+          <div className="flex w-full items-center pl-8 pt-8">
+            <HStack>
+              <div className="inline-block flex items-center gap-2  hover:opacity-75">
+                <Link
+                  href="/dashboard"
+                  className="flex flex-col 2xl:flex-row"
+                  onClick={navigateHome}
+                >
                   <Image
                     src="/assets/logo.png"
                     alt="header"
@@ -147,8 +151,10 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
                   />
                 </Link>
               </div>
+              <div className="absolute pl-32 text-4xl font-semibold">
+                {set.name}
+              </div>
             </HStack>
-            {set.name}
           </div>
           {curIndex >= 0 &&
           flashcards &&
@@ -200,7 +206,9 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
               </button>
             </div>
           )}
-          <div className="align-center w-screen flex-col items-center justify-center">
+          <div
+            className={`align-center w-screen flex-col items-center justify-center ${isReview ? "invisible" : "visible"}`}
+          >
             <div className="flex flex-row justify-between">
               <button
                 onClick={() => setCurIndex(curIndex - 1)}
@@ -221,14 +229,7 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
               </button>
             </div>
           </div>
-          {curIndex !== flashcards?.length && (
-            <ProgressBar
-              percentage={(100 * maxIndex) / cards.length}
-              shouldApplyMargin={true}
-              width={100}
-              shouldApplyBorderRadius={false}
-            />
-          )}
+          )
         </>
       )}
     </div>
