@@ -11,6 +11,7 @@ import AudioRecorder from "./AudioRecorder";
 import {
   Divider,
   HStack,
+  Icon,
   Spinner,
   Stack,
   Textarea,
@@ -18,6 +19,8 @@ import {
 } from "@chakra-ui/react";
 import StyledButton from "./Button";
 import ProgressBar from "./Progress/ProgressBar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 
 interface FlashCardProps {
   card: Card;
@@ -292,9 +295,9 @@ const FlashCard: FC<FlashCardProps> = ({
           <div dangerouslySetInnerHTML={{ __html: answerExplanation }} />
           <button
             onClick={() => onCorrectCallback?.()}
-            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
+            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-4 py-3 text-sm text-white hover:opacity-75"
           >
-            Got It!
+            <FontAwesomeIcon icon={faThumbsUp} />
           </button>
         </div>
       ) : (
@@ -303,9 +306,9 @@ const FlashCard: FC<FlashCardProps> = ({
           <div dangerouslySetInnerHTML={{ __html: answerExplanation }} />
           <button
             onClick={handleShowCorrectAnswerAffirmation}
-            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-6 py-1 text-sm text-white"
+            className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-4 py-3 text-sm text-white hover:opacity-75"
           >
-            Got It!
+            <FontAwesomeIcon icon={faThumbsUp} />
           </button>
           {/* TODO: Change GOT IT to icon? */}
         </div>
