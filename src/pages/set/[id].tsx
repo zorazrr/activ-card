@@ -33,6 +33,7 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
   // Tracks the farthest card they have attempted to answer
   const [maxIndex, setMaxIndex] = useState<number>(curIndex);
   const [showCanvas, setShowCanvas] = useState<boolean>(false);
+  const [isReview, setIsReview] = useState<boolean>(false);
   const toast = useToast();
 
   useEffect(() => {
@@ -134,7 +135,7 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
         />
       ) : (
         <>
-          <div className="w-full pl-8 pt-8 text-center font-bold">
+          <div className="w-full pl-8 pt-8 text-center text-lg font-bold">
             <HStack gap={0} position="absolute" onClick={navigateHome}>
               <div className="hover:opacity-75">
                 <Link href="/dashboard" className="flex flex-col 2xl:flex-row">
@@ -199,7 +200,9 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
               </button>
             </div>
           )}
-          <div className="align-center w-screen flex-col items-center justify-center">
+          <div
+            className={`align-center w-screen flex-col items-center justify-center ${isReview ? "invisible" : "visible"}`}
+          >
             <div className="flex flex-row justify-between">
               <button
                 onClick={() => setCurIndex(curIndex - 1)}
@@ -220,6 +223,7 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
               </button>
             </div>
           </div>
+          )
         </>
       )}
     </div>
