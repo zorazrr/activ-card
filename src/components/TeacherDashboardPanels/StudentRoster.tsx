@@ -11,6 +11,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { Classroom, Student } from "@prisma/client";
+import { m } from "framer-motion";
 
 const StudentRoster = ({
   currentClass,
@@ -20,7 +21,7 @@ const StudentRoster = ({
   return (
     <div>
       <TableContainer>
-        <Table variant="striped" colorScheme="darkBlue">
+        <Table variant="striped" colorScheme="telegram" backgroundColor="white">
           <Thead>
             <Tr>
               <Th w="45%">Name</Th>
@@ -29,7 +30,7 @@ const StudentRoster = ({
             </Tr>
           </Thead>
           <Tbody>
-            {currentClass?.students.map((student: Student) => (
+            {currentClass?.students.map((student: any) => (
               <>
                 <Tr key={student.email}>
                   <Td>{student.name}</Td>

@@ -14,24 +14,27 @@ const DashboardTabs = ({
 }) => {
   return (
     <Tabs variant="enclosed" pt={5} height="80vh" overflow="hidden">
-      <TabList>
+      <TabList pb={5}>
         <Tab>Sets</Tab>
-        <Tab>Badges</Tab>
+        <Tab>Students</Tab>
         {accountType && accountType == Role.TEACHER && (
           <>
-            <Tab>Students</Tab>
             <Tab>Metrics</Tab>
+            <Tab>Badges</Tab>
           </>
         )}
       </TabList>
-      <TabPanels height="100%" overflowY="auto">
+      <TabPanels
+        height="100%"
+        overflowY="auto"
+        backgroundColor={"lightGray.500"}
+        borderTopWidth={"0.5vh"}
+        borderColor={"lightGray.500"}
+      >
         <TabPanel>
           <Box pb={50}>
             <Sets accountType={accountType} currentClass={currentClass} />
           </Box>
-        </TabPanel>
-        <TabPanel>
-          <BadgeGallery currentClass={currentClass} />
         </TabPanel>
         {accountType && accountType == Role.TEACHER && (
           <TabPanel>
@@ -43,6 +46,9 @@ const DashboardTabs = ({
             <Metrics />
           </TabPanel>
         )}
+        <TabPanel>
+          <BadgeGallery currentClass={currentClass} />
+        </TabPanel>
       </TabPanels>
     </Tabs>
   );

@@ -53,7 +53,7 @@ export default {
         lightBlue: "#BEDDFC",
         black: "#000000",
         white: "#FFFFFF",
-        lightGray: "#EBEBEB",
+        lightGray: "#F5F9FA",
         darkGray: "#BDBDBD",
         veryDarkGray: "#1E1D1E",
       },
