@@ -28,6 +28,8 @@ const DashboardTabs = ({
         height="100%"
         overflowY="auto"
         backgroundColor={"lightGray.500"}
+        borderTopWidth={"0.5vh"}
+        borderColor={"lightGray.500"}
       >
         <TabPanel>
           <Box pb={50}>
