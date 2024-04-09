@@ -287,7 +287,7 @@ const FlashCard: FC<FlashCardProps> = ({
         <Spinner />
       ) : answerExplanation === "" ? (
         shouldDisplayAnswer && answerHelp !== "" ? (
-          <div className="flex w-3/4 flex-col rounded-lg border border-blue-400  px-12 py-5">
+          <div className="flex w-3/4 flex-col rounded-lg border border-midBlue  px-12 py-5">
             <div className="pb-2 font-bold">Feedback</div>
             <div dangerouslySetInnerHTML={{ __html: answerHelp }} />
             <button
