@@ -8,15 +8,7 @@ import {
 } from "react";
 import { api } from "~/utils/api";
 import AudioRecorder from "./AudioRecorder";
-import {
-  Divider,
-  HStack,
-  Icon,
-  Spinner,
-  Stack,
-  Textarea,
-  VStack,
-} from "@chakra-ui/react";
+import { Divider, Spinner, Stack, Textarea, VStack } from "@chakra-ui/react";
 import StyledButton from "./Button";
 import ProgressBar from "./Progress/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,7 +17,6 @@ import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 interface FlashCardProps {
   card: Card;
   onCorrectCallback?: () => void;
-  onIncorrectCallback?: () => void;
   moveCurrentCardToEnd: () => void;
   curIndex: number;
   maxIndex: number;
@@ -37,7 +28,6 @@ interface FlashCardProps {
 const FlashCard: FC<FlashCardProps> = ({
   card,
   onCorrectCallback,
-  onIncorrectCallback,
   moveCurrentCardToEnd,
   curIndex,
   maxIndex,
@@ -48,12 +38,16 @@ const FlashCard: FC<FlashCardProps> = ({
   const [studentInput, setStudentInput] = useState<string>("");
   const [studentAudioText, setStudentAudioText] = useState<string>();
   const [answerExplanation, setAnswerExplanation] = useState<string>("");
+  const [answerHelp, setAnswerHelp] = useState<string>("");
   const [isCorrect, setIsCorrect] = useState<boolean>(true);
   const [shouldDisplayAnswer, setShouldDisplayAnswer] = useState(false);
   const [isProcessingRecordedAnswer, setIsProcessingRecordedAnswer] =
     useState(false);
   const [isAnimationCompleted, setIsAnimationCompleted] = useState(false);
   const checkAnswerMutation = api.gpt.checkAnswer.useMutation({ retry: false });
+  const getAnswerHelpMutation = api.gpt.getAnswerHelp.useMutation({
+    retry: false,
+  });
 
   const handleShowCorrectAnswerAffirmation = () => {
     // Workaround
@@ -68,6 +62,7 @@ const FlashCard: FC<FlashCardProps> = ({
 
     if (curIndex === setLength - 1) {
       setShouldDisplayAnswer(false);
+      setAnswerHelp("");
       setAnswerExplanation("");
     } else {
       // If a student says they do not know for a flashcard they have previously answered, they should not be able to skip a card they have not answered
@@ -80,6 +75,23 @@ const FlashCard: FC<FlashCardProps> = ({
     }
 
     setIsAnimationCompleted(false);
+  };
+
+  const provideAnswerHelp = () => {
+    getAnswerHelpMutation.mutate(
+      {
+        term: card.term,
+        definition: card.definition,
+        type: card.type,
+        compLevel: compLevel,
+      },
+      {
+        onSuccess: ({ feedback }) => {
+          setAnswerHelp(feedback as string);
+        },
+      },
+    );
+    setShouldDisplayAnswer(true);
   };
 
   const checkAnswer = () => {
@@ -179,12 +191,12 @@ const FlashCard: FC<FlashCardProps> = ({
 
   return (
     <div className="relative flex h-full flex-col items-center justify-evenly">
-      <ProgressBar
+      {/* <ProgressBar
         percentage={(100 * maxIndex) / setLength}
         shouldApplyMargin={false}
         width={82}
         shouldApplyBorderRadius={true}
-      />
+      /> */}
       <div className="flex h-[60%] w-screen flex-row items-center justify-between gap-12 px-40 text-lg perspective">
         <div
           className={`${shouldDisplayAnswer && "animate-flip"} flex h-full w-full flex-row items-center justify-center rounded-lg border bg-gray-100 p-10 preserve-3d`}
@@ -225,7 +237,7 @@ const FlashCard: FC<FlashCardProps> = ({
             </Stack>
           ) : (
             <Textarea
-              isDisabled={
+              isReadOnly={
                 card.type == SetType.LITERACY ||
                 shouldDisplayAnswer ||
                 answerExplanation !== ""
@@ -252,7 +264,7 @@ const FlashCard: FC<FlashCardProps> = ({
             />
             <div className="flex flex-row gap-x-3">
               <button
-                onClick={() => setShouldDisplayAnswer(true)}
+                onClick={() => provideAnswerHelp()}
                 className={`h-fit self-end rounded-lg bg-midBlue px-4 py-3 text-sm text-white ${!(shouldDisplayAnswer || answerExplanation !== "") && "hover:opacity-75"}`}
                 disabled={shouldDisplayAnswer || answerExplanation !== ""}
               >
@@ -260,7 +272,7 @@ const FlashCard: FC<FlashCardProps> = ({
               </button>
               <button
                 onClick={() => checkAnswer()}
-                className={`h-fit self-end rounded-lg bg-darkBlue px-4 py-3 text-sm text-white ${!(shouldDisplayAnswer || answerExplanation !== "") && "hover:opacity-75"}`}
+                className={`h-fit self-end rounded-lg bg-mediumBlue px-4 py-3 text-sm text-white ${!(shouldDisplayAnswer || answerExplanation !== "") && "hover:opacity-75"}`}
                 disabled={shouldDisplayAnswer || answerExplanation !== ""}
               >
                 Check
@@ -270,28 +282,36 @@ const FlashCard: FC<FlashCardProps> = ({
         </div>
       </div>
       {checkAnswerMutation.isLoading ||
+      getAnswerHelpMutation.isLoading ||
       (shouldDisplayAnswer && !isAnimationCompleted) ? (
         <Spinner />
       ) : answerExplanation === "" ? (
-        shouldDisplayAnswer ? (
-          <div className="flex w-screen justify-center px-12">
-            <StyledButton
-              label="Got It!"
-              colorInd={0}
+        shouldDisplayAnswer && answerHelp !== "" ? (
+          <div className="flex w-3/4 flex-col rounded-lg border border-midBlue  px-12 py-5">
+            <div className="pb-2 font-bold">Feedback</div>
+            <div dangerouslySetInnerHTML={{ __html: answerHelp }} />
+            <button
               onClick={handleShowCorrectAnswerAffirmation}
-              style={{
-                width: "300%",
-                paddingTop: "15px",
-                paddingBottom: "15px",
-              }}
-            />
+              className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-4 py-3 text-sm text-white hover:opacity-75"
+            >
+              <FontAwesomeIcon icon={faThumbsUp} />
+            </button>
           </div>
         ) : (
-          <div></div>
+          <div className="invisible flex w-3/4 flex-col rounded-lg border border-blue-400 px-12 py-5">
+            <div className="pb-2 font-bold">Feedback</div>
+            <div dangerouslySetInnerHTML={{ __html: answerExplanation }} />
+            <button
+              onClick={() => onCorrectCallback?.()}
+              className="mt-6 h-fit w-fit self-end rounded-lg bg-darkBlue px-4 py-3 text-sm text-white hover:opacity-75"
+            >
+              <FontAwesomeIcon icon={faThumbsUp} />
+            </button>
+          </div>
         )
       ) : isCorrect ? (
         <div className="flex w-3/4 flex-col rounded-lg border border-green-400 px-12 py-5">
-          <div className="pb-5 font-bold">Feedback</div>
+          <div className="pb-2 font-bold">Feedback</div>
           <div dangerouslySetInnerHTML={{ __html: answerExplanation }} />
           <button
             onClick={() => onCorrectCallback?.()}

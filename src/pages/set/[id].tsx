@@ -16,6 +16,7 @@ import Canvas from "~/components/Canvas";
 import { type Card } from "@prisma/client";
 import Image from "next/image";
 import _ from "lodash";
+import ProgressBar from "~/components/Progress/ProgressBar";
 
 const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
   const setId = useRouter().query.id;
@@ -98,21 +99,21 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
     // });
   };
 
-  const handleIncorrectAnswer = () => {
-    // toast({
-    //   title: _.sample([
-    //     "Try again!",
-    //     "You've got this!",
-    //     "So close!",
-    //     "Keep going!",
-    //     "Practice makes perfect!",
-    //   ]),
-    //   status: "error",
-    //   duration: 3000,
-    //   isClosable: false,
-    //   position: "top",
-    // });
-  };
+  // const handleIncorrectAnswer = () => {
+  // toast({
+  //   title: _.sample([
+  //     "Try again!",
+  //     "You've got this!",
+  //     "So close!",
+  //     "Keep going!",
+  //     "Practice makes perfect!",
+  //   ]),
+  //   status: "error",
+  //   duration: 3000,
+  //   isClosable: false,
+  //   position: "top",
+  // });
+  // };
 
   const restartSet = () => {
     setFlashcards(cards);
@@ -135,9 +136,9 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
         />
       ) : (
         <>
-          <div className="flex w-full items-center pl-8 pt-8">
-            <HStack>
-              <div className="inline-block flex items-center gap-2  hover:opacity-75">
+          <HStack>
+            <HStack pt={8} pl={8} alignItems={"center"} w={"100vw"}>
+              <div className="hover:opacity-75">
                 <Link
                   href="/dashboard"
                   className="flex flex-col 2xl:flex-row"
@@ -151,11 +152,21 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
                   />
                 </Link>
               </div>
-              <div className="absolute pl-32 text-4xl font-semibold">
-                {set.name}
-              </div>
+              <HStack pl={"3.75vw"} pr={"2vw"}>
+                <div className="text-4xl font-semibold">{set.name}</div>
+              </HStack>
+              {flashcards && (
+                <Box flexGrow={0.875}>
+                  <ProgressBar
+                    percentage={(100 * maxIndex) / flashcards.length}
+                    shouldApplyMargin={false}
+                    width={100}
+                    shouldApplyBorderRadius={true}
+                  />
+                </Box>
+              )}
             </HStack>
-          </div>
+          </HStack>
           {curIndex >= 0 &&
           flashcards &&
           curIndex < flashcards.length &&
@@ -167,9 +178,9 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
                 onCorrectCallback={() => {
                   handleCorrectAnswer();
                 }}
-                onIncorrectCallback={() => {
-                  handleIncorrectAnswer();
-                }}
+                // onIncorrectCallback={() => {
+                //   handleIncorrectAnswer();
+                // }}
                 moveCurrentCardToEnd={moveCurrentCardToEnd}
                 curIndex={curIndex}
                 maxIndex={maxIndex}
@@ -206,7 +217,7 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
               </button>
             </div>
           )}
-          <div
+          {/* <div
             className={`align-center w-screen flex-col items-center justify-center ${isReview ? "invisible" : "visible"}`}
           >
             <div className="flex flex-row justify-between">
@@ -228,8 +239,7 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
                 </Box>
               </button>
             </div>
-          </div>
-          )
+          </div> */}
         </>
       )}
     </div>
