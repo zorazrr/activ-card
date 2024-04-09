@@ -17,7 +17,7 @@ const ProgressBar = ({
     margin={shouldApplyMargin ? "auto" : "inherit"}
     w={width ? `${width}%` : "60%"}
     colorScheme={color ? color : "indigo"}
-    height="28px"
+    height="2.75vh"
     value={percentage}
     borderRadius={shouldApplyBorderRadius ? "md" : 0}
   />

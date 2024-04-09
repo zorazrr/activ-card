@@ -404,7 +404,7 @@ export const gptRouter = createTRPCRouter({
             content: `Make sure your feedback is at a ${input.compLevel && (input.compLevel == 0 ? "kindergarten" : `grade ${input.compLevel}`)} classroom comprehension level. \ 
           You're talking to the student (second person POV) and explain why you marked the student's answer as "yes" or "no" given criteria above.\
            If the answer is correct, give affirmation on what they did well and, if any tiny mistakes, short suggestions on what to do next time. \
-           If they're incorrect, suggest what the student could improve for next time and, if anything, what they did correctly
+           If they're incorrect, explicitly emphasize why they were marked incorrect, what parts of their answer were right (if any) and suggest what to focus on in the future
           Keep your answer quick and easy to read, encouraging. \
           Bold the key words/phrases (use <b></b>) that will help student quickly grasp the action items you provide for next time and what they said correct/wrong.
           Provide your response in the following format (two lines): 
@@ -427,6 +427,68 @@ export const gptRouter = createTRPCRouter({
         feedback: firstFeedbackLine
           ? firstFeedbackLine.split(/:\s*/, 2)[1]
           : "",
+      };
+    }),
+  /**
+   * Check if the student's answer matches the definition
+   * @param term The term to check
+   * @param definition The definition to check
+   * @returns Whether the student's input matches the definition, binary
+   */
+  getAnswerHelp: publicProcedure
+    .input(
+      z.object({
+        term: z.string(),
+        definition: z.string(),
+        type: z.enum(["ASSIGNMENT", "INVERTED", "LITERACY", "THEORY"]),
+        compLevel: z.number().optional(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      let formattedInput: string;
+      let prompt: string;
+
+      switch (getSetTypeEnum(input.type)) {
+        case SetType.ASSIGNMENT:
+          formattedInput = `Term: ${input.term}\nDefinition: ${input.definition}`;
+          prompt = `Given the following term and definition, give a dumbed down explanation helping the student learn this content. Feel free to use analogies. Bold words/phrases in your explanation that will help the content stick by wrapping them with <b></b>`;
+          break;
+        case SetType.INVERTED:
+          formattedInput = `Question: ${input.term}\n`;
+          prompt = `This is an inverted classroom style \
+        and the student does not know what to respond to the question above. Can you help give some light guidance (without giving away any answers?)`;
+          break;
+        case SetType.LITERACY:
+          formattedInput = `Term: ${input.term}\n`;
+          prompt = `The student doesn't know how to read the term above. Give a pronunication guide on the parts of it to help. Keep it concise and bold important key words/phrases in your response that will help with <b></b>`;
+          break;
+        case SetType.THEORY:
+          formattedInput = `Question: ${input.term}\n`;
+          prompt = `Given the following question, the student doesn't know how to respond. Can you help provide a little guidance (feel free to give a few examples) at their  ${input.compLevel && (input.compLevel == 0 ? "kindergarten" : `grade ${input.compLevel}`)} classroom level`;
+          break;
+      }
+
+      const completion = await openai.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content: `You are a helpful teaching assistant in a ${input.compLevel && (input.compLevel == 0 ? "kindergarten" : `grade ${input.compLevel}`)} classroom`,
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+          { role: "assistant", content: formattedInput },
+          {
+            role: "assistant",
+            content: ` Keep your answer helpful, easy to read and understand and encouraging. Hard limit of four sentences (no more than three if possible).  keep in mind you're speaking with a ${input.compLevel && (input.compLevel == 0 ? "kindergarten" : `grade ${input.compLevel}`)} classroom.`,
+          },
+        ],
+        model: "gpt-3.5-turbo",
+      });
+
+      return {
+        feedback: completion.choices[0].message.content,
       };
     }),
 
