@@ -272,7 +272,7 @@ const FlashCard: FC<FlashCardProps> = ({
               </button>
               <button
                 onClick={() => checkAnswer()}
-                className={`h-fit self-end rounded-lg bg-darkBlue px-4 py-3 text-sm text-white ${!(shouldDisplayAnswer || answerExplanation !== "") && "hover:opacity-75"}`}
+                className={`h-fit self-end rounded-lg bg-mediumBlue px-4 py-3 text-sm text-white ${!(shouldDisplayAnswer || answerExplanation !== "") && "hover:opacity-75"}`}
                 disabled={shouldDisplayAnswer || answerExplanation !== ""}
               >
                 Check

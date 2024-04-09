@@ -136,7 +136,7 @@ const AudioRecorder = ({
       {recordingStatus === "inactive" ? (
         <button
           onClick={() => startRecording()}
-          className={`h-fit self-end rounded-lg bg-mediumBlue px-4 py-3 text-sm text-white ${!shouldDisplayAnswer && "hover:opacity-75"}`}
+          className={`h-fit self-end rounded-lg bg-darkBlue px-4 py-3 text-sm text-white ${!shouldDisplayAnswer && "hover:opacity-75"}`}
           disabled={shouldDisplayAnswer}
         >
           <FontAwesomeIcon icon={faMicrophone} />
