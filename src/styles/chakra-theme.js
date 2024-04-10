@@ -41,6 +41,9 @@ const colors = {
   indigo: {
     500: "#621D8C",
   },
+  blurple: {
+    500: "#9cabff",
+  },
 };
 
 const baseStyle = definePartsStyle({
