@@ -45,25 +45,25 @@ const Metrics = () => {
     <VStack w="100%" align="start">
       <HStack justifyContent="space-between" w="75%" mb={3}>
         <p className="h4 my-2">Overview</p>
-        <Select w="20%" placeholder="Unit 1" />
+        <Select w="20%" placeholder="Unit 1" bg={"white"} />
       </HStack>
 
       <HStack justifyContent="space-between" w="75%" gap={5}>
         <HStack gap={0} maxW="30%">
           <p className="h5 font-normal">Completion Rate</p>
-          <CircularProgress value={40} color="orange" size="150px">
+          <CircularProgress value={40} color="mediumBlue.500" size="150px">
             <CircularProgressLabel>40%</CircularProgressLabel>
           </CircularProgress>
         </HStack>
         <HStack gap={0} maxW="30%">
           <p className="h5 font-normal">Average Score</p>
-          <CircularProgress value={85} color="green" size="150px">
+          <CircularProgress value={85} color="darkBlue.500" size="150px">
             <CircularProgressLabel>85%</CircularProgressLabel>
           </CircularProgress>
         </HStack>
         <HStack gap={1} maxW="30%">
           <p className="h5 font-normal">Initial Accuracy Rate</p>
-          <CircularProgress value={20} color="red" size="150px">
+          <CircularProgress value={20} color="midBlue.500" size="150px">
             <CircularProgressLabel>20%</CircularProgressLabel>
           </CircularProgress>
         </HStack>

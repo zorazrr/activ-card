@@ -13,7 +13,13 @@ const DashboardTabs = ({
   accountType: Role | undefined;
 }) => {
   return (
-    <Tabs variant="enclosed" pt={5} height="80vh" overflow="hidden">
+    <Tabs
+      variant="enclosed"
+      pt={5}
+      height="80vh"
+      overflow="hidden"
+      w="calc(100% - 2.5rem)"
+    >
       <TabList pb={5}>
         <Tab>Sets</Tab>
         <Tab>Students</Tab>
