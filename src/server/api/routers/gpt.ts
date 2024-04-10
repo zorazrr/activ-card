@@ -110,7 +110,7 @@ export const gptRouter = createTRPCRouter({
 
       switch (getSetTypeEnum(input.setType)) {
         case SetType.ASSIGNMENT:
-          prompt = `with the reading comprehension level of a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, generate ${String(numCards)} relevant (term:definition) pairs, keep it concise and simple, focusing on keeping the parts most important to the definition. Provide in the following format of Term:Definition`;
+          prompt = `for a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, generate ${String(numCards)} relevant (term:definition) pairs. In the definitions created for each term, make sure it is made for reading comprehension at their grade level. Keep it concise and simple, only keeping the part most important to the definition. Provide in the following format of Term:Definition`;
           break;
         case SetType.INVERTED:
           prompt = `with the reading comprehension level of a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, i'm doing an inverted classroom meaning i want students to start get thinking about the topics even before we start the unit. generate ${String(numCards)} questions they can type responses to that help me accomplish this with them. only give me the sentences, nothing else`;
@@ -127,17 +127,22 @@ export const gptRouter = createTRPCRouter({
         messages: [
           {
             role: "system",
-            content: `You are a helpful teaching assistant in a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom`,
+            content: `You are a helpful teaching assistant in a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom.`,
           },
           {
             role: "user",
-            content: `For the given prompt or subject, ${[prompt]}`,
+            content: `For the given prompt or subject of "${input.subject}", do the following. ${[prompt]}`,
           },
-          { role: "assistant", content: input.subject }, // TODO: Figure out why this is here
         ],
         model: "gpt-3.5-turbo",
       });
 
+      console.log(
+        `You are a helpful teaching assistant in a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom.`,
+      );
+      console.log(
+        `For the given prompt or subject of "${input.subject}", do the following. ${[prompt]}`,
+      );
       console.log(completion.choices[0].message.content);
       const lines = completion.choices[0].message.content.split("\n");
       console.log("HERE ARE THE LINES");
@@ -149,7 +154,7 @@ export const gptRouter = createTRPCRouter({
         case SetType.ASSIGNMENT:
           termDefPairs = lines
             .map((line) => {
-              if (line) {
+              if (line.trim()) {
                 const [term, definition] = line.split(/:\s*/);
                 return {
                   term: term.replace(/^\d+\.\s*/, ""), // Remove the numbering
@@ -218,18 +223,20 @@ export const gptRouter = createTRPCRouter({
       let prompt;
       const numCards = 3;
 
+      const readingComprehensionLevel = Number(input.readingComprehensionLevel);
+
       switch (getSetTypeEnum(input.setType)) {
         case SetType.ASSIGNMENT:
-          prompt = `with the reading comprehension level of a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, generate ${String(numCards)} relevant (term:definition) pairs, keep it concise and simple, focusing on keeping the parts most important to the definition.`;
+          prompt = `for a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, generate ${String(numCards)} relevant (term:definition) pairs. In the definitions created for each term, make sure it is made for their grade level. Keep it concise and simple, focusing on keeping the parts most important to the definition`;
           break;
         case SetType.INVERTED:
-          prompt = `with the reading comprehension level of a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, i'm doing an inverted classroom meaning i want students to start get thinking about the topics even before we start the unit. generate ${String(numCards)} questions they can type responses to that help me accomplish this with them. only give me the sentences, nothing else`;
+          prompt = `for a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, i'm doing an inverted classroom meaning i want students to start get thinking about the topics even before we start the unit. generate ${String(numCards)} questions they can type responses to that help me accomplish this with them. only give me the sentences, nothing else`;
           break;
         case SetType.LITERACY:
-          prompt = `with the reading comprehension level of a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, generate ${String(numCards)} sentences for them to practice reading and literacy. only give me the sentences, nothing else`;
+          prompt = `for a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom, generate ${String(numCards)} sentences for them to practice reading and literacy. only give me the sentences, nothing else`;
           break;
         case SetType.THEORY:
-          prompt = `with the level of a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom,  using Bloom's taxonomy level of "Evaluating, Creating, Synthesis", generate ${String(numCards)} mix of open-ended or high level concept questions to strengthen their understanding, keep it concise and simple. Only give me the response in the format of questions and only give questions that can be responded through speech (no visual material or drawing needed`;
+          prompt = `for a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom,  using Bloom's taxonomy level of "Evaluating, Creating, Synthesis", generate ${String(numCards)} mix of open-ended or high level concept questions to strengthen their understanding, keep it concise and simple. Only give me the response in the format of questions and only give questions that can be responded through speech (no visual material or drawing needed`;
           break;
       }
 
@@ -237,13 +244,13 @@ export const gptRouter = createTRPCRouter({
         messages: [
           {
             role: "system",
-            content: `You are a helpful teaching assistant in a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom. In the definitions created for each term, plese dumb it down to their grade level ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} and do NOT use complex or technical words outside of their expected grade level vocab. These are ${readingComprehensionLevel + 5} year old kids you are making this for.`,
+            content: `You are a helpful teaching assistant in a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom.`,
           },
           {
             role: "user",
             content: `From the given content only,  ${[prompt]}.`,
           },
-          { role: "assistant", content: input.content },
+          { role: "user", content: `Here is the contentL ${input.content}` },
         ],
         model: "gpt-3.5-turbo",
       });
@@ -253,7 +260,7 @@ export const gptRouter = createTRPCRouter({
       switch (input.setType) {
         case SetType.ASSIGNMENT:
           termDefPairs = lines.map((line) => {
-            if (line) {
+            if (line.trim()) {
               // Split each line by the first colon to separate the term and the definition
               const [term, definition] = line.split(/:\s*/);
               return {
@@ -398,9 +405,9 @@ export const gptRouter = createTRPCRouter({
             role: "user",
             content: prompt,
           },
-          { role: "assistant", content: formattedInput },
+          { role: "user", content: formattedInput },
           {
-            role: "assistant",
+            role: "user",
             content: `Make sure your feedback is at a ${input.compLevel && (input.compLevel == 0 ? "kindergarten" : `grade ${input.compLevel}`)} classroom comprehension level. \ 
           You're talking to the student (second person POV) and explain why you marked the student's answer as "yes" or "no" given criteria above.\
            If the answer is correct, give affirmation on what they did well and, if any tiny mistakes, short suggestions on what to do next time. \
@@ -478,9 +485,9 @@ export const gptRouter = createTRPCRouter({
             role: "user",
             content: prompt,
           },
-          { role: "assistant", content: formattedInput },
+          { role: "user", content: formattedInput },
           {
-            role: "assistant",
+            role: "user",
             content: ` Keep your answer helpful, easy to read and understand and encouraging. Hard limit of four sentences (no more than three if possible).  keep in mind you're speaking with a ${input.compLevel && (input.compLevel == 0 ? "kindergarten" : `grade ${input.compLevel}`)} classroom.`,
           },
         ],
