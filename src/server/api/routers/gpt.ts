@@ -237,7 +237,7 @@ export const gptRouter = createTRPCRouter({
         messages: [
           {
             role: "system",
-            content: `You are a helpful teaching assistant in a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom`,
+            content: `You are a helpful teaching assistant in a ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} classroom. In the definitions created for each term, plese dumb it down to their grade level ${readingComprehensionLevel == 0 ? "kindergarten" : "grade " + String(readingComprehensionLevel)} and do NOT use complex or technical words outside of their expected grade level vocab. These are ${readingComprehensionLevel + 5} year old kids you are making this for.`,
           },
           {
             role: "user",
