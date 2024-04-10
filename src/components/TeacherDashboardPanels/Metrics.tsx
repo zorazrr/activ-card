@@ -59,7 +59,7 @@ const Metrics = () => {
         >
           <option value="option1">Revolutionary War</option>
           <option value="option4">Life Science</option>
-          <option value="option5">Water Cycle</option>
+          <option value="option5">Three States of Matter</option>
         </Select>
       </HStack>
 
@@ -143,7 +143,7 @@ const Metrics = () => {
               justifyContent="center"
               alignItems="center"
             >
-              <div>How did the Revolutionary War end?</div>
+              <div>Why did the Revolutionary War start?</div>
             </Box>
             <Box
               backgroundColor={"white"}
@@ -157,7 +157,7 @@ const Metrics = () => {
               justifyContent="center"
               alignItems="center"
             >
-              <div>How did the Revolutionary War end?</div>
+              <div>Who were two fighting sides?</div>
             </Box>
           </HStack>
           <p className="h5  my-2 text-darkBlue">Weakest Cards</p>
@@ -174,7 +174,7 @@ const Metrics = () => {
               justifyContent="center"
               alignItems="center"
             >
-              <div>How did the Revolutionary War end?</div>
+              <div>What is the role of George Washington in this war?</div>
             </Box>
             <Box
               backgroundColor={"white"}
@@ -188,7 +188,7 @@ const Metrics = () => {
               justifyContent="center"
               alignItems="center"
             >
-              <div>How did the Revolutionary War end?</div>
+              <div>Who fought in this war?</div>
             </Box>
             <Box
               backgroundColor={"white"}
@@ -202,7 +202,9 @@ const Metrics = () => {
               justifyContent="center"
               alignItems="center"
             >
-              <div>How did the Revolutionary War end?</div>
+              <div>
+                Can you name and explain one of the battles in this war?
+              </div>
             </Box>
           </HStack>
           <p className="h4 my-2 text-darkBlue">Student Statistics</p>
