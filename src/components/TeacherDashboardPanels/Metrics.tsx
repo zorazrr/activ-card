@@ -58,8 +58,6 @@ const Metrics = () => {
           placeholder="Select Set"
         >
           <option value="option1">Revolutionary War</option>
-          <option value="option2">Presidents</option>
-          <option value="option3">Rocks</option>
           <option value="option4">Life Science</option>
           <option value="option5">Water Cycle</option>
         </Select>
