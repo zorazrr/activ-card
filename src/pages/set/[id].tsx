@@ -152,11 +152,11 @@ const Set = ({ tempIdx }: { tempIdx: number | undefined }) => {
                   />
                 </Link>
               </div>
-              <HStack pl={"3.75vw"} pr={"2vw"}>
+              <HStack pl={"3.75vw"} flexGrow={0.02}>
                 <div className="text-4xl font-semibold">{set.name}</div>
               </HStack>
               {flashcards && (
-                <Box flexGrow={0.875}>
+                <Box flexGrow={0.85}>
                   <ProgressBar
                     percentage={(100 * maxIndex) / flashcards.length}
                     shouldApplyMargin={false}

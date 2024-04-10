@@ -216,12 +216,9 @@ const FlashCard: FC<FlashCardProps> = ({
             className="my-rotate-x-180 backface-hidden"
             id="back"
           >
-            <p className="self-center font-bold">{card.term}</p>
+            <p className=" font-bold">{card.term}</p>
             <Divider borderWidth="0.5px" borderColor="darkgray" />
-            <p>
-              <span style={{ fontWeight: 600 }}>Correct Answer </span>
-              {card.definition}
-            </p>
+            <p>{card.definition}</p>
           </VStack>
         </div>
         <div className="flex h-full w-full flex-col gap-2">
