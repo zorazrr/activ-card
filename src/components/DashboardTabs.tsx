@@ -13,16 +13,22 @@ const DashboardTabs = ({
   accountType: Role | undefined;
 }) => {
   return (
-    <Tabs variant="enclosed" pt={5} height="80vh" overflow="hidden">
+    <Tabs
+      variant="enclosed"
+      pt={5}
+      height="80vh"
+      overflow="hidden"
+      w="calc(100% - 2.5rem)"
+    >
       <TabList pb={5}>
         <Tab>Sets</Tab>
-        <Tab>Students</Tab>
         {accountType && accountType == Role.TEACHER && (
           <>
             <Tab>Metrics</Tab>
-            <Tab>Badges</Tab>
+            <Tab>Students</Tab>
           </>
         )}
+        <Tab>Badges</Tab>
       </TabList>
       <TabPanels
         height="100%"
@@ -38,12 +44,12 @@ const DashboardTabs = ({
         </TabPanel>
         {accountType && accountType == Role.TEACHER && (
           <TabPanel>
-            <StudentRoster currentClass={currentClass} />
+            <Metrics />
           </TabPanel>
         )}
         {accountType && accountType == Role.TEACHER && (
           <TabPanel>
-            <Metrics />
+            <StudentRoster currentClass={currentClass} />
           </TabPanel>
         )}
         <TabPanel>

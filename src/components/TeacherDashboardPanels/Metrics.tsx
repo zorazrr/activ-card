@@ -1,7 +1,9 @@
 import {
+  Box,
   CircularProgress,
   CircularProgressLabel,
   HStack,
+  ListItem,
   Select,
   Table,
   TableContainer,
@@ -10,9 +12,12 @@ import {
   Th,
   Thead,
   Tr,
+  UnorderedList,
   VStack,
+  Text,
 } from "@chakra-ui/react";
 import ProgressMetric from "../Progress/ProgressMetric";
+import { useState } from "react";
 
 const Metrics = () => {
   const students = [
@@ -23,107 +28,251 @@ const Metrics = () => {
     },
     {
       name: "David Zhang",
-      insight: "Needs help grasping the intricacies of the Civil War.",
+      insight: "Responding with one-word answers.",
     },
     {
       name: "Eva Franz",
-      insight: "Having difficulty with the concept of Manifest Destiny.",
+      insight: "Heavy use of Ctrl+C keyboard shortcut.",
     },
     {
       name: "Grace Todd",
-      insight:
-        "Struggling to comprehend the economic factors leading to the Great Depression.",
-    },
-    {
-      name: "Henry Cavill",
-      insight:
-        "Finding it challenging to understand the impact of World War II on the United States.",
+      insight: "Struggling to comprehend most definitions in set.",
     },
   ];
+  const [selectedOption, setSelectedOption] = useState("");
+
+  const handleSelectChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
 
   return (
-    <VStack w="100%" align="start">
-      <HStack justifyContent="space-between" w="75%" mb={3}>
-        <p className="h4 my-2">Overview</p>
-        <Select w="20%" placeholder="Unit 1" />
+    <VStack w="100%" align="start" pl={3} pr={3} overflowY={"auto"}>
+      <HStack justifyContent="space-between" w="100%" mb={3}>
+        <p className="h4 my-2 text-darkBlue">Overview</p>
+        <Select
+          w="20%"
+          bg={"white"}
+          color={"darkBlue.500"}
+          value={selectedOption}
+          onChange={handleSelectChange}
+          placeholder="Select Set"
+        >
+          <option value="option1">Revolutionary War</option>
+          <option value="option4">Life Science</option>
+          <option value="option5">Water Cycle</option>
+        </Select>
       </HStack>
 
-      <HStack justifyContent="space-between" w="75%" gap={5}>
-        <HStack gap={0} maxW="30%">
-          <p className="h5 font-normal">Completion Rate</p>
-          <CircularProgress value={40} color="orange" size="150px">
-            <CircularProgressLabel>40%</CircularProgressLabel>
-          </CircularProgress>
-        </HStack>
-        <HStack gap={0} maxW="30%">
-          <p className="h5 font-normal">Average Score</p>
-          <CircularProgress value={85} color="green" size="150px">
-            <CircularProgressLabel>85%</CircularProgressLabel>
-          </CircularProgress>
-        </HStack>
-        <HStack gap={1} maxW="30%">
-          <p className="h5 font-normal">Initial Accuracy Rate</p>
-          <CircularProgress value={20} color="red" size="150px">
-            <CircularProgressLabel>20%</CircularProgressLabel>
-          </CircularProgress>
-        </HStack>
-      </HStack>
-      <p className="h4  my-2">Card Statistics</p>
-      <ProgressMetric
-        label="Card 1: Describe the effects of World War II"
-        percentage={80}
-      />
-      <ProgressMetric
-        label="Card 2: What was America's main priority during the war?"
-        percentage={85}
-      />
-      <ProgressMetric
-        label="Card 3: What was Eisenhower's stance on the war?"
-        percentage={90}
-      />
-      <ProgressMetric
-        label="Card 4: What were some economical effects of WWII?"
-        percentage={100}
-      />
-      <ProgressMetric
-        label="Card 5: Explain how women's rights advanced or regressed during this time"
-        percentage={70}
-      />
-      <p className="h4 my-2">Students Needing Help</p>
+      {selectedOption === "" ? (
+        <Box>Select a Set to Run Metrics</Box>
+      ) : (
+        <>
+          <HStack justifyContent="space-between" w="100%" gap={4}>
+            <HStack
+              gap={3}
+              maxW="30%"
+              backgroundColor={"white"}
+              pt={4}
+              pb={4}
+              pl={6}
+              pr={6}
+              borderRadius={10}
+            >
+              <p className="h5 my-2 text-darkBlue">Completion Rate</p>
+              <CircularProgress value={50} color="mediumBlue.500" size="150px">
+                <CircularProgressLabel>50%</CircularProgressLabel>
+              </CircularProgress>
+            </HStack>
+            <HStack
+              gap={3}
+              maxW="30%"
+              backgroundColor={"white"}
+              pt={4}
+              pb={4}
+              pl={6}
+              pr={6}
+              borderRadius={10}
+            >
+              <p className="h5 my-2 text-darkBlue">Average Score</p>
+              <CircularProgress value={85} color="darkBlue.500" size="150px">
+                <CircularProgressLabel>85%</CircularProgressLabel>
+              </CircularProgress>
+            </HStack>
+            <HStack
+              gap={3}
+              maxW="30%"
+              backgroundColor={"white"}
+              pt={4}
+              pb={4}
+              pl={6}
+              pr={6}
+              borderRadius={10}
+            >
+              <p className="h5 my-2 text-darkBlue">Initial Accuracy Rate</p>
+              <CircularProgress value={33} color="midBlue.500" size="150px">
+                <CircularProgressLabel>33%</CircularProgressLabel>
+              </CircularProgress>
+            </HStack>
+          </HStack>
+          <p className="h4  my-2 text-darkBlue">Card Statistics</p>
+          <p className="h5  my-2 text-darkBlue">Strongest Cards</p>
+          <HStack gap={5} width="100%">
+            <Box
+              backgroundColor={"white"}
+              h="20vh"
+              w="40%"
+              borderRadius={10}
+              borderColor={"green.200"}
+              borderWidth={2}
+              p={6}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <div>How did the Revolutionary War end?</div>
+            </Box>
+            <Box
+              backgroundColor={"white"}
+              h="20vh"
+              w="40%"
+              borderRadius={10}
+              borderColor={"green.200"}
+              borderWidth={2}
+              p={6}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <div>How did the Revolutionary War end?</div>
+            </Box>
+            <Box
+              backgroundColor={"white"}
+              h="20vh"
+              w="40%"
+              borderRadius={10}
+              borderColor={"green.200"}
+              borderWidth={2}
+              p={6}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <div>How did the Revolutionary War end?</div>
+            </Box>
+          </HStack>
+          <p className="h5  my-2 text-darkBlue">Weakest Cards</p>
+          <HStack gap={5} width="100%">
+            <Box
+              backgroundColor={"white"}
+              h="20vh"
+              w="40%"
+              borderRadius={10}
+              borderColor={"red.200"}
+              borderWidth={2}
+              p={6}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <div>How did the Revolutionary War end?</div>
+            </Box>
+            <Box
+              backgroundColor={"white"}
+              h="20vh"
+              w="40%"
+              borderRadius={10}
+              borderColor={"red.200"}
+              borderWidth={2}
+              p={6}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <div>How did the Revolutionary War end?</div>
+            </Box>
+            <Box
+              backgroundColor={"white"}
+              h="20vh"
+              w="40%"
+              borderRadius={10}
+              borderColor={"red.200"}
+              borderWidth={2}
+              p={6}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <div>How did the Revolutionary War end?</div>
+            </Box>
+          </HStack>
+          <p className="h4 my-2 text-darkBlue">Student Statistics</p>
 
-      <TableContainer w="75%">
-        <Table w="100%" variant="striped" colorScheme="darkBlue">
-          <Thead>
-            <Tr>
-              <Th w="45%">Name</Th>
-              <Th w="45%">Insights</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {students.map((student) => (
-              <>
-                <Tr key={student.name}>
-                  <Td>{student.name}</Td>
-                  <Td>{student.insight}</Td>
+          <p className="h5 my-2 text-darkBlue">Group Insight</p>
+          <Box
+            backgroundColor={"blue.50"}
+            h="20vh"
+            w="100%"
+            borderColor={"darkBlue.500"}
+            borderWidth={1}
+            borderRadius={10}
+            p={6}
+          >
+            <Text>
+              The students collectively seem to have a{" "}
+              <b>strong understanding</b> of the <b>overall timeline</b> of the
+              <b> Revolutionary War</b> but are struggling in the following
+              areas:
+            </Text>
+            <br></br>
+            <UnorderedList>
+              <ListItem pb={2}>
+                Confusing Declaration of Independence with Constitution
+              </ListItem>
+              <ListItem pb={2}>
+                Understanding the role of Thomas Jefferson and Thomas Paine
+              </ListItem>
+            </UnorderedList>
+          </Box>
+          <p className="h5 my-2 text-darkBlue">Student Attention</p>
+          <Box
+            borderWidth={1}
+            borderColor={"darkBlue.500"}
+            backgroundColor={"white"}
+            borderRadius={10}
+            w="100%"
+            mb={20}
+          >
+            {/* <TableContainer
+              w="100%"
+              borderWidth={1}
+              borderColor={"darkBlue.500"}
+              backgroundColor={"white"}
+              borderRadius={10}
+            > */}
+            <Table w="100%" variant="simple" colorScheme="darkBlue">
+              <Thead>
+                <Tr>
+                  <Th w="45%">Name</Th>
+                  <Th w="45%">Insights</Th>
                 </Tr>
-              </>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
-      <p className="h4 my-2">Student Progress</p>
-      <ProgressMetric label="Vasu Chalasani" percentage={100} />
-      <ProgressMetric label="Zora Zhang" percentage={100} />
-      <ProgressMetric label="Archna Sobti" percentage={100} />
-      <ProgressMetric label="Alice" percentage={0} />
-      <ProgressMetric label="Bob" percentage={0} />
-      <ProgressMetric label="Charlie" percentage={0} />
-      <ProgressMetric label="David" percentage={0} />
-      <ProgressMetric label="Eva" percentage={0} />
-      <ProgressMetric label="Frank" percentage={0} />
-      <ProgressMetric label="Grace" percentage={0} />
-      <ProgressMetric label="Henry" percentage={0} />
-      <ProgressMetric label="Ivy" percentage={0} />
+              </Thead>
+              <Tbody>
+                {students.map((student) => (
+                  <>
+                    <Tr key={student.name}>
+                      <Td>
+                        <b>{student.name}</b>
+                      </Td>
+                      <Td>{student.insight}</Td>
+                    </Tr>
+                  </>
+                ))}
+              </Tbody>
+            </Table>
+            {/* </TableContainer> */}
+          </Box>
+        </>
+      )}
     </VStack>
   );
 };

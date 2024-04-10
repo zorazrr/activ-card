@@ -43,19 +43,6 @@ const SetCard = (props: SetCardProps) => {
     window.location.href = `/create/set/${props.id}?isEdit=true`;
   };
 
-  const getTypeTagColor = (type: SetType) => {
-    switch (type) {
-      case SetType.ASSIGNMENT:
-        return "#ffb990";
-      case SetType.INVERTED:
-        return "pink";
-      case SetType.LITERACY:
-        return "#FFF192";
-      case SetType.THEORY:
-        return "#90EE90";
-    }
-  };
-
   return (
     <Card
       p={3}
@@ -77,7 +64,7 @@ const SetCard = (props: SetCardProps) => {
       }}
     >
       <CardBody h="100%" paddingY={0} paddingRight={0}>
-        <Box h="25vh" w="41vh">
+        <Box h="25vh" w="22vw">
           <Box
             minH="100%"
             display={"flex"}
