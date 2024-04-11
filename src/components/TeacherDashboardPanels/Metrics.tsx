@@ -39,7 +39,7 @@ const Metrics = () => {
       insight: "Struggling to comprehend most definitions in set.",
     },
   ];
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState("option1");
 
   const handleSelectChange = (event) => {
     setSelectedOption(event.target.value);
