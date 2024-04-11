@@ -62,6 +62,7 @@ const FlashCard: FC<FlashCardProps> = ({
 
     if (curIndex === setLength - 1) {
       setShouldDisplayAnswer(false);
+      setStudentInput("");
       setAnswerHelp("");
       setAnswerExplanation("");
     } else {
@@ -87,7 +88,7 @@ const FlashCard: FC<FlashCardProps> = ({
       },
       {
         onSuccess: ({ feedback }) => {
-          setAnswerHelp(feedback as string);
+          setAnswerHelp(feedback!);
         },
       },
     );
